@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from "date-fns";
 import type {
   DiffComment,
   IssueComment,
@@ -7,7 +8,7 @@ import type {
 } from "./types.js";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toISOString().slice(0, 16).replace("T", " ") + " UTC";
+  return formatDistanceToNow(iso, {addSuffix: true});
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -54,6 +55,11 @@ function renderReview(review: Review): string {
   return review.body.trim() ? [header, "", review.body].join("\n") : header;
 }
 
+// Trim everything up to the last block of changes.
+function renderDiffHunk(hunk: string): string {
+  return hunk.replace(/.*^ [^\n\r]*[\n\r]+/ms, "");
+}
+
 function renderDiffThread(root: DiffComment, replies: DiffComment[]): string {
   const location =
     root.line !== null
@@ -64,7 +70,7 @@ function renderDiffThread(root: DiffComment, replies: DiffComment[]): string {
     `**Diff comment** on ${location} (${formatDate(root.created_at)}):`,
     "",
     "```diff",
-    root.diff_hunk,
+    renderDiffHunk(root.diff_hunk),
     "```",
     "",
     `**${root.user.login}** wrote:`,
