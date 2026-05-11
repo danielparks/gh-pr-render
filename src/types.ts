@@ -31,11 +31,11 @@ export interface IssueComment {
 }
 
 export type ReviewState =
-  | 'APPROVED'
-  | 'CHANGES_REQUESTED'
-  | 'COMMENTED'
-  | 'DISMISSED'
-  | 'PENDING';
+  | "APPROVED"
+  | "CHANGES_REQUESTED"
+  | "COMMENTED"
+  | "DISMISSED"
+  | "PENDING";
 
 export interface Review {
   id: number;

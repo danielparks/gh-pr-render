@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-import { execSync } from 'child_process';
-import { Command } from 'commander';
-import { fetchPRData } from './fetch.js';
-import { renderPR } from './render.js';
+import { execSync } from "child_process";
+import { Command } from "commander";
+import { fetchPRData } from "./fetch.js";
+import { renderPR } from "./render.js";
 
 function detectRepo(): string {
-  const url = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+  const url = execSync("git remote get-url origin", {
+    encoding: "utf8",
+  }).trim();
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/);
   if (!match?.[1]) {
     throw new Error(
@@ -17,10 +19,10 @@ function detectRepo(): string {
 }
 
 new Command()
-  .name('gh-pr-render')
-  .description('Render a GitHub PR with comments for LLM consumption')
-  .argument('<repo-or-pr>', 'Repository (owner/repo) or PR number')
-  .argument('[pr]', 'PR number when first argument is a repository')
+  .name("gh-pr-render")
+  .description("Render a GitHub PR with comments for LLM consumption")
+  .argument("<repo-or-pr>", "Repository (owner/repo) or PR number")
+  .argument("[pr]", "PR number when first argument is a repository")
   .action((repoOrPr: string, prArg: string | undefined) => {
     let repo: string;
     let prNumber: number;

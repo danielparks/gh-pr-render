@@ -1,21 +1,27 @@
-import type { DiffComment, IssueComment, PRData, Review, ReviewState } from './types.js';
+import type {
+  DiffComment,
+  IssueComment,
+  PRData,
+  Review,
+  ReviewState,
+} from "./types.js";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+  return new Date(iso).toISOString().slice(0, 16).replace("T", " ") + " UTC";
 }
 
 function reviewStateLabel(state: ReviewState): string {
   switch (state) {
-    case 'APPROVED':
-      return 'approved this PR';
-    case 'CHANGES_REQUESTED':
-      return 'requested changes';
-    case 'COMMENTED':
-      return 'reviewed';
-    case 'DISMISSED':
-      return 'dismissed review';
-    case 'PENDING':
-      return 'pending review';
+    case "APPROVED":
+      return "approved this PR";
+    case "CHANGES_REQUESTED":
+      return "requested changes";
+    case "COMMENTED":
+      return "reviewed";
+    case "DISMISSED":
+      return "dismissed review";
+    case "PENDING":
+      return "pending review";
   }
 }
 
@@ -24,9 +30,9 @@ function reviewStateLabel(state: ReviewState): string {
 function isSignificantReview(review: Review): boolean {
   return (
     review.body.trim().length > 0 ||
-    review.state === 'APPROVED' ||
-    review.state === 'CHANGES_REQUESTED' ||
-    review.state === 'DISMISSED'
+    review.state === "APPROVED" ||
+    review.state === "CHANGES_REQUESTED" ||
+    review.state === "DISMISSED"
   );
 }
 
@@ -38,48 +44,50 @@ interface TimelineEntry {
 function renderIssueComment(comment: IssueComment): string {
   return [
     `**${comment.user.login}** commented (${formatDate(comment.created_at)}):`,
-    '',
+    "",
     comment.body,
-  ].join('\n');
+  ].join("\n");
 }
 
 function renderReview(review: Review): string {
   const header = `**${review.user.login}** ${reviewStateLabel(review.state)} (${formatDate(review.submitted_at)})`;
-  return review.body.trim()
-    ? [header, '', review.body].join('\n')
-    : header;
+  return review.body.trim() ? [header, "", review.body].join("\n") : header;
 }
 
 function renderDiffThread(root: DiffComment, replies: DiffComment[]): string {
   const location =
-    root.line !== null ? `\`${root.path}\` line ${root.line}` : `\`${root.path}\``;
+    root.line !== null
+      ? `\`${root.path}\` line ${root.line}`
+      : `\`${root.path}\``;
 
   const lines: string[] = [
     `**Diff comment** on ${location} (${formatDate(root.created_at)}):`,
-    '',
-    '```diff',
+    "",
+    "```diff",
     root.diff_hunk,
-    '```',
-    '',
+    "```",
+    "",
     `**${root.user.login}** wrote:`,
-    '',
+    "",
     root.body,
   ];
 
   for (const reply of replies) {
     lines.push(
-      '',
+      "",
       `**${reply.user.login}** replied (${formatDate(reply.created_at)}):`,
-      '',
+      "",
       reply.body,
     );
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 function buildDiffThreadEntries(diffComments: DiffComment[]): TimelineEntry[] {
-  const commentById = new Map<number, DiffComment>(diffComments.map((c) => [c.id, c]));
+  const commentById = new Map<number, DiffComment>(
+    diffComments.map((c) => [c.id, c]),
+  );
 
   function findRootId(id: number): number {
     const c = commentById.get(id);
@@ -103,9 +111,13 @@ function buildDiffThreadEntries(diffComments: DiffComment[]): TimelineEntry[] {
 
   return roots.map((root) => {
     const replies = (threadReplies.get(root.id) ?? []).sort(
-      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
     );
-    return { timestamp: root.created_at, content: renderDiffThread(root, replies) };
+    return {
+      timestamp: root.created_at,
+      content: renderDiffThread(root, replies),
+    };
   });
 }
 
@@ -114,7 +126,7 @@ export function renderPR(data: PRData): string {
   const out: string[] = [];
 
   // Header
-  out.push(`# PR #${pull.number}: ${pull.title}`, '');
+  out.push(`# PR #${pull.number}: ${pull.title}`, "");
   out.push(
     `**Author:** ${pull.user.login} | **State:** ${pull.state}`,
     `**Branch:** \`${pull.head.ref}\` → \`${pull.base.ref}\``,
@@ -122,38 +134,48 @@ export function renderPR(data: PRData): string {
   );
 
   if (pull.body?.trim()) {
-    out.push('', '---', '', pull.body);
+    out.push("", "---", "", pull.body);
   }
 
   // Changed files
-  out.push('', '---', '', '## Changed Files', '');
+  out.push("", "---", "", "## Changed Files", "");
   for (const file of files) {
-    out.push(`- \`${file.filename}\` (${file.status}) +${file.additions} / -${file.deletions}`);
+    out.push(
+      `- \`${file.filename}\` (${file.status}) +${file.additions} / -${file.deletions}`,
+    );
   }
 
   // Timeline
   const timeline: TimelineEntry[] = [];
 
   for (const comment of topComments) {
-    timeline.push({ timestamp: comment.created_at, content: renderIssueComment(comment) });
+    timeline.push({
+      timestamp: comment.created_at,
+      content: renderIssueComment(comment),
+    });
   }
 
   for (const review of reviews) {
     if (isSignificantReview(review)) {
-      timeline.push({ timestamp: review.submitted_at, content: renderReview(review) });
+      timeline.push({
+        timestamp: review.submitted_at,
+        content: renderReview(review),
+      });
     }
   }
 
   timeline.push(...buildDiffThreadEntries(diffComments));
-  timeline.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  timeline.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
 
   if (timeline.length > 0) {
-    out.push('', '---', '', '## Discussion');
+    out.push("", "---", "", "## Discussion");
     for (const entry of timeline) {
-      out.push('', '---', '', entry.content);
+      out.push("", "---", "", entry.content);
     }
   }
 
-  out.push('');
-  return out.join('\n');
+  out.push("");
+  return out.join("\n");
 }
