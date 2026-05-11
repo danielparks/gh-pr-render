@@ -48,7 +48,11 @@ function renderIssueComment(comment: IssueComment): string {
   const minimized = comment.isMinimized
     ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]`
     : "";
-  return [`**${author}** commented (${formatDate(comment.createdAt)})${minimized}:`, "", comment.body].join("\n");
+  return [
+    `**${author}** commented (${formatDate(comment.createdAt)})${minimized}:`,
+    "",
+    comment.body,
+  ].join("\n");
 }
 
 function renderReview(review: Review): string {
@@ -67,9 +71,7 @@ function renderThreadComment(
 ): string {
   const author = comment.author?.login ?? "ghost";
   const header = `**${author}** ${verb} (${formatDate(comment.createdAt)})${comment.isMinimized ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]` : ""}:`;
-  return comment.isMinimized
-    ? header
-    : [header, "", comment.body].join("\n");
+  return comment.isMinimized ? header : [header, "", comment.body].join("\n");
 }
 
 function renderReviewThread(

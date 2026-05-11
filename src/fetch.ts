@@ -166,7 +166,9 @@ export async function fetchPRData(
 ): Promise<PRData> {
   const slash = repo.indexOf("/");
   if (slash === -1)
-    throw new Error(`Invalid repository format: "${repo}" (expected owner/repo)`);
+    throw new Error(
+      `Invalid repository format: "${repo}" (expected owner/repo)`,
+    );
   const owner = repo.slice(0, slash);
   const repoName = repo.slice(slash + 1);
 

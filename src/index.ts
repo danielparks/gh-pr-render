@@ -23,26 +23,37 @@ new Command()
   .description("Render a GitHub PR with comments for LLM consumption")
   .argument("<repo-or-pr>", "Repository (owner/repo) or PR number")
   .argument("[pr]", "PR number when first argument is a repository")
-  .option("--include-minimized", "include minimized comments (marked with reason)")
-  .action(async (repoOrPr: string, prArg: string | undefined, opts: { includeMinimized?: boolean }) => {
-    let repo: string;
-    let prNumber: number;
+  .option(
+    "--include-minimized",
+    "include minimized comments (marked with reason)",
+  )
+  .action(
+    async (
+      repoOrPr: string,
+      prArg: string | undefined,
+      opts: { includeMinimized?: boolean },
+    ) => {
+      let repo: string;
+      let prNumber: number;
 
-    if (prArg !== undefined) {
-      repo = repoOrPr;
-      prNumber = parseInt(prArg, 10);
-    } else {
-      repo = detectRepo();
-      prNumber = parseInt(repoOrPr, 10);
-    }
+      if (prArg !== undefined) {
+        repo = repoOrPr;
+        prNumber = parseInt(prArg, 10);
+      } else {
+        repo = detectRepo();
+        prNumber = parseInt(repoOrPr, 10);
+      }
 
-    if (isNaN(prNumber)) {
-      console.error(`Error: "${repoOrPr}" is not a valid PR number`);
-      process.exit(1);
-    }
+      if (isNaN(prNumber)) {
+        console.error(`Error: "${repoOrPr}" is not a valid PR number`);
+        process.exit(1);
+      }
 
-    const data = await fetchPRData(repo, prNumber);
-    const renderOptions: RenderOptions = { includeMinimized: opts.includeMinimized ?? false };
-    process.stdout.write(renderPR(data, renderOptions));
-  })
+      const data = await fetchPRData(repo, prNumber);
+      const renderOptions: RenderOptions = {
+        includeMinimized: opts.includeMinimized ?? false,
+      };
+      process.stdout.write(renderPR(data, renderOptions));
+    },
+  )
   .parse();

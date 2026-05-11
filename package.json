@@ -2,7 +2,9 @@
   "name": "gh-pr-render",
   "version": "1.0.0",
   "description": "Render a GitHub PR with comments for LLM consumption",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "index.js",
   "prepare": "tsc",
   "bin": {
