@@ -24,10 +24,12 @@ export interface ChangedFile {
 }
 
 export interface IssueComment {
-  id: number;
-  user: User;
+  databaseId: number;
+  author: { login: string } | null;
   body: string;
-  created_at: string;
+  createdAt: string;
+  isMinimized: boolean;
+  minimizedReason: string | null;
 }
 
 export type ReviewState =

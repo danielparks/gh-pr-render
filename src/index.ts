@@ -2,7 +2,7 @@
 import { execSync } from "child_process";
 import { Command } from "commander";
 import { fetchPRData } from "./fetch.js";
-import { renderPR } from "./render.js";
+import { renderPR, type RenderOptions } from "./render.js";
 
 function detectRepo(): string {
   const url = execSync("git remote get-url origin", {
@@ -23,7 +23,8 @@ new Command()
   .description("Render a GitHub PR with comments for LLM consumption")
   .argument("<repo-or-pr>", "Repository (owner/repo) or PR number")
   .argument("[pr]", "PR number when first argument is a repository")
-  .action(async (repoOrPr: string, prArg: string | undefined) => {
+  .option("--include-minimized", "include minimized comments (marked with reason)")
+  .action(async (repoOrPr: string, prArg: string | undefined, opts: { includeMinimized?: boolean }) => {
     let repo: string;
     let prNumber: number;
 
@@ -41,6 +42,7 @@ new Command()
     }
 
     const data = await fetchPRData(repo, prNumber);
-    process.stdout.write(renderPR(data));
+    const renderOptions: RenderOptions = { includeMinimized: opts.includeMinimized ?? false };
+    process.stdout.write(renderPR(data, renderOptions));
   })
   .parse();

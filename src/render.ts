@@ -44,11 +44,11 @@ interface TimelineEntry {
 }
 
 function renderIssueComment(comment: IssueComment): string {
-  return [
-    `**${comment.user.login}** commented (${formatDate(comment.created_at)}):`,
-    "",
-    comment.body,
-  ].join("\n");
+  const author = comment.author?.login ?? "ghost";
+  const minimized = comment.isMinimized
+    ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]`
+    : "";
+  return [`**${author}** commented (${formatDate(comment.createdAt)})${minimized}:`, "", comment.body].join("\n");
 }
 
 function renderReview(review: Review): string {
@@ -72,7 +72,10 @@ function renderThreadComment(
     : [header, "", comment.body].join("\n");
 }
 
-function renderReviewThread(thread: ReviewThread): string {
+function renderReviewThread(
+  thread: ReviewThread,
+  includeMinimized: boolean,
+): string {
   const first = thread.comments.nodes[0];
   if (!first) return "";
 
@@ -97,14 +100,20 @@ function renderReviewThread(thread: ReviewThread): string {
   ];
 
   for (const comment of thread.comments.nodes.slice(1)) {
+    if (comment.isMinimized && !includeMinimized) continue;
     lines.push("", renderThreadComment(comment, "replied"));
   }
 
   return lines.join("\n");
 }
 
-export function renderPR(data: PRData): string {
+export interface RenderOptions {
+  includeMinimized: boolean;
+}
+
+export function renderPR(data: PRData, options: RenderOptions): string {
   const { pull, files, topComments, reviews, reviewThreads } = data;
+  const { includeMinimized } = options;
   const out: string[] = [];
 
   // Header
@@ -131,8 +140,9 @@ export function renderPR(data: PRData): string {
   const timeline: TimelineEntry[] = [];
 
   for (const comment of topComments) {
+    if (comment.isMinimized && !includeMinimized) continue;
     timeline.push({
-      timestamp: comment.created_at,
+      timestamp: comment.createdAt,
       content: renderIssueComment(comment),
     });
   }
@@ -148,12 +158,12 @@ export function renderPR(data: PRData): string {
 
   for (const thread of reviewThreads) {
     const first = thread.comments.nodes[0];
-    if (first) {
-      timeline.push({
-        timestamp: first.createdAt,
-        content: renderReviewThread(thread),
-      });
-    }
+    if (!first) continue;
+    if (first.isMinimized && !includeMinimized) continue;
+    timeline.push({
+      timestamp: first.createdAt,
+      content: renderReviewThread(thread, includeMinimized),
+    });
   }
 
   timeline.sort(
