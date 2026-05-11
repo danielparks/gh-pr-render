@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "gh-pr-render": "./dist/index.js"
+  },
   "scripts": {
     "build": "npx tsc",
     "dev": "tsc --watch",
     "check": "tsc --noEmit",
     "lint": "eslint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +35,7 @@
     "jiti": "^2.7.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.2"
+    "typescript-eslint": "^8.59.2",
+    "vitest": "^3.0.0"
   }
 }
