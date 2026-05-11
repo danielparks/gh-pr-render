@@ -1,14 +1,15 @@
 import { formatDistanceToNow } from "date-fns";
 import type {
-  DiffComment,
   IssueComment,
   PRData,
   Review,
   ReviewState,
+  ReviewThread,
+  ThreadComment,
 } from "./types.js";
 
 function formatDate(iso: string): string {
-  return formatDistanceToNow(iso, {addSuffix: true});
+  return formatDistanceToNow(iso, { addSuffix: true });
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -60,75 +61,50 @@ function renderDiffHunk(hunk: string): string {
   return hunk.replace(/.*^ [^\n\r]*[\n\r]+/ms, "");
 }
 
-function renderDiffThread(root: DiffComment, replies: DiffComment[]): string {
+function renderThreadComment(
+  comment: ThreadComment,
+  verb: "wrote" | "replied",
+): string {
+  const author = comment.author?.login ?? "ghost";
+  const header = `**${author}** ${verb} (${formatDate(comment.createdAt)})${comment.isMinimized ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]` : ""}:`;
+  return comment.isMinimized
+    ? header
+    : [header, "", comment.body].join("\n");
+}
+
+function renderReviewThread(thread: ReviewThread): string {
+  const first = thread.comments.nodes[0];
+  if (!first) return "";
+
   const location =
-    root.line !== null
-      ? `\`${root.path}\` line ${root.line}`
-      : `\`${root.path}\``;
+    thread.line !== null
+      ? `\`${thread.path}\` line ${thread.line}`
+      : `\`${thread.path}\``;
+
+  const tags: string[] = [];
+  if (thread.isResolved) tags.push("resolved");
+  if (thread.isOutdated) tags.push("outdated");
+  const tagStr = tags.length > 0 ? ` [${tags.join(", ")}]` : "";
 
   const lines: string[] = [
-    `**Diff comment** on ${location} (${formatDate(root.created_at)}):`,
+    `**Diff comment** on ${location}${tagStr}:`,
     "",
     "```diff",
-    renderDiffHunk(root.diff_hunk),
+    renderDiffHunk(first.diffHunk),
     "```",
     "",
-    `**${root.user.login}** wrote:`,
-    "",
-    root.body,
+    renderThreadComment(first, "wrote"),
   ];
 
-  for (const reply of replies) {
-    lines.push(
-      "",
-      `**${reply.user.login}** replied (${formatDate(reply.created_at)}):`,
-      "",
-      reply.body,
-    );
+  for (const comment of thread.comments.nodes.slice(1)) {
+    lines.push("", renderThreadComment(comment, "replied"));
   }
 
   return lines.join("\n");
 }
 
-function buildDiffThreadEntries(diffComments: DiffComment[]): TimelineEntry[] {
-  const commentById = new Map<number, DiffComment>(
-    diffComments.map((c) => [c.id, c]),
-  );
-
-  function findRootId(id: number): number {
-    const c = commentById.get(id);
-    return c?.in_reply_to_id !== undefined ? findRootId(c.in_reply_to_id) : id;
-  }
-
-  const threadReplies = new Map<number, DiffComment[]>();
-  const roots: DiffComment[] = [];
-
-  for (const comment of diffComments) {
-    if (comment.in_reply_to_id === undefined) {
-      roots.push(comment);
-      if (!threadReplies.has(comment.id)) threadReplies.set(comment.id, []);
-    } else {
-      const rootId = findRootId(comment.in_reply_to_id);
-      const replies = threadReplies.get(rootId) ?? [];
-      replies.push(comment);
-      threadReplies.set(rootId, replies);
-    }
-  }
-
-  return roots.map((root) => {
-    const replies = (threadReplies.get(root.id) ?? []).sort(
-      (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-    );
-    return {
-      timestamp: root.created_at,
-      content: renderDiffThread(root, replies),
-    };
-  });
-}
-
 export function renderPR(data: PRData): string {
-  const { pull, files, topComments, reviews, diffComments } = data;
+  const { pull, files, topComments, reviews, reviewThreads } = data;
   const out: string[] = [];
 
   // Header
@@ -170,7 +146,16 @@ export function renderPR(data: PRData): string {
     }
   }
 
-  timeline.push(...buildDiffThreadEntries(diffComments));
+  for (const thread of reviewThreads) {
+    const first = thread.comments.nodes[0];
+    if (first) {
+      timeline.push({
+        timestamp: first.createdAt,
+        content: renderReviewThread(thread),
+      });
+    }
+  }
+
   timeline.sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
   );

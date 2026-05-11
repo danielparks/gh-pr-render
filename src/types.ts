@@ -45,17 +45,24 @@ export interface Review {
   submitted_at: string;
 }
 
-export interface DiffComment {
-  id: number;
-  user: User;
+export interface ThreadComment {
+  databaseId: number;
+  author: { login: string } | null;
   body: string;
+  createdAt: string;
+  isMinimized: boolean;
+  minimizedReason: string | null;
+  diffHunk: string;
+}
+
+export interface ReviewThread {
+  isResolved: boolean;
+  isOutdated: boolean;
   path: string;
-  diff_hunk: string;
   line: number | null;
-  side: string;
-  in_reply_to_id?: number;
-  pull_request_review_id: number | null;
-  created_at: string;
+  comments: {
+    nodes: ThreadComment[];
+  };
 }
 
 export interface PRData {
@@ -63,5 +70,5 @@ export interface PRData {
   files: ChangedFile[];
   topComments: IssueComment[];
   reviews: Review[];
-  diffComments: DiffComment[];
+  reviewThreads: ReviewThread[];
 }

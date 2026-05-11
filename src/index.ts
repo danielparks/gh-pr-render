@@ -23,7 +23,7 @@ new Command()
   .description("Render a GitHub PR with comments for LLM consumption")
   .argument("<repo-or-pr>", "Repository (owner/repo) or PR number")
   .argument("[pr]", "PR number when first argument is a repository")
-  .action((repoOrPr: string, prArg: string | undefined) => {
+  .action(async (repoOrPr: string, prArg: string | undefined) => {
     let repo: string;
     let prNumber: number;
 
@@ -40,7 +40,7 @@ new Command()
       process.exit(1);
     }
 
-    const data = fetchPRData(repo, prNumber);
+    const data = await fetchPRData(repo, prNumber);
     process.stdout.write(renderPR(data));
   })
   .parse();
