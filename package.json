@@ -1,8 +1,10 @@
 {
   "name": "gh-pr-render",
   "version": "1.0.0",
-  "description": "",
+  "description": "Render a GitHub PR with comments for LLM consumption",
+  "files": ["dist"],
   "main": "index.js",
+  "prepare": "tsc",
   "bin": {
     "gh-pr-render": "./dist/index.js"
   },
@@ -16,7 +18,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT OR Apache-2.0",
   "type": "module",
   "dependencies": {
     "@octokit/graphql": "^9.0.3",
