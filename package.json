@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "prepare": "tsc",
   "bin": {
-    "gh-pr-render": "./dist/index.js"
+    "gh-pr-render": "dist/index.js"
   },
   "scripts": {
     "build": "npx tsc",
