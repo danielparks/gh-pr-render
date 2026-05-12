@@ -8,3 +8,4 @@ All notable changes to this project will be documented in this file.
 - Switch times from being relative to now to being relative to PR creation.
 - Tweak output to distinguish top level comments and reviews from replies to comments on diffs.
 - Support PR URL as a command line argument.
+- Add `--timings` option to print API request times.
