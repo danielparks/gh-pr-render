@@ -473,3 +473,192 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 @dependabot recreate
 "
 `;
+
+exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders with minimized comments 1`] = `
+"# PR #1: Add type hints and arithmetic operations
+
+**Author:** danielparks | **State:** open
+**Branch:** \`feat/type-hints-and-ops\` → \`main\`
+**URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
+
+---
+
+Adds type annotations to all functions and implements \`power\` and \`modulo\` operations.
+
+---
+
+## Changed Files
+
+- \`calculator.py\` (modified) +12 / -4
+
+---
+
+## Discussion
+
+---
+
+**danielparks** commented (20 days ago):
+
+Overall looks good! The type hints are a nice addition.
+
+---
+
+**danielparks** commented (20 days ago) [minimized: duplicate]:
+
+This is a duplicate of last week's PR.
+
+---
+
+**Diff comment** on \`calculator.py\` [outdated]:
+
+\`\`\`diff
++
++
++def power(a: float, b: int) -> float:
++    result = 1.0
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+This loop runs in O(b) time. Python has a built-in \`**\` operator.
+
+---
+
+**Diff comment** on \`calculator.py\` line 13:
+
+\`\`\`diff
+-def divide(a, b):
++def divide(a: float, b: float) -> float:
+\`\`\`
+
+**danielparks** wrote (20 days ago) [minimized: outdated]:
+
+---
+
+**danielparks** reviewed (20 days ago)
+
+Please add docstrings to each function.
+
+---
+
+**Diff comment** on \`calculator.py\` [resolved, outdated]:
+
+\`\`\`diff
++
++
++def power(base: float, exponent: int) -> float:
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+Nice, much cleaner!
+
+---
+
+**Diff comment** on \`calculator.py\` line 23:
+
+\`\`\`diff
++
++
++def power(base: float, exponent: int) -> float:
++    return base ** exponent
++
++
++def modulo(dividend: float, divisor: float) -> float:
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+Good choice of parameter names.
+
+**danielparks** replied (20 days ago):
+
+Agreed — much clearer than \`a\` and \`b\`.
+"
+`;
+
+exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders without minimized comments 1`] = `
+"# PR #1: Add type hints and arithmetic operations
+
+**Author:** danielparks | **State:** open
+**Branch:** \`feat/type-hints-and-ops\` → \`main\`
+**URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
+
+---
+
+Adds type annotations to all functions and implements \`power\` and \`modulo\` operations.
+
+---
+
+## Changed Files
+
+- \`calculator.py\` (modified) +12 / -4
+
+---
+
+## Discussion
+
+---
+
+**danielparks** commented (20 days ago):
+
+Overall looks good! The type hints are a nice addition.
+
+---
+
+**Diff comment** on \`calculator.py\` [outdated]:
+
+\`\`\`diff
++
++
++def power(a: float, b: int) -> float:
++    result = 1.0
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+This loop runs in O(b) time. Python has a built-in \`**\` operator.
+
+---
+
+**danielparks** reviewed (20 days ago)
+
+Please add docstrings to each function.
+
+---
+
+**Diff comment** on \`calculator.py\` [resolved, outdated]:
+
+\`\`\`diff
++
++
++def power(base: float, exponent: int) -> float:
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+Nice, much cleaner!
+
+---
+
+**Diff comment** on \`calculator.py\` line 23:
+
+\`\`\`diff
++
++
++def power(base: float, exponent: int) -> float:
++    return base ** exponent
++
++
++def modulo(dividend: float, divisor: float) -> float:
+\`\`\`
+
+**danielparks** wrote (20 days ago):
+
+Good choice of parameter names.
+
+**danielparks** replied (20 days ago):
+
+Agreed — much clearer than \`a\` and \`b\`.
+"
+`;

@@ -34,3 +34,24 @@ describe("renderPR - danielparks/htmlize #66", () => {
     expect(renderPR(data, { includeMinimized: true })).toMatchSnapshot();
   });
 });
+
+describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
+  beforeAll(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(SNAPSHOT_NOW);
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
+  const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 1);
+
+  it("renders without minimized comments", () => {
+    expect(renderPR(data, { includeMinimized: false })).toMatchSnapshot();
+  });
+
+  it("renders with minimized comments", () => {
+    expect(renderPR(data, { includeMinimized: true })).toMatchSnapshot();
+  });
+});
