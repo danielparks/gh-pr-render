@@ -1,4 +1,5 @@
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
+import { promisify } from "util";
 import { graphql } from "@octokit/graphql";
 import type {
   ChangedFile,
@@ -9,6 +10,8 @@ import type {
   ReviewThread,
 } from "./types.js";
 
+const execAsync = promisify(exec);
+
 function getAuthToken(): string {
   return (
     process.env["GH_TOKEN"] ??
@@ -17,23 +20,21 @@ function getAuthToken(): string {
   );
 }
 
-function ghApi(endpoint: string): unknown {
-  return JSON.parse(
-    execSync(`gh api "${endpoint}"`, {
-      encoding: "utf8",
-      maxBuffer: 10 * 1024 * 1024,
-    }),
-  );
+async function ghApi(endpoint: string): Promise<unknown> {
+  const { stdout } = await execAsync(`gh api "${endpoint}"`, {
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  return JSON.parse(stdout);
 }
 
-function ghApiArray(endpoint: string): unknown[] {
+async function ghApiArray(endpoint: string): Promise<unknown[]> {
   const results: unknown[] = [];
   let page = 1;
   const sep = endpoint.includes("?") ? "&" : "?";
   while (true) {
-    const items = ghApi(
+    const items = (await ghApi(
       `${endpoint}${sep}per_page=100&page=${page}`,
-    ) as unknown[];
+    )) as unknown[];
     results.push(...items);
     if (items.length < 100) break;
     page++;
@@ -164,10 +165,15 @@ export interface FetchOptions {
   timings: boolean;
 }
 
+function timed<T>(fn: () => Promise<T>): Promise<[T, number]> {
+  const t = performance.now();
+  return fn().then((r) => [r, performance.now() - t]);
+}
+
 export async function fetchPRData(
   repo: string,
   prNumber: number,
-  options: FetchOptions,
+  options: FetchOptions = { timings: false },
 ): Promise<PRData> {
   const totalStart = performance.now();
 
@@ -185,47 +191,35 @@ export async function fetchPRData(
 
   const base = `repos/${repo}`;
 
-  let topCommentsMs = 0;
-  let reviewThreadsMs = 0;
-  const graphqlStart = performance.now();
-  const [topComments, reviewThreads] = await Promise.all([
-    (async () => {
-      const t = performance.now();
-      const r = await fetchTopComments(client, owner, repoName, prNumber);
-      topCommentsMs = performance.now() - t;
-      return r;
-    })(),
-    (async () => {
-      const t = performance.now();
-      const r = await fetchReviewThreads(client, owner, repoName, prNumber);
-      reviewThreadsMs = performance.now() - t;
-      return r;
-    })(),
+  const [
+    [topComments, topCommentsMs],
+    [reviewThreads, reviewThreadsMs],
+    [pull, pullMs],
+    [files, filesMs],
+    [reviews, reviewsMs],
+  ] = await Promise.all([
+    timed(() => fetchTopComments(client, owner, repoName, prNumber)),
+    timed(() => fetchReviewThreads(client, owner, repoName, prNumber)),
+    timed(() => ghApi(`${base}/pulls/${prNumber}`) as Promise<PullRequest>),
+    timed(
+      () =>
+        ghApiArray(`${base}/pulls/${prNumber}/files`) as Promise<ChangedFile[]>,
+    ),
+    timed(
+      () =>
+        ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Promise<Review[]>,
+    ),
   ]);
-  const graphqlMs = performance.now() - graphqlStart;
-
-  const pullStart = performance.now();
-  const pull = ghApi(`${base}/pulls/${prNumber}`) as PullRequest;
-  const pullMs = performance.now() - pullStart;
-
-  const filesStart = performance.now();
-  const files = ghApiArray(`${base}/pulls/${prNumber}/files`) as ChangedFile[];
-  const filesMs = performance.now() - filesStart;
-
-  const reviewsStart = performance.now();
-  const reviews = ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Review[];
-  const reviewsMs = performance.now() - reviewsStart;
 
   const totalMs = performance.now() - totalStart;
 
   if (options.timings) {
     const rows: [string, number][] = [
-      ["graphql (parallel)", graphqlMs],
-      ["  top-level comments", topCommentsMs],
-      ["  review threads", reviewThreadsMs],
-      ["REST pr metadata", pullMs],
-      ["REST changed files", filesMs],
-      ["REST reviews", reviewsMs],
+      ["top-level comments (graphql)", topCommentsMs],
+      ["review threads (graphql)", reviewThreadsMs],
+      ["pr metadata (REST)", pullMs],
+      ["changed files (REST)", filesMs],
+      ["reviews (REST)", reviewsMs],
       ["total", totalMs],
     ];
     const labelWidth = Math.max(...rows.map(([l]) => l.length));
