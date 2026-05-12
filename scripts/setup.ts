@@ -258,7 +258,9 @@ async function createScenarioPR(dir: string, title: string): Promise<void> {
       },
     ],
   });
-  log("  Added empty-body COMMENTED review with inline comment on power/line 20.");
+  log(
+    "  Added empty-body COMMENTED review with inline comment on power/line 20.",
+  );
   log("  (Review filtered by renderer; inline thread will become outdated.)");
 
   // Diff thread on line 13 of commit 1 — root will be minimized, causing the
@@ -283,7 +285,12 @@ async function createScenarioPR(dir: string, title: string): Promise<void> {
   log("Pushing commit 2...");
   writeFileSync(join(dir, "calculator.py"), CALCULATOR_V2);
   git(dir, "add", "calculator.py");
-  git(dir, "commit", "-m", "Simplify power and modulo using built-in operators");
+  git(
+    dir,
+    "commit",
+    "-m",
+    "Simplify power and modulo using built-in operators",
+  );
   git(dir, "push");
   const sha2 = git(dir, "rev-parse", "HEAD");
 
