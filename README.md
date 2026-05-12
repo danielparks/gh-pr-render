@@ -6,6 +6,8 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 
 ## Example output
 
+<!-- eslint-disable -->
+
 > # PR #1: Add type hints and arithmetic operations
 >
 > **Author:** danielparks | **State:** open
@@ -88,6 +90,8 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > **danielparks** replied (33 minutes ago):
 >
 > Agreed — much clearer than `a` and `b`.
+
+<!-- eslint-enable -->
 
 ## License
 

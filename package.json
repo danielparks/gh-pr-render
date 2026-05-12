@@ -5,7 +5,7 @@
   "files": [
     "dist"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "prepare": "tsc",
   "bin": {
     "gh-pr-render": "./dist/index.js"
@@ -20,8 +20,15 @@
     "record": "jiti scripts/record.ts",
     "setup": "jiti scripts/setup.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "github",
+    "pull-request",
+    "llm",
+    "ai",
+    "code-review",
+    "cli"
+  ],
+  "author": "Daniel Parks <oss-gh-pr-render@demonhorse.org> (https://demon.horse)",
   "license": "MIT OR Apache-2.0",
   "type": "module",
   "dependencies": {

@@ -37,5 +37,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "exclude": ["dist", "eslint.config.mts", "scripts"]
+  "exclude": ["dist", "eslint.config.mts", "scripts", "src/**/*.test.ts"]
 }
