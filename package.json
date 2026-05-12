@@ -16,7 +16,8 @@
     "check": "tsc --noEmit",
     "lint": "eslint",
     "format": "prettier --write .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "record": "jiti scripts/record.ts"
   },
   "keywords": [],
   "author": "",
