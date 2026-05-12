@@ -1,6 +1,6 @@
 {
   "name": "gh-pr-render",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Render GitHub PRs with comments for LLM PR reviews",
   "files": [
     "dist"
