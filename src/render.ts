@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistance } from "date-fns";
 import type {
   IssueComment,
   PRData,
@@ -8,8 +8,8 @@ import type {
   ThreadComment,
 } from "./types.js";
 
-function formatDate(iso: string): string {
-  return formatDistanceToNow(iso, { addSuffix: true });
+function formatDate(iso: string, baseDate: string): string {
+  return formatDistance(iso, baseDate) + " later";
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -43,20 +43,20 @@ interface TimelineEntry {
   content: string;
 }
 
-function renderIssueComment(comment: IssueComment): string {
+function renderIssueComment(comment: IssueComment, baseDate: string): string {
   const author = comment.author?.login ?? "ghost";
   const minimized = comment.isMinimized
     ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]`
     : "";
   return [
-    `**${author}** commented (${formatDate(comment.createdAt)})${minimized}:`,
+    `**${author}** commented (${formatDate(comment.createdAt, baseDate)})${minimized}:`,
     "",
     comment.body,
   ].join("\n");
 }
 
-function renderReview(review: Review): string {
-  const header = `**${review.user.login}** ${reviewStateLabel(review.state)} (${formatDate(review.submitted_at)})`;
+function renderReview(review: Review, baseDate: string): string {
+  const header = `**${review.user.login}** ${reviewStateLabel(review.state)} (${formatDate(review.submitted_at, baseDate)})`;
   return review.body.trim() ? [header, "", review.body].join("\n") : header;
 }
 
@@ -68,15 +68,17 @@ function renderDiffHunk(hunk: string): string {
 function renderThreadComment(
   comment: ThreadComment,
   verb: "wrote" | "replied",
+  baseDate: string,
 ): string {
   const author = comment.author?.login ?? "ghost";
-  const header = `**${author}** ${verb} (${formatDate(comment.createdAt)})${comment.isMinimized ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]` : ""}:`;
+  const header = `**${author}** ${verb} (${formatDate(comment.createdAt, baseDate)})${comment.isMinimized ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]` : ""}:`;
   return comment.isMinimized ? header : [header, "", comment.body].join("\n");
 }
 
 function renderReviewThread(
   thread: ReviewThread,
   includeMinimized: boolean,
+  baseDate: string,
 ): string {
   const first = thread.comments.nodes[0];
   if (!first) return "";
@@ -99,12 +101,12 @@ function renderReviewThread(
     renderDiffHunk(first.diffHunk),
     "```",
     "",
-    renderThreadComment(first, "wrote"),
+    renderThreadComment(first, "wrote", baseDate),
   ];
 
   for (const comment of thread.comments.nodes.slice(1)) {
     if (comment.isMinimized && !includeMinimized) continue;
-    lines.push("", renderThreadComment(comment, "replied"));
+    lines.push("", renderThreadComment(comment, "replied", baseDate));
   }
 
   return lines.join("\n");
@@ -146,7 +148,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     if (comment.isMinimized && !includeMinimized) continue;
     timeline.push({
       timestamp: comment.createdAt,
-      content: renderIssueComment(comment),
+      content: renderIssueComment(comment, pull.created_at),
     });
   }
 
@@ -154,7 +156,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     if (isSignificantReview(review)) {
       timeline.push({
         timestamp: review.submitted_at,
-        content: renderReview(review),
+        content: renderReview(review, pull.created_at),
       });
     }
   }
@@ -165,7 +167,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     if (first.isMinimized && !includeMinimized) continue;
     timeline.push({
       timestamp: first.createdAt,
-      content: renderReviewThread(thread, includeMinimized),
+      content: renderReviewThread(thread, includeMinimized, pull.created_at),
     });
   }
 

@@ -202,20 +202,20 @@ You can trigger Dependabot actions by commenting on this PR:
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 days later):
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot rebase
 
 
 ---
 
-**dependabot** commented (over 2 years ago):
+**dependabot** commented (5 months later):
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -224,14 +224,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot recreate
 
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot recreate
 "
@@ -439,20 +439,20 @@ You can trigger Dependabot actions by commenting on this PR:
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 days later):
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot rebase
 
 
 ---
 
-**dependabot** commented (over 2 years ago):
+**dependabot** commented (5 months later):
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -461,14 +461,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot recreate
 
 
 ---
 
-**danielparks** commented (over 2 years ago):
+**danielparks** commented (5 months later):
 
 @dependabot recreate
 "
@@ -497,13 +497,13 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 ---
 
-**danielparks** commented (20 days ago):
+**danielparks** commented (less than a minute later):
 
 Overall looks good! The type hints are a nice addition.
 
 ---
 
-**danielparks** commented (20 days ago) [minimized: duplicate]:
+**danielparks** commented (less than a minute later) [minimized: duplicate]:
 
 This is a duplicate of last week's PR.
 
@@ -518,7 +518,7 @@ This is a duplicate of last week's PR.
 +    result = 1.0
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 This loop runs in O(b) time. Python has a built-in \`**\` operator.
 
@@ -531,11 +531,11 @@ This loop runs in O(b) time. Python has a built-in \`**\` operator.
 +def divide(a: float, b: float) -> float:
 \`\`\`
 
-**danielparks** wrote (20 days ago) [minimized: outdated]:
+**danielparks** wrote (less than a minute later) [minimized: outdated]:
 
 ---
 
-**danielparks** reviewed (20 days ago)
+**danielparks** reviewed (less than a minute later)
 
 Please add docstrings to each function.
 
@@ -549,7 +549,7 @@ Please add docstrings to each function.
 +def power(base: float, exponent: int) -> float:
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 Nice, much cleaner!
 
@@ -567,11 +567,11 @@ Nice, much cleaner!
 +def modulo(dividend: float, divisor: float) -> float:
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 Good choice of parameter names.
 
-**danielparks** replied (20 days ago):
+**danielparks** replied (less than a minute later):
 
 Agreed — much clearer than \`a\` and \`b\`.
 "
@@ -600,7 +600,7 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 ---
 
-**danielparks** commented (20 days ago):
+**danielparks** commented (less than a minute later):
 
 Overall looks good! The type hints are a nice addition.
 
@@ -615,13 +615,13 @@ Overall looks good! The type hints are a nice addition.
 +    result = 1.0
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 This loop runs in O(b) time. Python has a built-in \`**\` operator.
 
 ---
 
-**danielparks** reviewed (20 days ago)
+**danielparks** reviewed (less than a minute later)
 
 Please add docstrings to each function.
 
@@ -635,7 +635,7 @@ Please add docstrings to each function.
 +def power(base: float, exponent: int) -> float:
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 Nice, much cleaner!
 
@@ -653,11 +653,11 @@ Nice, much cleaner!
 +def modulo(dividend: float, divisor: float) -> float:
 \`\`\`
 
-**danielparks** wrote (20 days ago):
+**danielparks** wrote (less than a minute later):
 
 Good choice of parameter names.
 
-**danielparks** replied (20 days ago):
+**danielparks** replied (less than a minute later):
 
 Agreed — much clearer than \`a\` and \`b\`.
 "

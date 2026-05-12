@@ -31,7 +31,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ---
 >
-> **danielparks** commented (about 3 hours ago):
+> **danielparks** commented (less than a minute later):
 >
 > Overall looks good! The type hints are a nice addition.
 >
@@ -46,13 +46,13 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +    result = 1.0
 > ```
 >
-> **danielparks** wrote (about 3 hours ago):
+> **danielparks** wrote (less than a minute later):
 >
 > This loop runs in O(b) time. Python has a built-in `**` operator.
 >
 > ---
 >
-> **danielparks** reviewed (about 3 hours ago)
+> **danielparks** reviewed (less than a minute later)
 >
 > Please add docstrings to each function.
 >
@@ -66,7 +66,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def power(base: float, exponent: int) -> float:
 > ```
 >
-> **danielparks** wrote (about 3 hours ago):
+> **danielparks** wrote (less than a minute later):
 >
 > Nice, much cleaner!
 >
@@ -84,11 +84,11 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def modulo(dividend: float, divisor: float) -> float:
 > ```
 >
-> **danielparks** wrote (about 3 hours ago):
+> **danielparks** wrote (less than a minute later):
 >
 > Good choice of parameter names.
 >
-> **danielparks** replied (about 3 hours ago):
+> **danielparks** replied (less than a minute later):
 >
 > Agreed — much clearer than `a` and `b`.
 

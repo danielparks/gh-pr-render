@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { renderPR } from "./render.js";
 import type { PRData } from "./types.js";
 
@@ -11,19 +11,7 @@ function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   return JSON.parse(readFileSync(path, "utf8")) as PRData;
 }
 
-// Freeze time so formatDistanceToNow produces stable snapshot output.
-const SNAPSHOT_NOW = new Date("2026-06-01T00:00:00Z");
-
 describe("renderPR - danielparks/htmlize #66", () => {
-  beforeAll(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(SNAPSHOT_NOW);
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   const data = loadFixture("danielparks", "htmlize", 66);
 
   it("renders without minimized comments", () => {
@@ -36,15 +24,6 @@ describe("renderPR - danielparks/htmlize #66", () => {
 });
 
 describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
-  beforeAll(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(SNAPSHOT_NOW);
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 1);
 
   it("renders without minimized comments", () => {
