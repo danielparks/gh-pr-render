@@ -25,3 +25,12 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 **Empty-body `COMMENTED` reviews are intentionally excluded** from the timeline. They are just grouping containers for diff comments and carry no information of their own. Only reviews with a body, or with state `APPROVED`, `CHANGES_REQUESTED`, or `DISMISSED`, appear as timeline entries.
 
 **Minimized comments are filtered out by default.** `--include-minimized` includes them marked with their reason. A minimized root comment causes its entire diff thread to be skipped.
+
+## Testing
+
+Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Time is frozen in tests so `formatDistanceToNow` output is stable.
+
+- **Run tests**: `npm test`
+- **Update snapshots** (after intentional render changes): `npx vitest run --update-snapshots`
+- **Re-record a fixture** (if GitHub API responses change): `npm run record <owner/repo> <pr-number>`
+- **Recreate the synthetic fixture repo** from scratch: `npm run setup [-- --owner <owner>]` (defaults to the authenticated `gh` user), then re-record PR #1
