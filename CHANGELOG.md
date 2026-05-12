@@ -9,3 +9,4 @@ All notable changes to this project will be documented in this file.
 - Tweak output to distinguish top level comments and reviews from replies to comments on diffs.
 - Support PR URL as a command line argument.
 - Add `--timings` option to print API request times.
+- Cut run time from 3.5 seconds to 2 seconds (on my laptop) by running API calls in parallel.
