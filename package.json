@@ -18,7 +18,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "record": "jiti scripts/record.ts",
-    "setup": "jiti scripts/setup.ts"
+    "setup": "jiti scripts/setup.ts",
+    "update-readme": "jiti scripts/update-readme.ts"
   },
   "keywords": [
     "github",

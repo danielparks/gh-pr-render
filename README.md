@@ -7,7 +7,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 ## Example output
 
 <!-- eslint-disable -->
-
+<!-- example-output-start -->
 > # PR #1: Add type hints and arithmetic operations
 >
 > **Author:** danielparks | **State:** open
@@ -30,7 +30,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ---
 >
-> **danielparks** commented (33 minutes ago):
+> **danielparks** commented (about 3 hours ago):
 >
 > Overall looks good! The type hints are a nice addition.
 >
@@ -45,13 +45,13 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +    result = 1.0
 > ```
 >
-> **danielparks** wrote (33 minutes ago):
+> **danielparks** wrote (about 3 hours ago):
 >
 > This loop runs in O(b) time. Python has a built-in `**` operator.
 >
 > ---
 >
-> **danielparks** reviewed (33 minutes ago)
+> **danielparks** reviewed (about 3 hours ago)
 >
 > Please add docstrings to each function.
 >
@@ -65,7 +65,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def power(base: float, exponent: int) -> float:
 > ```
 >
-> **danielparks** wrote (33 minutes ago):
+> **danielparks** wrote (about 3 hours ago):
 >
 > Nice, much cleaner!
 >
@@ -83,13 +83,14 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def modulo(dividend: float, divisor: float) -> float:
 > ```
 >
-> **danielparks** wrote (33 minutes ago):
+> **danielparks** wrote (about 3 hours ago):
 >
 > Good choice of parameter names.
 >
-> **danielparks** replied (33 minutes ago):
+> **danielparks** replied (about 3 hours ago):
 >
 > Agreed — much clearer than `a` and `b`.
+<!-- example-output-end -->
 
 <!-- eslint-enable -->
 
