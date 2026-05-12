@@ -11,7 +11,8 @@
     "gh-pr-render": "dist/index.js"
   },
   "scripts": {
-    "build": "npx tsc",
+    "start": "jiti src/index.ts",
+    "build": "tsc",
     "dev": "tsc --watch",
     "check": "tsc --noEmit",
     "lint": "eslint",
