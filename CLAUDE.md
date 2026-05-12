@@ -28,9 +28,9 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 
 ## Testing
 
-Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Time is frozen in tests so `formatDistanceToNow` output is stable.
+Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`.
 
 - **Run tests**: `npm test`
-- **Update snapshots** (after intentional render changes): `npx vitest run --update-snapshots`
+- **Update snapshots** (after intentional render changes): `npx vitest run --update`
 - **Re-record a fixture** (if GitHub API responses change): `npm run record <owner/repo> <pr-number>`
 - **Recreate the synthetic fixture repo** from scratch: `npm run setup [-- --owner <owner>]` (defaults to the authenticated `gh` user), then re-record PR #1
