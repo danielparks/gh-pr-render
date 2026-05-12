@@ -54,6 +54,19 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  readme:
+    name: readme
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - run: npm run update-readme
+      - run: git diff --exit-code README.md
+
   typos:
     name: typos
     runs-on: ubuntu-latest
