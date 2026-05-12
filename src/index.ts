@@ -21,7 +21,10 @@ function detectRepo(): string {
 new Command()
   .name("gh-pr-render")
   .description("Render a GitHub PR with comments for LLM consumption")
-  .argument("<repo-or-pr>", "Repository (owner/repo) or PR number")
+  .argument(
+    "<repo-or-pr>",
+    "GitHub PR URL, repository (owner/repo), or PR number",
+  )
   .argument("[pr]", "PR number when first argument is a repository")
   .option(
     "--include-minimized",
@@ -36,7 +39,13 @@ new Command()
       let repo: string;
       let prNumber: number;
 
-      if (prArg !== undefined) {
+      const urlMatch = repoOrPr.match(
+        /github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/,
+      );
+      if (urlMatch?.[1] && urlMatch[2]) {
+        repo = urlMatch[1];
+        prNumber = parseInt(urlMatch[2], 10);
+      } else if (prArg !== undefined) {
         repo = repoOrPr;
         prNumber = parseInt(prArg, 10);
       } else {
