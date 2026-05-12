@@ -27,8 +27,8 @@ const blockquote = rendered
 const readmePath = join(root, "README.md");
 const readme = readFileSync(readmePath, "utf8");
 
-const START = "<!-- example-output-start -->";
-const END = "<!-- example-output-end -->";
+const START = "<!-- example-output-start -->\n";
+const END = "\n<!-- example-output-end -->";
 const startIndex = readme.indexOf(START);
 const endIndex = readme.indexOf(END);
 
