@@ -11,7 +11,8 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 
 > # PR #1: Add type hints and arithmetic operations
 >
-> **Author:** danielparks | **State:** open
+> **Author:** danielparks
+> **State:** open
 > **Branch:** `feat/type-hints-and-ops` → `main`
 > **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
 >
@@ -25,19 +26,15 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > - `calculator.py` (modified) +12 / -4
 >
-> ---
->
 > ## Discussion
 >
-> ---
->
-> **danielparks** commented (less than a minute later):
+> ### Comment by danielparks less than a minute later:
 >
 > Overall looks good! The type hints are a nice addition.
 >
 > ---
 >
-> **Diff comment** on `calculator.py` [outdated, id: 3223656523]:
+> ### Diff comment on `calculator.py` (outdated, id: 3223656523):
 >
 > ```diff
 > +
@@ -46,19 +43,19 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +    result = 1.0
 > ```
 >
-> **danielparks** wrote (less than a minute later):
+> #### danielparks less than a minute later:
 >
 > This loop runs in O(b) time. Python has a built-in `**` operator.
 >
 > ---
 >
-> **danielparks** reviewed (less than a minute later)
+> ### Review by danielparks less than a minute later:
 >
 > Please add docstrings to each function.
 >
 > ---
 >
-> **Diff comment** on `calculator.py` [resolved, outdated, id: 3223656785]:
+> ### Diff comment on `calculator.py` (resolved, outdated, id: 3223656785):
 >
 > ```diff
 > +
@@ -66,13 +63,13 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def power(base: float, exponent: int) -> float:
 > ```
 >
-> **danielparks** wrote (less than a minute later):
+> #### danielparks less than a minute later:
 >
 > Nice, much cleaner!
 >
 > ---
 >
-> **Diff comment** on `calculator.py` line 23 [id: 3223656851]:
+> ### Diff comment on `calculator.py` line 23 (id: 3223656851):
 >
 > ```diff
 > +
@@ -84,16 +81,15 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > +def modulo(dividend: float, divisor: float) -> float:
 > ```
 >
-> **danielparks** wrote (less than a minute later):
+> #### danielparks less than a minute later:
 >
 > Good choice of parameter names.
 >
-> **danielparks** replied (less than a minute later):
+> #### danielparks less than a minute later:
 >
 > Agreed — much clearer than `a` and `b`.
 
 <!-- example-output-end -->
-
 <!-- eslint-enable -->
 
 ## License

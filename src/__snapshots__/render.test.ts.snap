@@ -3,7 +3,8 @@
 exports[`renderPR - danielparks/htmlize #66 > renders with minimized comments 1`] = `
 "# PR #66: Bump actions/checkout from 3 to 4
 
-**Author:** dependabot[bot] | **State:** closed
+**Author:** dependabot[bot]
+**State:** closed
 **Branch:** \`dependabot/github_actions/actions/checkout-4\` → \`main\`
 **URL:** https://github.com/danielparks/htmlize/pull/66
 
@@ -196,26 +197,22 @@ You can trigger Dependabot actions by commenting on this PR:
 - \`.github/workflows/pr-checks.yaml\` (modified) +5 / -5
 - \`.github/workflows/release.yaml\` (modified) +1 / -1
 
----
-
 ## Discussion
 
----
-
-**danielparks** commented (5 days later):
+### Comment by danielparks 5 days later:
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot rebase
 
 
 ---
 
-**dependabot** commented (5 months later):
+### Comment by dependabot 5 months later:
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -224,14 +221,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot recreate
 
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot recreate
 "
@@ -240,7 +237,8 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 exports[`renderPR - danielparks/htmlize #66 > renders without minimized comments 1`] = `
 "# PR #66: Bump actions/checkout from 3 to 4
 
-**Author:** dependabot[bot] | **State:** closed
+**Author:** dependabot[bot]
+**State:** closed
 **Branch:** \`dependabot/github_actions/actions/checkout-4\` → \`main\`
 **URL:** https://github.com/danielparks/htmlize/pull/66
 
@@ -433,26 +431,22 @@ You can trigger Dependabot actions by commenting on this PR:
 - \`.github/workflows/pr-checks.yaml\` (modified) +5 / -5
 - \`.github/workflows/release.yaml\` (modified) +1 / -1
 
----
-
 ## Discussion
 
----
-
-**danielparks** commented (5 days later):
+### Comment by danielparks 5 days later:
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot rebase
 
 
 ---
 
-**dependabot** commented (5 months later):
+### Comment by dependabot 5 months later:
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -461,14 +455,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot recreate
 
 
 ---
 
-**danielparks** commented (5 months later):
+### Comment by danielparks 5 months later:
 
 @dependabot recreate
 "
@@ -477,7 +471,8 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders with minimized comments 1`] = `
 "# PR #1: Add type hints and arithmetic operations
 
-**Author:** danielparks | **State:** open
+**Author:** danielparks
+**State:** open
 **Branch:** \`feat/type-hints-and-ops\` → \`main\`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
 
@@ -491,25 +486,21 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 - \`calculator.py\` (modified) +12 / -4
 
----
-
 ## Discussion
 
----
-
-**danielparks** commented (less than a minute later):
+### Comment by danielparks less than a minute later:
 
 Overall looks good! The type hints are a nice addition.
 
 ---
 
-**danielparks** commented (less than a minute later) [minimized: duplicate]:
+### Comment by danielparks less than a minute later [minimized: duplicate]:
 
 This is a duplicate of last week's PR.
 
 ---
 
-**Diff comment** on \`calculator.py\` [outdated, id: 3223656523]:
+### Diff comment on \`calculator.py\` (outdated, id: 3223656523):
 
 \`\`\`diff
 +
@@ -518,30 +509,30 @@ This is a duplicate of last week's PR.
 +    result = 1.0
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 This loop runs in O(b) time. Python has a built-in \`**\` operator.
 
 ---
 
-**Diff comment** on \`calculator.py\` line 13 [id: 3223656596]:
+### Diff comment on \`calculator.py\` line 13 (id: 3223656596):
 
 \`\`\`diff
 -def divide(a, b):
 +def divide(a: float, b: float) -> float:
 \`\`\`
 
-**danielparks** wrote (less than a minute later) [minimized: outdated]:
+#### danielparks less than a minute later (minimized: outdated):
 
 ---
 
-**danielparks** reviewed (less than a minute later)
+### Review by danielparks less than a minute later:
 
 Please add docstrings to each function.
 
 ---
 
-**Diff comment** on \`calculator.py\` [resolved, outdated, id: 3223656785]:
+### Diff comment on \`calculator.py\` (resolved, outdated, id: 3223656785):
 
 \`\`\`diff
 +
@@ -549,13 +540,13 @@ Please add docstrings to each function.
 +def power(base: float, exponent: int) -> float:
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 Nice, much cleaner!
 
 ---
 
-**Diff comment** on \`calculator.py\` line 23 [id: 3223656851]:
+### Diff comment on \`calculator.py\` line 23 (id: 3223656851):
 
 \`\`\`diff
 +
@@ -567,11 +558,11 @@ Nice, much cleaner!
 +def modulo(dividend: float, divisor: float) -> float:
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 Good choice of parameter names.
 
-**danielparks** replied (less than a minute later):
+#### danielparks less than a minute later:
 
 Agreed — much clearer than \`a\` and \`b\`.
 "
@@ -580,7 +571,8 @@ Agreed — much clearer than \`a\` and \`b\`.
 exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders without minimized comments 1`] = `
 "# PR #1: Add type hints and arithmetic operations
 
-**Author:** danielparks | **State:** open
+**Author:** danielparks
+**State:** open
 **Branch:** \`feat/type-hints-and-ops\` → \`main\`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
 
@@ -594,19 +586,15 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 - \`calculator.py\` (modified) +12 / -4
 
----
-
 ## Discussion
 
----
-
-**danielparks** commented (less than a minute later):
+### Comment by danielparks less than a minute later:
 
 Overall looks good! The type hints are a nice addition.
 
 ---
 
-**Diff comment** on \`calculator.py\` [outdated, id: 3223656523]:
+### Diff comment on \`calculator.py\` (outdated, id: 3223656523):
 
 \`\`\`diff
 +
@@ -615,19 +603,19 @@ Overall looks good! The type hints are a nice addition.
 +    result = 1.0
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 This loop runs in O(b) time. Python has a built-in \`**\` operator.
 
 ---
 
-**danielparks** reviewed (less than a minute later)
+### Review by danielparks less than a minute later:
 
 Please add docstrings to each function.
 
 ---
 
-**Diff comment** on \`calculator.py\` [resolved, outdated, id: 3223656785]:
+### Diff comment on \`calculator.py\` (resolved, outdated, id: 3223656785):
 
 \`\`\`diff
 +
@@ -635,13 +623,13 @@ Please add docstrings to each function.
 +def power(base: float, exponent: int) -> float:
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 Nice, much cleaner!
 
 ---
 
-**Diff comment** on \`calculator.py\` line 23 [id: 3223656851]:
+### Diff comment on \`calculator.py\` line 23 (id: 3223656851):
 
 \`\`\`diff
 +
@@ -653,11 +641,11 @@ Nice, much cleaner!
 +def modulo(dividend: float, divisor: float) -> float:
 \`\`\`
 
-**danielparks** wrote (less than a minute later):
+#### danielparks less than a minute later:
 
 Good choice of parameter names.
 
-**danielparks** replied (less than a minute later):
+#### danielparks less than a minute later:
 
 Agreed — much clearer than \`a\` and \`b\`.
 "

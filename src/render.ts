@@ -15,15 +15,15 @@ function formatDate(iso: string, baseDate: string): string {
 function reviewStateLabel(state: ReviewState): string {
   switch (state) {
     case "APPROVED":
-      return "approved this PR";
+      return "Approval";
     case "CHANGES_REQUESTED":
-      return "requested changes";
+      return "Change request";
     case "COMMENTED":
-      return "reviewed";
+      return "Review";
     case "DISMISSED":
-      return "dismissed review";
+      return "Review dismissal";
     case "PENDING":
-      return "pending review";
+      return "Pending review";
   }
 }
 
@@ -45,18 +45,21 @@ interface TimelineEntry {
 
 function renderIssueComment(comment: IssueComment, baseDate: string): string {
   const author = comment.author?.login ?? "ghost";
+  const time = formatDate(comment.createdAt, baseDate);
   const minimized = comment.isMinimized
     ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]`
     : "";
   return [
-    `**${author}** commented (${formatDate(comment.createdAt, baseDate)})${minimized}:`,
+    `### Comment by ${author} ${time}${minimized}:`,
     "",
     comment.body,
   ].join("\n");
 }
 
 function renderReview(review: Review, baseDate: string): string {
-  const header = `**${review.user.login}** ${reviewStateLabel(review.state)} (${formatDate(review.submitted_at, baseDate)})`;
+  const state = reviewStateLabel(review.state);
+  const time = formatDate(review.submitted_at, baseDate);
+  const header = `### ${state} by ${review.user.login} ${time}:`;
   return review.body.trim() ? [header, "", review.body].join("\n") : header;
 }
 
@@ -65,13 +68,13 @@ function renderDiffHunk(hunk: string): string {
   return hunk.replace(/.*^ [^\n\r]*[\n\r]+/ms, "");
 }
 
-function renderThreadComment(
-  comment: ThreadComment,
-  verb: "wrote" | "replied",
-  baseDate: string,
-): string {
+function renderThreadComment(comment: ThreadComment, baseDate: string): string {
   const author = comment.author?.login ?? "ghost";
-  const header = `**${author}** ${verb} (${formatDate(comment.createdAt, baseDate)})${comment.isMinimized ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]` : ""}:`;
+  const time = formatDate(comment.createdAt, baseDate);
+  const minimized = comment.isMinimized
+    ? ` (minimized: ${comment.minimizedReason ?? "hidden"})`
+    : "";
+  const header = `#### ${author} ${time}${minimized}:`;
   return comment.isMinimized ? header : [header, "", comment.body].join("\n");
 }
 
@@ -92,21 +95,19 @@ function renderReviewThread(
   if (thread.isResolved) tags.push("resolved");
   if (thread.isOutdated) tags.push("outdated");
   tags.push(`id: ${first.databaseId}`);
-  const tagStr = ` [${tags.join(", ")}]`;
+  const tagStr = ` (${tags.join(", ")})`;
 
   const lines: string[] = [
-    `**Diff comment** on ${location}${tagStr}:`,
+    `### Diff comment on ${location}${tagStr}:`,
     "",
     "```diff",
     renderDiffHunk(first.diffHunk),
     "```",
-    "",
-    renderThreadComment(first, "wrote", baseDate),
   ];
 
-  for (const comment of thread.comments.nodes.slice(1)) {
+  for (const comment of thread.comments.nodes) {
     if (comment.isMinimized && !includeMinimized) continue;
-    lines.push("", renderThreadComment(comment, "replied", baseDate));
+    lines.push("", renderThreadComment(comment, baseDate));
   }
 
   return lines.join("\n");
@@ -124,17 +125,18 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   // Header
   out.push(`# PR #${pull.number}: ${pull.title}`, "");
   out.push(
-    `**Author:** ${pull.user.login} | **State:** ${pull.state}`,
+    `**Author:** ${pull.user.login}`,
+    `**State:** ${pull.state}`,
     `**Branch:** \`${pull.head.ref}\` → \`${pull.base.ref}\``,
     `**URL:** ${pull.html_url}`,
   );
 
   if (pull.body?.trim()) {
-    out.push("", "---", "", pull.body);
+    out.push("", "---", "", pull.body, "", "---");
   }
 
   // Changed files
-  out.push("", "---", "", "## Changed Files", "");
+  out.push("", "## Changed Files", "");
   for (const file of files) {
     out.push(
       `- \`${file.filename}\` (${file.status}) +${file.additions} / -${file.deletions}`,
@@ -175,10 +177,12 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
   );
 
+  let separator: string[] = [];
   if (timeline.length > 0) {
-    out.push("", "---", "", "## Discussion");
+    out.push("", "## Discussion", "");
     for (const entry of timeline) {
-      out.push("", "---", "", entry.content);
+      out.push(...separator, entry.content);
+      separator = ["", "---", ""];
     }
   }
 
