@@ -17,7 +17,8 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "test": "vitest run",
-    "record": "jiti scripts/record.ts"
+    "record": "jiti scripts/record.ts",
+    "setup": "jiti scripts/setup.ts"
   },
   "keywords": [],
   "author": "",
