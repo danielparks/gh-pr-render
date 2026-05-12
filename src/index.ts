@@ -30,11 +30,12 @@ new Command()
     "--include-minimized",
     "include minimized comments (marked with reason)",
   )
+  .option("--timings", "print request timings to stderr")
   .action(
     async (
       repoOrPr: string,
       prArg: string | undefined,
-      opts: { includeMinimized?: boolean },
+      opts: { includeMinimized?: boolean; timings?: boolean },
     ) => {
       let repo: string;
       let prNumber: number;
@@ -58,7 +59,9 @@ new Command()
         process.exit(1);
       }
 
-      const data = await fetchPRData(repo, prNumber);
+      const data = await fetchPRData(repo, prNumber, {
+        timings: opts.timings ?? false,
+      });
       const renderOptions: RenderOptions = {
         includeMinimized: opts.includeMinimized ?? false,
       };

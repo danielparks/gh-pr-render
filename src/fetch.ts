@@ -160,10 +160,17 @@ async function fetchReviewThreads(
   return threads;
 }
 
+export interface FetchOptions {
+  timings: boolean;
+}
+
 export async function fetchPRData(
   repo: string,
   prNumber: number,
+  options: FetchOptions,
 ): Promise<PRData> {
+  const totalStart = performance.now();
+
   const slash = repo.indexOf("/");
   if (slash === -1)
     throw new Error(
@@ -177,16 +184,58 @@ export async function fetchPRData(
   });
 
   const base = `repos/${repo}`;
-  const [topComments, reviewThreads] = await Promise.all([
-    fetchTopComments(client, owner, repoName, prNumber),
-    fetchReviewThreads(client, owner, repoName, prNumber),
-  ]);
 
-  return {
-    pull: ghApi(`${base}/pulls/${prNumber}`) as PullRequest,
-    files: ghApiArray(`${base}/pulls/${prNumber}/files`) as ChangedFile[],
-    reviews: ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Review[],
-    topComments,
-    reviewThreads,
-  };
+  let topCommentsMs = 0;
+  let reviewThreadsMs = 0;
+  const graphqlStart = performance.now();
+  const [topComments, reviewThreads] = await Promise.all([
+    (async () => {
+      const t = performance.now();
+      const r = await fetchTopComments(client, owner, repoName, prNumber);
+      topCommentsMs = performance.now() - t;
+      return r;
+    })(),
+    (async () => {
+      const t = performance.now();
+      const r = await fetchReviewThreads(client, owner, repoName, prNumber);
+      reviewThreadsMs = performance.now() - t;
+      return r;
+    })(),
+  ]);
+  const graphqlMs = performance.now() - graphqlStart;
+
+  const pullStart = performance.now();
+  const pull = ghApi(`${base}/pulls/${prNumber}`) as PullRequest;
+  const pullMs = performance.now() - pullStart;
+
+  const filesStart = performance.now();
+  const files = ghApiArray(`${base}/pulls/${prNumber}/files`) as ChangedFile[];
+  const filesMs = performance.now() - filesStart;
+
+  const reviewsStart = performance.now();
+  const reviews = ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Review[];
+  const reviewsMs = performance.now() - reviewsStart;
+
+  const totalMs = performance.now() - totalStart;
+
+  if (options.timings) {
+    const rows: [string, number][] = [
+      ["graphql (parallel)", graphqlMs],
+      ["  top-level comments", topCommentsMs],
+      ["  review threads", reviewThreadsMs],
+      ["REST pr metadata", pullMs],
+      ["REST changed files", filesMs],
+      ["REST reviews", reviewsMs],
+      ["total", totalMs],
+    ];
+    const labelWidth = Math.max(...rows.map(([l]) => l.length));
+    const lines = rows
+      .map(
+        ([label, ms]) => `  ${label.padEnd(labelWidth)}  ${Math.round(ms)}ms`,
+      )
+      .join("\n");
+    process.stderr.write(`timings:\n${lines}\n`);
+  }
+
+  return { pull, files, reviews, topComments, reviewThreads };
 }
