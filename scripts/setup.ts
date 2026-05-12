@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Creates gh-pr-render-fixtures and populates it with a PR that exercises
  * each rendering scenario: minimized top-level comment, minimized diff thread

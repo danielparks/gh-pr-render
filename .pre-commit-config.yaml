@@ -1,0 +1,68 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+        exclude: "^src/index[.]ts$"
+      - id: check-json
+        exclude: "^tsconfig[.]json$"
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ["--fix=no"]
+      - id: no-commit-to-branch
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.46.1
+    hooks:
+      - id: typos
+        args: []
+        exclude: "^fixtures/|^src/__snapshots__/"
+  - repo: local
+    hooks:
+      - id: update-readme
+        name: update-readme
+        language: system
+        entry: npm run update-readme
+        pass_filenames: false
+        types: [file]
+        stages: [pre-commit, pre-merge-commit]
+        require_serial: true
+      - id: format
+        name: format
+        language: system
+        entry: npm run format
+        types: [file]
+        stages: [pre-commit, pre-merge-commit]
+        require_serial: true
+      - id: lint
+        name: lint
+        language: system
+        entry: npm run lint
+        types: [file]
+        stages: [pre-commit, pre-merge-commit]
+        require_serial: true
+      - id: check
+        name: check
+        language: system
+        entry: npm run check
+        pass_filenames: false
+        types: [file]
+        stages: [pre-commit, pre-merge-commit]
+        require_serial: true
+      - id: test
+        name: test
+        language: system
+        entry: npm run test
+        pass_filenames: false
+        types: [file]
+        stages: [pre-commit, pre-merge-commit]
+        require_serial: true
