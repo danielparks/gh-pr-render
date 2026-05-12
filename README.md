@@ -36,7 +36,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ---
 >
-> **Diff comment** on `calculator.py` [outdated]:
+> **Diff comment** on `calculator.py` [outdated, id: 3223656523]:
 >
 > ```diff
 > +
@@ -57,7 +57,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ---
 >
-> **Diff comment** on `calculator.py` [resolved, outdated]:
+> **Diff comment** on `calculator.py` [resolved, outdated, id: 3223656785]:
 >
 > ```diff
 > +
@@ -71,7 +71,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ---
 >
-> **Diff comment** on `calculator.py` line 23:
+> **Diff comment** on `calculator.py` line 23 [id: 3223656851]:
 >
 > ```diff
 > +
