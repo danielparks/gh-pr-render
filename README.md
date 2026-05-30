@@ -2,7 +2,7 @@
 
 This is a CLI tool that downloads PR comments and reviews from GitHub and formats them into Markdown for easy consumption by LLMs.
 
-The primary use case is helping LLMs keep track of the conversation on a PR when re-reviewing.
+The primary use case is helping LLMs keep track of the conversation on a PR when re-reviewing. My GitHub action [danielparks/claude-pr-review] uses `gh-pr-render` to provide context to Claude in automatic PR reviews.
 
 ## Example output
 
@@ -102,3 +102,5 @@ Unless otherwise noted, this project is dual-licensed under the Apache 2 and MIT
 ### Contributions
 
 Unless you explicitly state otherwise, any contribution you submit as defined in the Apache 2.0 license shall be dual licensed as above, without any additional terms or conditions.
+
+[danielparks/claude-pr-review]: https://github.com/danielparks/claude-pr-review
