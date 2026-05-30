@@ -47,7 +47,7 @@ repos:
         name: lint
         language: system
         entry: npm run lint
-        types: [file]
+        files: \.([mc]?[tj]sx?|jsonc?|md)$
         stages: [pre-commit, pre-merge-commit]
         require_serial: true
       - id: check
