@@ -5,71 +5,53 @@ on:
     branches: [main]
   pull_request:
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# These would more naturally be separate jobs, but GitHub actions “bills” each
+# job separately and rounds up to the next minute, so four 10 second jobs “cost”
+# my account 4 action minutes.
 jobs:
-  typecheck:
-    name: typecheck
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      security-events: write # SARIF reporting for zizmor
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: lts/*
           cache: npm
-      - run: npm ci
+      - run: npm clean-install
+
+      - uses: crate-ci/typos@37bb98842b0d8c4ffebdb75301a13db0267cef89 # v1.47.2
+        if: ${{ !cancelled() }}
+
+      - uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6
+        if: ${{ !cancelled() }}
+        with:
+          persona: pedantic
+
       - run: npm run check
+        if: ${{ !cancelled() }}
 
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-      - run: npm ci
       - run: npm run lint
+        if: ${{ !cancelled() }}
 
-  format:
-    name: format
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-      - run: npm ci
       - run: npx prettier --check .
+        if: ${{ !cancelled() }}
 
-  test:
-    name: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-      - run: npm ci
       - run: npm test
+        if: ${{ !cancelled() }}
 
-  readme:
-    name: readme
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-      - run: npm ci
-      - run: npm run update-readme
-      - run: git diff --exit-code README.md
-
-  typos:
-    name: typos
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: crate-ci/typos@v1.46.0
+      - run: |
+          npm run update-readme
+          git diff --exit-code README.md
+        if: ${{ !cancelled() }}

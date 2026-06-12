@@ -1,0 +1,27 @@
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    cooldown:
+      default-days: 30
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 30
+    # Security updates only:
+    open-pull-requests-limit: 0
+    groups:
+      npm-dependencies:
+        applies-to: security-updates
+        patterns:
+          - "*"
