@@ -17,11 +17,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
 > **Labels:** feature
 >
-> ---
->
-> Adds type annotations to all functions and implements `power` and `modulo` operations.
->
-> ---
+> > Adds type annotations to all functions and implements `power` and `modulo` operations.
 >
 > ## Changed Files
 >
@@ -31,9 +27,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ### Comment by danielparks less than a minute later (id: 4427286000):
 >
-> Overall looks good! The type hints are a nice addition.
->
-> ---
+> > Overall looks good! The type hints are a nice addition.
 >
 > ### Diff comment on `calculator.py` (outdated, id: 3223656523):
 >
@@ -46,15 +40,11 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > #### danielparks less than a minute later:
 >
-> This loop runs in O(b) time. Python has a built-in `**` operator.
->
-> ---
+> > This loop runs in O(b) time. Python has a built-in `**` operator.
 >
 > ### Review by danielparks less than a minute later:
 >
-> Please add docstrings to each function.
->
-> ---
+> > Please add docstrings to each function.
 >
 > ### Diff comment on `calculator.py` (resolved, outdated, id: 3223656785):
 >
@@ -66,9 +56,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > #### danielparks less than a minute later:
 >
-> Nice, much cleaner!
->
-> ---
+> > Nice, much cleaner!
 >
 > ### Diff comment on `calculator.py` line 23 (id: 3223656851):
 >
@@ -84,11 +72,11 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > #### danielparks less than a minute later:
 >
-> Good choice of parameter names.
+> > Good choice of parameter names.
 >
 > #### danielparks less than a minute later:
 >
-> Agreed — much clearer than `a` and `b`.
+> > Agreed — much clearer than `a` and `b`.
 
 <!-- example-output-end -->
 <!-- eslint-enable -->

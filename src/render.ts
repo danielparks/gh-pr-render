@@ -12,6 +12,17 @@ function formatDate(iso: string, baseDate: string): string {
   return formatDistance(iso, baseDate) + " later";
 }
 
+// Prefixes every line with "> " so bodies (which may contain arbitrary
+// markdown, including headings or rules that could be mistaken for
+// renderer-generated structure) are always visually and structurally
+// distinct from it.
+function blockquote(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => (line ? `> ${line}` : ">"))
+    .join("\n");
+}
+
 function reviewStateLabel(state: ReviewState): string {
   switch (state) {
     case "APPROVED":
@@ -52,7 +63,7 @@ function renderIssueComment(comment: IssueComment, baseDate: string): string {
   return [
     `### Comment by ${author} ${time} (id: ${comment.databaseId}${minimized}):`,
     "",
-    comment.body,
+    blockquote(comment.body),
   ].join("\n");
 }
 
@@ -60,7 +71,9 @@ function renderReview(review: Review, baseDate: string): string {
   const state = reviewStateLabel(review.state);
   const time = formatDate(review.submitted_at, baseDate);
   const header = `### ${state} by ${review.user.login} ${time}:`;
-  return review.body.trim() ? [header, "", review.body].join("\n") : header;
+  return review.body.trim()
+    ? [header, "", blockquote(review.body)].join("\n")
+    : header;
 }
 
 // Trim everything up to the last block of changes.
@@ -75,7 +88,9 @@ function renderThreadComment(comment: ThreadComment, baseDate: string): string {
     ? ` (minimized: ${comment.minimizedReason ?? "hidden"})`
     : "";
   const header = `#### ${author} ${time}${minimized}:`;
-  return comment.isMinimized ? header : [header, "", comment.body].join("\n");
+  return comment.isMinimized
+    ? header
+    : [header, "", blockquote(comment.body)].join("\n");
 }
 
 function renderReviewThread(
@@ -138,7 +153,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   }
 
   if (pull.body?.trim()) {
-    out.push("", "---", "", pull.body, "", "---");
+    out.push("", blockquote(pull.body));
   }
 
   // Changed files
@@ -188,7 +203,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     out.push("", "## Discussion", "");
     for (const entry of timeline) {
       out.push(...separator, entry.content);
-      separator = ["", "---", ""];
+      separator = [""];
     }
   }
 

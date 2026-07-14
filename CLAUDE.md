@@ -26,6 +26,8 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 
 **Minimized comments are filtered out by default.** `--include-minimized` includes them marked with their reason. A minimized root comment causes its entire diff thread to be skipped.
 
+**All free-text bodies (PR description, comments, reviews) are rendered as blockquotes.** The primary consumer is an LLM, and the `> ` prefix on every line makes it structurally impossible for a body — which can contain arbitrary markdown, including its own headings or `---` rules — to be mistaken for renderer-generated structure. Because that boundary is unambiguous on its own, the `---` thematic breaks that used to separate the PR body and timeline entries were removed as redundant; headings plus the blockquote marker already delimit sections.
+
 ## Testing
 
 Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`.
