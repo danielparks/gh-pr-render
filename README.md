@@ -15,6 +15,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > **State:** open
 > **Branch:** `feat/type-hints-and-ops` → `main`
 > **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
+> **Labels:** feature
 >
 > ---
 >

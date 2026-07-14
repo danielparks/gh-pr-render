@@ -3,7 +3,7 @@
  * each rendering scenario: minimized top-level comment, minimized diff thread
  * root (skips whole thread), outdated thread, resolved thread, thread with
  * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
- * and an APPROVED review.
+ * an APPROVED review, and a label.
  *
  * Usage: npm run setup [-- --owner <owner>]
  * Default owner: the currently authenticated gh user.
@@ -25,6 +25,10 @@ const owner: string =
 
 const REPO = "gh-pr-render-fixtures";
 const FULL = `${owner}/${REPO}`;
+
+const LABEL_NAME = "feature";
+const LABEL_COLOR = "1d76db";
+const LABEL_DESCRIPTION = "New feature or request";
 
 const token = sh("gh auth token");
 const gql = graphql.defaults({ headers: { authorization: `token ${token}` } });
@@ -164,6 +168,12 @@ try {
   );
 }
 
+log(`Ensuring label "${LABEL_NAME}" exists...`);
+sh(
+  `gh label create ${JSON.stringify(LABEL_NAME)} --repo ${FULL} ` +
+    `--color ${LABEL_COLOR} --description ${JSON.stringify(LABEL_DESCRIPTION)} --force`,
+);
+
 const tmpDir = join(tmpdir(), `gh-pr-render-setup-${Date.now()}`);
 mkdirSync(tmpDir, { recursive: true });
 
@@ -191,11 +201,19 @@ try {
     ),
   ) as Array<{ number: number; title: string }>;
 
-  if (existing.some((pr) => pr.title === PR_TITLE)) {
-    log(`PR "${PR_TITLE}" already exists — skipping.`);
+  const existingPR = existing.find((pr) => pr.title === PR_TITLE);
+  let prNumber: number;
+  if (existingPR) {
+    log(`PR "${PR_TITLE}" already exists — skipping creation.`);
+    prNumber = existingPR.number;
   } else {
-    await createScenarioPR(tmpDir, PR_TITLE);
+    prNumber = await createScenarioPR(tmpDir, PR_TITLE);
   }
+
+  ghPost(`repos/${FULL}/issues/${prNumber}/labels`, {
+    labels: [LABEL_NAME],
+  });
+  log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
 } finally {
   rmSync(tmpDir, { recursive: true, force: true });
 }
@@ -204,7 +222,7 @@ log("Done.");
 
 // ─── Scenario PR ─────────────────────────────────────────────────────────────
 
-async function createScenarioPR(dir: string, title: string): Promise<void> {
+async function createScenarioPR(dir: string, title: string): Promise<number> {
   const branch = "feat/type-hints-and-ops";
 
   // Commit 1: type hints + loop-based power/modulo
@@ -402,4 +420,5 @@ async function createScenarioPR(dir: string, title: string): Promise<void> {
 
   log(`\nPR #${n}: https://github.com/${FULL}/pull/${n}`);
   log(`Record: npm run record ${FULL} ${n}`);
+  return n;
 }

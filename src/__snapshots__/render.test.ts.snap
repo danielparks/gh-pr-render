@@ -477,6 +477,7 @@ exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders with min
 **State:** open
 **Branch:** \`feat/type-hints-and-ops\` → \`main\`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
+**Labels:** feature
 
 ---
 
@@ -577,6 +578,7 @@ exports[`renderPR - danielparks-test/gh-pr-render-fixtures #1 > renders without 
 **State:** open
 **Branch:** \`feat/type-hints-and-ops\` → \`main\`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
+**Labels:** feature
 
 ---
 
