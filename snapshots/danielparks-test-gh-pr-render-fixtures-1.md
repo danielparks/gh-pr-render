@@ -18,7 +18,7 @@
 
 > Overall looks good! The type hints are a nice addition.
 
-### Diff comment on `calculator.py` (outdated, id: 3223656523):
+### Diff comment on `calculator.py` (outdated):
 
 ```diff
 +
@@ -35,7 +35,7 @@
 
 > Please add docstrings to each function.
 
-### Diff comment on `calculator.py` (resolved, outdated, id: 3223656785):
+### Diff comment on `calculator.py` (resolved, outdated):
 
 ```diff
 +
@@ -47,7 +47,7 @@
 
 > Nice, much cleaner!
 
-### Diff comment on `calculator.py` line 23 (id: 3223656851):
+### Diff comment on `calculator.py` line 23:
 
 ```diff
 +

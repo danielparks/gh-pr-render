@@ -112,8 +112,7 @@ function renderReviewThread(
   const tags: string[] = [];
   if (thread.isResolved) tags.push("resolved");
   if (thread.isOutdated) tags.push("outdated");
-  tags.push(`id: ${first.databaseId}`);
-  const tagStr = ` (${tags.join(", ")})`;
+  const tagStr = tags.length ? ` (${tags.join(", ")})` : "";
 
   const lines: string[] = [
     `### Diff comment on ${location}${tagStr}:`,
