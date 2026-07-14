@@ -12,15 +12,18 @@ function formatDate(iso: string, baseDate: string): string {
   return formatDistance(iso, baseDate) + " later";
 }
 
-// Prefixes every line with "> " so bodies (which may contain arbitrary
-// markdown, including headings or rules that could be mistaken for
-// renderer-generated structure) are always visually and structurally
-// distinct from it.
-function blockquote(text: string): string {
+// Prefixes every line with "> ".
+//
+// This ensures bodies containing arbitrary markdown are always visually and
+// structurally distinct from renderer-generated structure.
+//
+// This normalizes CRLF to LF and strips a single trailing newline if it exists.
+export function blockquote(text: string): string {
   return text
-    .split("\n")
-    .map((line) => (line ? `> ${line}` : ">"))
-    .join("\n");
+    .replace(/\r\n/gm, "\n")
+    .replace(/\n$/, "")
+    .replace(/^/gm, "> ")
+    .replace(/^> $/gm, ">");
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -198,12 +201,10 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
   );
 
-  let separator: string[] = [];
   if (timeline.length > 0) {
-    out.push("", "## Discussion", "");
+    out.push("", "## Discussion");
     for (const entry of timeline) {
-      out.push(...separator, entry.content);
-      separator = [""];
+      out.push("", entry.content);
     }
   }
 
