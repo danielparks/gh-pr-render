@@ -11,27 +11,56 @@ function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   return JSON.parse(readFileSync(path, "utf8")) as PRData;
 }
 
+function snapshotPath(
+  owner: string,
+  repo: string,
+  prNumber: number,
+  variant: string,
+): string {
+  const snapshotsDir = fileURLToPath(new URL("../snapshots", import.meta.url));
+  return join(snapshotsDir, `${owner}-${repo}-${prNumber}${variant}.md`);
+}
+
 describe("renderPR - danielparks/htmlize #66", () => {
   const data = loadFixture("danielparks", "htmlize", 66);
 
-  it("renders without minimized comments", () => {
-    expect(renderPR(data, { includeMinimized: false })).toMatchSnapshot();
+  it("renders without minimized comments", async () => {
+    await expect(
+      renderPR(data, { includeMinimized: false }),
+    ).toMatchFileSnapshot(snapshotPath("danielparks", "htmlize", 66, ""));
   });
 
-  it("renders with minimized comments", () => {
-    expect(renderPR(data, { includeMinimized: true })).toMatchSnapshot();
+  it("renders with minimized comments", async () => {
+    await expect(
+      renderPR(data, { includeMinimized: true }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks", "htmlize", 66, ".with-minimized"),
+    );
   });
 });
 
 describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
   const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 1);
 
-  it("renders without minimized comments", () => {
-    expect(renderPR(data, { includeMinimized: false })).toMatchSnapshot();
+  it("renders without minimized comments", async () => {
+    await expect(
+      renderPR(data, { includeMinimized: false }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks-test", "gh-pr-render-fixtures", 1, ""),
+    );
   });
 
-  it("renders with minimized comments", () => {
-    expect(renderPR(data, { includeMinimized: true })).toMatchSnapshot();
+  it("renders with minimized comments", async () => {
+    await expect(
+      renderPR(data, { includeMinimized: true }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".with-minimized",
+      ),
+    );
   });
 });
 

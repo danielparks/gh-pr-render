@@ -8,7 +8,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "snapshots"]),
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     plugins: { js },

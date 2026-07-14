@@ -81,6 +81,8 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 <!-- example-output-end -->
 <!-- eslint-enable -->
 
+See [`snapshots/`](snapshots/) for more examples of rendered output, including diff comments, reviews, and minimized comments.
+
 ## License
 
 Unless otherwise noted, this project is dual-licensed under the Apache 2 and MIT licenses. You may choose to use either.

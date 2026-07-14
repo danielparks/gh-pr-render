@@ -30,7 +30,7 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 
 ## Testing
 
-Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`.
+Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Expected output is stored as rendered markdown files in `snapshots/{owner}/{repo}/{prNumber}[.variant].md` (via `toMatchFileSnapshot`) rather than in a single `.snap` file, so a PR's rendered output can be viewed directly on GitHub.
 
 - **Run tests**: `npm test`
 - **Update snapshots** (after intentional render changes): `npx vitest run --update`
