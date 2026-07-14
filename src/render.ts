@@ -131,6 +131,12 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     `**URL:** ${pull.html_url}`,
   );
 
+  if (pull.labels.length > 0) {
+    out.push(
+      `**Labels:** ${pull.labels.map((label) => label.name).join(", ")}`,
+    );
+  }
+
   if (pull.body?.trim()) {
     out.push("", "---", "", pull.body, "", "---");
   }

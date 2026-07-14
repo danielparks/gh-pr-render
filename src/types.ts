@@ -2,6 +2,10 @@ export interface User {
   login: string;
 }
 
+export interface Label {
+  name: string;
+}
+
 export interface PullRequest {
   number: number;
   title: string;
@@ -12,6 +16,7 @@ export interface PullRequest {
   base: { ref: string; sha: string };
   html_url: string;
   created_at: string;
+  labels: Label[];
 }
 
 export interface ChangedFile {

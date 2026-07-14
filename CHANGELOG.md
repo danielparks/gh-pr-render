@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+- Render PR labels.
+
 ## Release 0.2.0 (2026-05-12)
 
 - Add ID to review threads to make it easy for Claude to post replies.

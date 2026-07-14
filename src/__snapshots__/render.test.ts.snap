@@ -7,6 +7,7 @@ exports[`renderPR - danielparks/htmlize #66 > renders with minimized comments 1`
 **State:** closed
 **Branch:** \`dependabot/github_actions/actions/checkout-4\` → \`main\`
 **URL:** https://github.com/danielparks/htmlize/pull/66
+**Labels:** dependencies
 
 ---
 
@@ -241,6 +242,7 @@ exports[`renderPR - danielparks/htmlize #66 > renders without minimized comments
 **State:** closed
 **Branch:** \`dependabot/github_actions/actions/checkout-4\` → \`main\`
 **URL:** https://github.com/danielparks/htmlize/pull/66
+**Labels:** dependencies
 
 ---
 
