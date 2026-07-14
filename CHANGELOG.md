@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 ## main branch
 
 - Render PR labels.
-- Add ID to top-level comments to make it easy for Claude to update them.
+- Render descriptions and comments with blockquotes to ensure a distinction between content and structure.
+- Add ID to all comments to make it easy for Claude to update them.
+- Add `snapshots/` directory with example output.
 
 ## Release 0.2.0 (2026-05-12)
 
