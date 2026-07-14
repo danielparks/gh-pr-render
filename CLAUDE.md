@@ -55,3 +55,5 @@ Requires `gh` auth with write access to that repo (`gh auth login`). If `npm run
 Make commits for logical changes, creating a new branch if on `main`.
 
 Run `npm install` to deal with environment differences before committing.
+
+This repo is managed with `jj` (Jujutsu), colocated with git. Plain `git commit` works fine — the pre-commit hooks run either way — but it leaves `HEAD` detached (normal for jj; don't try to "fix" it) and does **not** move the current branch's jj bookmark. After committing with `git commit`, run `jj bookmark set <branch-name> -r @-` to bring the bookmark up to the new commit — `@-` is reliably the commit `git commit` just made, since jj auto-imports it as the parent of a new empty working-copy commit. Skipping this leaves the branch looking stale to `jj log`/`jj bookmark list` and to anything that pushes from the bookmark rather than from git HEAD.
