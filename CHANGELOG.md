@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## main branch
+## Release 0.3.0 (2026-07-14)
 
 - Render PR labels.
 - Render descriptions and comments with blockquotes to ensure a distinction between content and structure.
