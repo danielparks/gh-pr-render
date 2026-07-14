@@ -35,7 +35,9 @@ Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumb
 - **Re-record a fixture** (if GitHub API responses change): `npm run record <owner/repo> <pr-number>`
 - **Recreate the synthetic fixture repo** from scratch: `npm run setup [-- --owner <owner>]` (defaults to the authenticated `gh` user), then re-record PR #1
 
-**Adding a new rendering scenario** (e.g. a new comment type, a label) means adding it to `scripts/setup.ts`. That script is idempotent — it doesn't recreate the PR if it already exists, it just applies whatever new step you added — so the full loop for the canonical `danielparks-test/gh-pr-render-fixtures` PR #1 fixture is:
+### Updating test PR fixture generation
+
+Adding a new rendering scenario, e.g. a new comment type or a label, means adding it to `scripts/setup.ts`. That script is idempotent — it doesn't recreate the PR if it already exists, it just applies whatever new step you added — so the full loop for the canonical `danielparks-test/gh-pr-render-fixtures` PR #1 fixture is:
 
 ```sh
 npm run setup
