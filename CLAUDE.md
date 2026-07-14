@@ -49,3 +49,9 @@ npx vitest run --update
 ```
 
 Requires `gh` auth with write access to that repo (`gh auth login`). If `npm run setup` fails cloning with `Permission denied (publickey)`, `gh` is set to clone over SSH but no SSH key is configured — fix with `gh config set -h github.com git_protocol https`.
+
+## Committing
+
+Make commits for logical changes, creating a new branch if on `main`.
+
+Run `npm install` to deal with environment differences before committing.
