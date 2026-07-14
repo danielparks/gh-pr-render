@@ -200,20 +200,20 @@ You can trigger Dependabot actions by commenting on this PR:
 
 ## Discussion
 
-### Comment by danielparks 5 days later:
+### Comment by danielparks 5 days later (id: 1750005030):
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951788373):
 
 @dependabot rebase
 
 
 ---
 
-### Comment by dependabot 5 months later:
+### Comment by dependabot 5 months later (id: 1951788414):
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -222,14 +222,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951788909):
 
 @dependabot recreate
 
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951796878):
 
 @dependabot recreate
 "
@@ -435,20 +435,20 @@ You can trigger Dependabot actions by commenting on this PR:
 
 ## Discussion
 
-### Comment by danielparks 5 days later:
+### Comment by danielparks 5 days later (id: 1750005030):
 
 Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951788373):
 
 @dependabot rebase
 
 
 ---
 
-### Comment by dependabot 5 months later:
+### Comment by dependabot 5 months later (id: 1951788414):
 
 Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
 
@@ -457,14 +457,14 @@ If you're happy for Dependabot to recreate it from scratch, overwriting any edit
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951788909):
 
 @dependabot recreate
 
 
 ---
 
-### Comment by danielparks 5 months later:
+### Comment by danielparks 5 months later (id: 1951796878):
 
 @dependabot recreate
 "
@@ -491,13 +491,13 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 ## Discussion
 
-### Comment by danielparks less than a minute later:
+### Comment by danielparks less than a minute later (id: 4427286000):
 
 Overall looks good! The type hints are a nice addition.
 
 ---
 
-### Comment by danielparks less than a minute later [minimized: duplicate]:
+### Comment by danielparks less than a minute later (id: 4427286037, minimized: duplicate):
 
 This is a duplicate of last week's PR.
 
@@ -592,7 +592,7 @@ Adds type annotations to all functions and implements \`power\` and \`modulo\` o
 
 ## Discussion
 
-### Comment by danielparks less than a minute later:
+### Comment by danielparks less than a minute later (id: 4427286000):
 
 Overall looks good! The type hints are a nice addition.
 

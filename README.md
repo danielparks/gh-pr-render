@@ -29,7 +29,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > ## Discussion
 >
-> ### Comment by danielparks less than a minute later:
+> ### Comment by danielparks less than a minute later (id: 4427286000):
 >
 > Overall looks good! The type hints are a nice addition.
 >

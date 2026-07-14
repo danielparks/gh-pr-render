@@ -47,10 +47,10 @@ function renderIssueComment(comment: IssueComment, baseDate: string): string {
   const author = comment.author?.login ?? "ghost";
   const time = formatDate(comment.createdAt, baseDate);
   const minimized = comment.isMinimized
-    ? ` [minimized: ${comment.minimizedReason ?? "hidden"}]`
+    ? `, minimized: ${comment.minimizedReason ?? "hidden"}`
     : "";
   return [
-    `### Comment by ${author} ${time}${minimized}:`,
+    `### Comment by ${author} ${time} (id: ${comment.databaseId}${minimized}):`,
     "",
     comment.body,
   ].join("\n");
