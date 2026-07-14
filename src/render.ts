@@ -88,9 +88,9 @@ function renderThreadComment(comment: ThreadComment, baseDate: string): string {
   const author = comment.author?.login ?? "ghost";
   const time = formatDate(comment.createdAt, baseDate);
   const minimized = comment.isMinimized
-    ? ` (minimized: ${comment.minimizedReason ?? "hidden"})`
+    ? `, minimized: ${comment.minimizedReason ?? "hidden"}`
     : "";
-  const header = `#### ${author} ${time}${minimized}:`;
+  const header = `#### ${author} ${time} (id: ${comment.databaseId}${minimized}):`;
   return comment.isMinimized
     ? header
     : [header, "", blockquote(comment.body)].join("\n");

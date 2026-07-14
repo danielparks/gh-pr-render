@@ -28,6 +28,8 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 
 **All free-text bodies (PR description, comments, reviews) are rendered as blockquotes.** The primary consumer is an LLM, and the `> ` prefix on every line makes it structurally impossible for a body — which can contain arbitrary markdown, including its own headings or `---` rules — to be mistaken for renderer-generated structure. Because that boundary is unambiguous on its own, the `---` thematic breaks that used to separate the PR body and timeline entries were removed as redundant; headings plus the blockquote marker already delimit sections.
 
+**Every comment — top-level and diff-thread replies alike — renders its `databaseId`.** The main use case is an LLM (e.g. Claude) picking the conversation back up: replying to or resolving a specific comment requires its ID, so every comment gets one, not just the first comment in a thread.
+
 ## Testing
 
 Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Expected output is stored as rendered markdown files in `snapshots/{owner}/{repo}/{prNumber}[.variant].md` (via `toMatchFileSnapshot`) rather than in a single `.snap` file, so a PR's rendered output can be viewed directly on GitHub.

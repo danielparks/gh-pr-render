@@ -27,7 +27,7 @@
 +    result = 1.0
 ```
 
-#### danielparks less than a minute later:
+#### danielparks less than a minute later (id: 3223656523):
 
 > This loop runs in O(b) time. Python has a built-in `**` operator.
 
@@ -43,7 +43,7 @@
 +def power(base: float, exponent: int) -> float:
 ```
 
-#### danielparks less than a minute later:
+#### danielparks less than a minute later (id: 3223656785):
 
 > Nice, much cleaner!
 
@@ -59,10 +59,10 @@
 +def modulo(dividend: float, divisor: float) -> float:
 ```
 
-#### danielparks less than a minute later:
+#### danielparks less than a minute later (id: 3223656851):
 
 > Good choice of parameter names.
 
-#### danielparks less than a minute later:
+#### danielparks less than a minute later (id: 3223656909):
 
 > Agreed — much clearer than `a` and `b`.
