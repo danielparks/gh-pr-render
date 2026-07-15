@@ -35,7 +35,9 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "resolveJsonModule": true
   },
   "exclude": ["dist", "eslint.config.mts", "scripts", "src/**/*.test.ts"]
 }

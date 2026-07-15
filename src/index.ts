@@ -3,6 +3,7 @@ import { execSync } from "child_process";
 import { Command } from "commander";
 import { fetchPRData } from "./fetch.js";
 import { renderPR, type RenderOptions } from "./render.js";
+import metadata from "../package.json" with { type: "json" };
 
 function detectRepo(): string {
   const url = execSync("git remote get-url origin", {
@@ -19,8 +20,9 @@ function detectRepo(): string {
 }
 
 new Command()
-  .name("gh-pr-render")
-  .description("Render a GitHub PR with comments for LLM consumption")
+  .name(metadata.name)
+  .version(metadata.version)
+  .description(metadata.description)
   .argument(
     "<repo-or-pr>",
     "GitHub PR URL, repository (owner/repo), or PR number",

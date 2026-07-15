@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+- Add `--version` option to display gh-pr-render version.
+- Use metadata from package in `--help` to ensure consistency.
+
 ## Release 0.3.0 (2026-07-14)
 
 - Render PR labels.
