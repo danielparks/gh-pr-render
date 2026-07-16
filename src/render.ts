@@ -39,13 +39,18 @@ const REACTION_EMOJI: Record<ReactionContent, string> = {
   EYES: "👀",
 };
 
-// Reactor logins carry more signal than a bare count: an author reacting 👍
-// to a suggestion often means "agreed" without a reply comment. GraphQL
-// caps the reactor list per group (see REACTOR_LIMIT in fetch.ts), so
-// totalCount can exceed the number of logins we actually have.
-export function formatReactions(groups: ReactionGroup[]): string | null {
+// Displays emoji reactions and their authors.
+//
+// Only displays header if there are reactions. Shows reactions we don’t have
+// authors for with “(+N more)” (see REACTOR_LIMIT in fetch.ts).
+//
+// Returns string lines without newlines.
+export function formatReactions(
+  groups: ReactionGroup[],
+  heading: string,
+): string[] {
   const nonEmpty = groups.filter((group) => group.reactors.totalCount > 0);
-  if (nonEmpty.length === 0) return null;
+  if (nonEmpty.length === 0) return [];
 
   const lines = nonEmpty.map((group) => {
     const logins = group.reactors.nodes.map((node) => node.login);
@@ -54,7 +59,7 @@ export function formatReactions(groups: ReactionGroup[]): string | null {
     return `- ${REACTION_EMOJI[group.content]} ${logins.join(", ")}${more}`;
   });
 
-  return ["**Reactions:**", "", ...lines].join("\n");
+  return ["", heading, "", ...lines];
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -94,14 +99,12 @@ function renderIssueComment(comment: IssueComment, baseDate: string): string {
   const minimized = comment.isMinimized
     ? `, minimized: ${comment.minimizedReason ?? "hidden"}`
     : "";
-  const lines = [
+  return [
     `### Comment by ${author} ${time} (id: ${comment.databaseId}${minimized}):`,
     "",
     blockquote(comment.body),
-  ];
-  const reactions = formatReactions(comment.reactionGroups);
-  if (reactions) lines.push("", reactions);
-  return lines.join("\n");
+    ...formatReactions(comment.reactionGroups, "#### Reactions"),
+  ].join("\n");
 }
 
 function renderReview(review: Review, baseDate: string): string {
@@ -127,10 +130,12 @@ function renderThreadComment(comment: ThreadComment, baseDate: string): string {
   const header = `#### ${author} ${time} (id: ${comment.databaseId}${minimized}):`;
   if (comment.isMinimized) return header;
 
-  const lines = [header, "", blockquote(comment.body)];
-  const reactions = formatReactions(comment.reactionGroups);
-  if (reactions) lines.push("", reactions);
-  return lines.join("\n");
+  return [
+    header,
+    "",
+    blockquote(comment.body),
+    ...formatReactions(comment.reactionGroups, "##### Reactions"),
+  ].join("\n");
 }
 
 function renderReviewThread(

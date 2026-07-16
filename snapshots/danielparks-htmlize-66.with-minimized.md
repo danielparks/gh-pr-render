@@ -201,7 +201,7 @@
 
 > @dependabot rebase
 
-**Reactions:**
+#### Reactions
 
 - 👍 dependabot
 
@@ -215,7 +215,7 @@
 
 > @dependabot recreate
 
-**Reactions:**
+#### Reactions
 
 - 👍 dependabot
 
@@ -223,6 +223,6 @@
 
 > @dependabot recreate
 
-**Reactions:**
+#### Reactions
 
 - 👍 dependabot

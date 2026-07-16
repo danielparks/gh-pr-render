@@ -65,15 +65,15 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
 });
 
 describe("formatReactions", () => {
-  it("returns null for no groups", () => {
-    expect(formatReactions([])).toBeNull();
+  it("returns [] for no groups", () => {
+    expect(formatReactions([])).toEqual([]);
   });
 
-  it("returns null when every group is empty", () => {
+  it("returns [] when every group is empty", () => {
     const groups: ReactionGroup[] = [
       { content: "THUMBS_UP", reactors: { totalCount: 0, nodes: [] } },
     ];
-    expect(formatReactions(groups)).toBeNull();
+    expect(formatReactions(groups)).toEqual([]);
   });
 
   it("lists reactor logins for a single group", () => {
@@ -86,9 +86,12 @@ describe("formatReactions", () => {
         },
       },
     ];
-    expect(formatReactions(groups)).toEqual(
-      "**Reactions:**\n\n- 👍 alice, bob",
-    );
+    expect(formatReactions(groups)).toEqual([
+      "",
+      "#### Reactions",
+      "",
+      "- 👍 alice, bob",
+    ]);
   });
 
   it("notes remaining reactors past the fetched cap", () => {
@@ -101,9 +104,12 @@ describe("formatReactions", () => {
         },
       },
     ];
-    expect(formatReactions(groups)).toEqual(
-      "**Reactions:**\n\n- 🎉 alice, bob (+6 more)",
-    );
+    expect(formatReactions(groups)).toEqual([
+      "",
+      "#### Reactions",
+      "",
+      "- 🎉 alice, bob (+6 more)",
+    ]);
   });
 
   it("skips empty groups but keeps non-empty ones", () => {
@@ -114,7 +120,12 @@ describe("formatReactions", () => {
         reactors: { totalCount: 1, nodes: [{ login: "carol" }] },
       },
     ];
-    expect(formatReactions(groups)).toEqual("**Reactions:**\n\n- 👀 carol");
+    expect(formatReactions(groups)).toEqual([
+      "",
+      "#### Reactions",
+      "",
+      "- 👀 carol",
+    ]);
   });
 
   it("renders multiple groups as separate bullets", () => {
@@ -128,9 +139,13 @@ describe("formatReactions", () => {
         reactors: { totalCount: 1, nodes: [{ login: "bob" }] },
       },
     ];
-    expect(formatReactions(groups)).toEqual(
-      "**Reactions:**\n\n- 👍 alice\n- 🎉 bob",
-    );
+    expect(formatReactions(groups)).toEqual([
+      "",
+      "#### Reactions",
+      "",
+      "- 👍 alice",
+      "- 🎉 bob",
+    ]);
   });
 });
 

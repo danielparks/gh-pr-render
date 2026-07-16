@@ -29,7 +29,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > > Overall looks good! The type hints are a nice addition.
 >
-> **Reactions:**
+> #### Reactions
 >
 > - 👍 danielparks
 > - 🎉 danielparks
@@ -83,7 +83,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > > Agreed — much clearer than `a` and `b`.
 >
-> **Reactions:**
+> #### Reactions
 >
 > - 👀 danielparks
 

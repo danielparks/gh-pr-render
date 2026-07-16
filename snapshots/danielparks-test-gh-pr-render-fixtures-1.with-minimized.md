@@ -18,7 +18,7 @@
 
 > Overall looks good! The type hints are a nice addition.
 
-**Reactions:**
+#### Reactions
 
 - 👍 danielparks
 - 🎉 danielparks
@@ -85,6 +85,6 @@
 
 > Agreed — much clearer than `a` and `b`.
 
-**Reactions:**
+#### Reactions
 
 - 👀 danielparks
