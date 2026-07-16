@@ -29,6 +29,11 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 >
 > > Overall looks good! The type hints are a nice addition.
 >
+> **Reactions:**
+>
+> - 👍 danielparks
+> - 🎉 danielparks
+>
 > ### Diff comment on `calculator.py` (outdated):
 >
 > ```diff
@@ -77,6 +82,10 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > #### danielparks less than a minute later (id: 3223656909):
 >
 > > Agreed — much clearer than `a` and `b`.
+>
+> **Reactions:**
+>
+> - 👀 danielparks
 
 <!-- example-output-end -->
 <!-- eslint-enable -->

@@ -152,14 +152,14 @@
         "releases_url": "https://api.github.com/repos/danielparks/htmlize/releases{/id}",
         "deployments_url": "https://api.github.com/repos/danielparks/htmlize/deployments",
         "created_at": "2019-12-03T00:01:01Z",
-        "updated_at": "2026-05-03T07:11:14Z",
-        "pushed_at": "2026-05-03T07:11:11Z",
+        "updated_at": "2026-07-10T06:22:16Z",
+        "pushed_at": "2026-07-10T14:16:31Z",
         "git_url": "git://github.com/danielparks/htmlize.git",
         "ssh_url": "git@github.com:danielparks/htmlize.git",
         "clone_url": "https://github.com/danielparks/htmlize.git",
         "svn_url": "https://github.com/danielparks/htmlize",
         "homepage": "",
-        "size": 41635,
+        "size": 41649,
         "stargazers_count": 12,
         "watchers_count": 12,
         "language": "Rust",
@@ -292,14 +292,14 @@
         "releases_url": "https://api.github.com/repos/danielparks/htmlize/releases{/id}",
         "deployments_url": "https://api.github.com/repos/danielparks/htmlize/deployments",
         "created_at": "2019-12-03T00:01:01Z",
-        "updated_at": "2026-05-03T07:11:14Z",
-        "pushed_at": "2026-05-03T07:11:11Z",
+        "updated_at": "2026-07-10T06:22:16Z",
+        "pushed_at": "2026-07-10T14:16:31Z",
         "git_url": "git://github.com/danielparks/htmlize.git",
         "ssh_url": "git@github.com:danielparks/htmlize.git",
         "clone_url": "https://github.com/danielparks/htmlize.git",
         "svn_url": "https://github.com/danielparks/htmlize",
         "homepage": "",
-        "size": 41635,
+        "size": 41649,
         "stargazers_count": 12,
         "watchers_count": 12,
         "language": "Rust",
@@ -438,7 +438,65 @@
       "body": "Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.",
       "createdAt": "2023-10-06T05:27:48Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     },
     {
       "databaseId": 1951788373,
@@ -448,7 +506,69 @@
       "body": "@dependabot rebase\r\n",
       "createdAt": "2024-02-19T06:30:15Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 1,
+            "nodes": [
+              {
+                "login": "dependabot"
+              }
+            ]
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     },
     {
       "databaseId": 1951788414,
@@ -458,7 +578,65 @@
       "body": "Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!\n\nIf you're happy for Dependabot to recreate it from scratch, overwriting any edits, you can request `@dependabot recreate`.\n",
       "createdAt": "2024-02-19T06:30:18Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     },
     {
       "databaseId": 1951788909,
@@ -468,7 +646,69 @@
       "body": "@dependabot recreate\r\n",
       "createdAt": "2024-02-19T06:30:50Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 1,
+            "nodes": [
+              {
+                "login": "dependabot"
+              }
+            ]
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     },
     {
       "databaseId": 1951796878,
@@ -478,7 +718,69 @@
       "body": "@dependabot recreate",
       "createdAt": "2024-02-19T06:39:12Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 1,
+            "nodes": [
+              {
+                "login": "dependabot"
+              }
+            ]
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     }
   ],
   "reviewThreads": []

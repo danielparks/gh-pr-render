@@ -2,8 +2,8 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import { renderPR, blockquote } from "./render.js";
-import type { PRData } from "./types.js";
+import { renderPR, blockquote, formatReactions } from "./render.js";
+import type { PRData, ReactionGroup } from "./types.js";
 
 function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   const fixturesDir = fileURLToPath(new URL("../fixtures", import.meta.url));
@@ -60,6 +60,76 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         1,
         ".with-minimized",
       ),
+    );
+  });
+});
+
+describe("formatReactions", () => {
+  it("returns null for no groups", () => {
+    expect(formatReactions([])).toBeNull();
+  });
+
+  it("returns null when every group is empty", () => {
+    const groups: ReactionGroup[] = [
+      { content: "THUMBS_UP", reactors: { totalCount: 0, nodes: [] } },
+    ];
+    expect(formatReactions(groups)).toBeNull();
+  });
+
+  it("lists reactor logins for a single group", () => {
+    const groups: ReactionGroup[] = [
+      {
+        content: "THUMBS_UP",
+        reactors: {
+          totalCount: 2,
+          nodes: [{ login: "alice" }, { login: "bob" }],
+        },
+      },
+    ];
+    expect(formatReactions(groups)).toEqual(
+      "**Reactions:**\n\n- 👍 alice, bob",
+    );
+  });
+
+  it("notes remaining reactors past the fetched cap", () => {
+    const groups: ReactionGroup[] = [
+      {
+        content: "HOORAY",
+        reactors: {
+          totalCount: 8,
+          nodes: [{ login: "alice" }, { login: "bob" }],
+        },
+      },
+    ];
+    expect(formatReactions(groups)).toEqual(
+      "**Reactions:**\n\n- 🎉 alice, bob (+6 more)",
+    );
+  });
+
+  it("skips empty groups but keeps non-empty ones", () => {
+    const groups: ReactionGroup[] = [
+      { content: "THUMBS_DOWN", reactors: { totalCount: 0, nodes: [] } },
+      {
+        content: "EYES",
+        reactors: { totalCount: 1, nodes: [{ login: "carol" }] },
+      },
+    ];
+    expect(formatReactions(groups)).toEqual("**Reactions:**\n\n- 👀 carol");
+  });
+
+  it("renders multiple groups as separate bullets", () => {
+    const groups: ReactionGroup[] = [
+      {
+        content: "THUMBS_UP",
+        reactors: { totalCount: 1, nodes: [{ login: "alice" }] },
+      },
+      {
+        content: "HOORAY",
+        reactors: { totalCount: 1, nodes: [{ login: "bob" }] },
+      },
+    ];
+    expect(formatReactions(groups)).toEqual(
+      "**Reactions:**\n\n- 👍 alice\n- 🎉 bob",
     );
   });
 });

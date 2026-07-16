@@ -34,7 +34,7 @@
     },
     "body": "Adds type annotations to all functions and implements `power` and `modulo` operations.",
     "created_at": "2026-05-12T04:18:15Z",
-    "updated_at": "2026-07-14T12:51:19Z",
+    "updated_at": "2026-07-16T05:00:40Z",
     "closed_at": null,
     "merged_at": null,
     "merge_commit_sha": "e71872e6c80ed1bb95717a0dca4ee3485c49e915",
@@ -625,7 +625,73 @@
       "body": "Overall looks good! The type hints are a nice addition.",
       "createdAt": "2026-05-12T04:18:16Z",
       "isMinimized": false,
-      "minimizedReason": null
+      "minimizedReason": null,
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 1,
+            "nodes": [
+              {
+                "login": "danielparks"
+              }
+            ]
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 1,
+            "nodes": [
+              {
+                "login": "danielparks"
+              }
+            ]
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     },
     {
       "databaseId": 4427286037,
@@ -635,7 +701,65 @@
       "body": "This is a duplicate of last week's PR.",
       "createdAt": "2026-05-12T04:18:17Z",
       "isMinimized": true,
-      "minimizedReason": "duplicate"
+      "minimizedReason": "duplicate",
+      "reactionGroups": [
+        {
+          "content": "THUMBS_UP",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "THUMBS_DOWN",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "LAUGH",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HOORAY",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "CONFUSED",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "HEART",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "ROCKET",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        },
+        {
+          "content": "EYES",
+          "reactors": {
+            "totalCount": 0,
+            "nodes": []
+          }
+        }
+      ]
     }
   ],
   "reviewThreads": [
@@ -655,7 +779,65 @@
             "createdAt": "2026-05-12T04:18:18Z",
             "isMinimized": false,
             "minimizedReason": null,
-            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(a: float, b: int) -> float:\n+    result = 1.0"
+            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(a: float, b: int) -> float:\n+    result = 1.0",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
           }
         ]
       }
@@ -676,7 +858,65 @@
             "createdAt": "2026-05-12T04:18:19Z",
             "isMinimized": true,
             "minimizedReason": "outdated",
-            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:"
+            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
           }
         ]
       }
@@ -697,7 +937,65 @@
             "createdAt": "2026-05-12T04:18:22Z",
             "isMinimized": false,
             "minimizedReason": null,
-            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:"
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
           }
         ]
       }
@@ -718,7 +1016,65 @@
             "createdAt": "2026-05-12T04:18:23Z",
             "isMinimized": false,
             "minimizedReason": null,
-            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:"
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
           },
           {
             "databaseId": 3223656909,
@@ -729,7 +1085,69 @@
             "createdAt": "2026-05-12T04:18:24Z",
             "isMinimized": false,
             "minimizedReason": null,
-            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:"
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 1,
+                  "nodes": [
+                    {
+                      "login": "danielparks"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       }

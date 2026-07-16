@@ -28,6 +28,24 @@ export interface ChangedFile {
   patch?: string;
 }
 
+export type ReactionContent =
+  | "THUMBS_UP"
+  | "THUMBS_DOWN"
+  | "LAUGH"
+  | "HOORAY"
+  | "CONFUSED"
+  | "HEART"
+  | "ROCKET"
+  | "EYES";
+
+export interface ReactionGroup {
+  content: ReactionContent;
+  reactors: {
+    totalCount: number;
+    nodes: { login: string }[];
+  };
+}
+
 export interface IssueComment {
   databaseId: number;
   author: { login: string } | null;
@@ -35,6 +53,7 @@ export interface IssueComment {
   createdAt: string;
   isMinimized: boolean;
   minimizedReason: string | null;
+  reactionGroups: ReactionGroup[];
 }
 
 export type ReviewState =
@@ -60,6 +79,7 @@ export interface ThreadComment {
   isMinimized: boolean;
   minimizedReason: string | null;
   diffHunk: string;
+  reactionGroups: ReactionGroup[];
 }
 
 export interface ReviewThread {

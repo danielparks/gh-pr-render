@@ -18,6 +18,11 @@
 
 > Overall looks good! The type hints are a nice addition.
 
+**Reactions:**
+
+- 👍 danielparks
+- 🎉 danielparks
+
 ### Comment by danielparks less than a minute later (id: 4427286037, minimized: duplicate):
 
 > This is a duplicate of last week's PR.
@@ -79,3 +84,7 @@
 #### danielparks less than a minute later (id: 3223656909):
 
 > Agreed — much clearer than `a` and `b`.
+
+**Reactions:**
+
+- 👀 danielparks

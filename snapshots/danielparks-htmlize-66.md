@@ -201,6 +201,10 @@
 
 > @dependabot rebase
 
+**Reactions:**
+
+- 👍 dependabot
+
 ### Comment by dependabot 5 months later (id: 1951788414):
 
 > Looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
@@ -211,6 +215,14 @@
 
 > @dependabot recreate
 
+**Reactions:**
+
+- 👍 dependabot
+
 ### Comment by danielparks 5 months later (id: 1951796878):
 
 > @dependabot recreate
+
+**Reactions:**
+
+- 👍 dependabot

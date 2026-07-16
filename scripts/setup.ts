@@ -3,7 +3,8 @@
  * each rendering scenario: minimized top-level comment, minimized diff thread
  * root (skips whole thread), outdated thread, resolved thread, thread with
  * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
- * an APPROVED review, and a label.
+ * an APPROVED review, a label, and reactions (multiple groups on a top-level
+ * comment, a single group on a diff-thread reply).
  *
  * Usage: npm run setup [-- --owner <owner>]
  * Default owner: the currently authenticated gh user.
@@ -64,6 +65,19 @@ function ghPost(path: string, body: object): unknown {
 
 function git(cwd: string, ...args: string[]): string {
   return sh(`git ${args.map((a) => JSON.stringify(a)).join(" ")}`, { cwd });
+}
+
+// Adding the same reactor+content pair again is a no-op on GitHub's side, so
+// this is safe to call every run, not just on first PR creation.
+async function addReaction(subjectId: string, content: string): Promise<void> {
+  await gql(
+    `mutation($id: ID!, $content: ReactionContent!) {
+      addReaction(input: {subjectId: $id, content: $content}) {
+        reaction { content }
+      }
+    }`,
+    { id: subjectId, content },
+  );
 }
 
 // ─── File content ─────────────────────────────────────────────────────────────
@@ -214,11 +228,63 @@ try {
     labels: [LABEL_NAME],
   });
   log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
+
+  await addScenarioReactions(prNumber);
 } finally {
   rmSync(tmpDir, { recursive: true, force: true });
 }
 
 log("Done.");
+
+// ─── Reactions ───────────────────────────────────────────────────────────────
+
+// Looked up fresh by comment body each run (rather than captured at creation
+// time) so this applies whether the PR was just created or already existed.
+async function addScenarioReactions(prNumber: number): Promise<void> {
+  const result = await gql<{
+    repository: {
+      pullRequest: {
+        comments: { nodes: Array<{ id: string; body: string }> };
+        reviewThreads: {
+          nodes: Array<{
+            comments: { nodes: Array<{ id: string; body: string }> };
+          }>;
+        };
+      };
+    };
+  }>(
+    `query($owner: String!, $repo: String!, $number: Int!) {
+      repository(owner: $owner, name: $repo) {
+        pullRequest(number: $number) {
+          comments(first: 100) { nodes { id body } }
+          reviewThreads(first: 100) {
+            nodes { comments(first: 100) { nodes { id body } } }
+          }
+        }
+      }
+    }`,
+    { owner, repo: REPO, number: prNumber },
+  );
+
+  const pr = result.repository.pullRequest;
+
+  const commentA = pr.comments.nodes.find((c) =>
+    c.body.startsWith("Overall looks good!"),
+  );
+  if (commentA) {
+    await addReaction(commentA.id, "THUMBS_UP");
+    await addReaction(commentA.id, "HOORAY");
+    log("  Reacted 👍🎉 to top-level comment A.");
+  }
+
+  const modReply = pr.reviewThreads.nodes
+    .flatMap((t) => t.comments.nodes)
+    .find((c) => c.body.startsWith("Agreed — much clearer"));
+  if (modReply) {
+    await addReaction(modReply.id, "EYES");
+    log("  Reacted 👀 to modulo thread reply.");
+  }
+}
 
 // ─── Scenario PR ─────────────────────────────────────────────────────────────
 

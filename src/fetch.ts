@@ -12,6 +12,24 @@ import type {
 
 const execAsync = promisify(exec);
 
+// Number of reactors to fetch (by login) per reaction emoji. GitHub returns
+// reactors as a `Reactor` union (User | Bot | Organization | Mannequin);
+// `... on Actor` picks up `login` from whichever concrete type it is.
+const REACTOR_LIMIT = 5;
+const REACTIONS_FIELDS = `
+  reactionGroups {
+    content
+    reactors(first: ${REACTOR_LIMIT}) {
+      totalCount
+      nodes {
+        ... on Actor {
+          login
+        }
+      }
+    }
+  }
+`;
+
 function getAuthToken(): string {
   return (
     process.env["GH_TOKEN"] ??
@@ -55,6 +73,7 @@ const TOP_COMMENTS_QUERY = `
             createdAt
             isMinimized
             minimizedReason
+            ${REACTIONS_FIELDS}
           }
         }
       }
@@ -93,6 +112,7 @@ const REVIEW_THREADS_QUERY = `
                 isMinimized
                 minimizedReason
                 diffHunk
+                ${REACTIONS_FIELDS}
               }
             }
           }

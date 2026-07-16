@@ -18,6 +18,11 @@
 
 > Overall looks good! The type hints are a nice addition.
 
+**Reactions:**
+
+- 👍 danielparks
+- 🎉 danielparks
+
 ### Diff comment on `calculator.py` (outdated):
 
 ```diff
@@ -66,3 +71,7 @@
 #### danielparks less than a minute later (id: 3223656909):
 
 > Agreed — much clearer than `a` and `b`.
+
+**Reactions:**
+
+- 👀 danielparks

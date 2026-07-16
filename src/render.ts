@@ -2,6 +2,8 @@ import { formatDistance } from "date-fns";
 import type {
   IssueComment,
   PRData,
+  ReactionContent,
+  ReactionGroup,
   Review,
   ReviewState,
   ReviewThread,
@@ -24,6 +26,35 @@ export function blockquote(text: string): string {
     .replace(/\n$/, "")
     .replace(/^/gm, "> ")
     .replace(/^> $/gm, ">");
+}
+
+const REACTION_EMOJI: Record<ReactionContent, string> = {
+  THUMBS_UP: "👍",
+  THUMBS_DOWN: "👎",
+  LAUGH: "😄",
+  HOORAY: "🎉",
+  CONFUSED: "😕",
+  HEART: "❤️",
+  ROCKET: "🚀",
+  EYES: "👀",
+};
+
+// Reactor logins carry more signal than a bare count: an author reacting 👍
+// to a suggestion often means "agreed" without a reply comment. GraphQL
+// caps the reactor list per group (see REACTOR_LIMIT in fetch.ts), so
+// totalCount can exceed the number of logins we actually have.
+export function formatReactions(groups: ReactionGroup[]): string | null {
+  const nonEmpty = groups.filter((group) => group.reactors.totalCount > 0);
+  if (nonEmpty.length === 0) return null;
+
+  const lines = nonEmpty.map((group) => {
+    const logins = group.reactors.nodes.map((node) => node.login);
+    const remaining = group.reactors.totalCount - logins.length;
+    const more = remaining > 0 ? ` (+${remaining} more)` : "";
+    return `- ${REACTION_EMOJI[group.content]} ${logins.join(", ")}${more}`;
+  });
+
+  return ["**Reactions:**", "", ...lines].join("\n");
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -63,11 +94,14 @@ function renderIssueComment(comment: IssueComment, baseDate: string): string {
   const minimized = comment.isMinimized
     ? `, minimized: ${comment.minimizedReason ?? "hidden"}`
     : "";
-  return [
+  const lines = [
     `### Comment by ${author} ${time} (id: ${comment.databaseId}${minimized}):`,
     "",
     blockquote(comment.body),
-  ].join("\n");
+  ];
+  const reactions = formatReactions(comment.reactionGroups);
+  if (reactions) lines.push("", reactions);
+  return lines.join("\n");
 }
 
 function renderReview(review: Review, baseDate: string): string {
@@ -91,9 +125,12 @@ function renderThreadComment(comment: ThreadComment, baseDate: string): string {
     ? `, minimized: ${comment.minimizedReason ?? "hidden"}`
     : "";
   const header = `#### ${author} ${time} (id: ${comment.databaseId}${minimized}):`;
-  return comment.isMinimized
-    ? header
-    : [header, "", blockquote(comment.body)].join("\n");
+  if (comment.isMinimized) return header;
+
+  const lines = [header, "", blockquote(comment.body)];
+  const reactions = formatReactions(comment.reactionGroups);
+  if (reactions) lines.push("", reactions);
+  return lines.join("\n");
 }
 
 function renderReviewThread(
