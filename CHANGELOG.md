@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - Add `--version` option to display gh-pr-render version.
 - Use metadata from package in `--help` to ensure consistency.
+- Set minimum Node version in `package.json`: 20.18.3.
 
 ## Release 0.3.0 (2026-07-14)
 
