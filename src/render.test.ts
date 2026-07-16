@@ -66,14 +66,14 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
 
 describe("formatReactions", () => {
   it("returns [] for no groups", () => {
-    expect(formatReactions([])).toEqual([]);
+    expect(formatReactions([], "#### Reactions")).toEqual([]);
   });
 
   it("returns [] when every group is empty", () => {
     const groups: ReactionGroup[] = [
       { content: "THUMBS_UP", reactors: { totalCount: 0, nodes: [] } },
     ];
-    expect(formatReactions(groups)).toEqual([]);
+    expect(formatReactions(groups, "#### Reactions")).toEqual([]);
   });
 
   it("lists reactor logins for a single group", () => {
@@ -86,7 +86,7 @@ describe("formatReactions", () => {
         },
       },
     ];
-    expect(formatReactions(groups)).toEqual([
+    expect(formatReactions(groups, "#### Reactions")).toEqual([
       "",
       "#### Reactions",
       "",
@@ -104,7 +104,7 @@ describe("formatReactions", () => {
         },
       },
     ];
-    expect(formatReactions(groups)).toEqual([
+    expect(formatReactions(groups, "#### Reactions")).toEqual([
       "",
       "#### Reactions",
       "",
@@ -120,7 +120,7 @@ describe("formatReactions", () => {
         reactors: { totalCount: 1, nodes: [{ login: "carol" }] },
       },
     ];
-    expect(formatReactions(groups)).toEqual([
+    expect(formatReactions(groups, "#### Reactions")).toEqual([
       "",
       "#### Reactions",
       "",
@@ -139,12 +139,27 @@ describe("formatReactions", () => {
         reactors: { totalCount: 1, nodes: [{ login: "bob" }] },
       },
     ];
-    expect(formatReactions(groups)).toEqual([
+    expect(formatReactions(groups, "#### Reactions")).toEqual([
       "",
       "#### Reactions",
       "",
       "- 👍 alice",
       "- 🎉 bob",
+    ]);
+  });
+
+  it("uses the provided heading", () => {
+    const groups: ReactionGroup[] = [
+      {
+        content: "ROCKET",
+        reactors: { totalCount: 1, nodes: [{ login: "alice" }] },
+      },
+    ];
+    expect(formatReactions(groups, "## Reactions")).toEqual([
+      "",
+      "## Reactions",
+      "",
+      "- 🚀 alice",
     ]);
   });
 });

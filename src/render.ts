@@ -200,6 +200,8 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     out.push("", blockquote(pull.body));
   }
 
+  out.push(...formatReactions(pull.reactionGroups, "## Reactions"));
+
   // Changed files
   out.push("", "## Changed Files", "");
   for (const file of files) {

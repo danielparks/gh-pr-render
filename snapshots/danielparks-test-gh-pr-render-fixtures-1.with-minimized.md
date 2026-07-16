@@ -8,6 +8,10 @@
 
 > Adds type annotations to all functions and implements `power` and `modulo` operations.
 
+## Reactions
+
+- 🚀 danielparks
+
 ## Changed Files
 
 - `calculator.py` (modified) +12 / -4
@@ -85,6 +89,6 @@
 
 > Agreed — much clearer than `a` and `b`.
 
-#### Reactions
+##### Reactions
 
 - 👀 danielparks

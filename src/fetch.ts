@@ -6,6 +6,7 @@ import type {
   IssueComment,
   PRData,
   PullRequest,
+  ReactionGroup,
   Review,
   ReviewThread,
 } from "./types.js";
@@ -64,6 +65,7 @@ const TOP_COMMENTS_QUERY = `
   query PullRequestComments($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $number) {
+        ${REACTIONS_FIELDS}
         comments(first: 100, after: $cursor) {
           pageInfo { hasNextPage endCursor }
           nodes {
@@ -84,6 +86,7 @@ const TOP_COMMENTS_QUERY = `
 interface TopCommentsResult {
   repository: {
     pullRequest: {
+      reactionGroups: ReactionGroup[];
       comments: {
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
         nodes: IssueComment[];
@@ -133,13 +136,21 @@ interface ReviewThreadsResult {
   };
 }
 
+interface TopCommentsFetch {
+  comments: IssueComment[];
+  // Reported on every page of the same query; only the PR itself has just
+  // one set of reactions, so any page's value is the correct one.
+  pullReactionGroups: ReactionGroup[];
+}
+
 async function fetchTopComments(
   client: typeof graphql,
   owner: string,
   repo: string,
   number: number,
-): Promise<IssueComment[]> {
+): Promise<TopCommentsFetch> {
   const comments: IssueComment[] = [];
+  let pullReactionGroups: ReactionGroup[];
   let cursor: string | null = null;
 
   while (true) {
@@ -147,14 +158,14 @@ async function fetchTopComments(
       TOP_COMMENTS_QUERY,
       { owner, repo, number, cursor },
     );
-    const connection: TopCommentsResult["repository"]["pullRequest"]["comments"] =
-      result.repository.pullRequest.comments;
-    comments.push(...connection.nodes);
-    if (!connection.pageInfo.hasNextPage) break;
-    cursor = connection.pageInfo.endCursor;
+    const pullRequest = result.repository.pullRequest;
+    comments.push(...pullRequest.comments.nodes);
+    pullReactionGroups = pullRequest.reactionGroups;
+    if (!pullRequest.comments.pageInfo.hasNextPage) break;
+    cursor = pullRequest.comments.pageInfo.endCursor;
   }
 
-  return comments;
+  return { comments, pullReactionGroups };
 }
 
 async function fetchReviewThreads(
@@ -212,15 +223,20 @@ export async function fetchPRData(
   const base = `repos/${repo}`;
 
   const [
-    [topComments, topCommentsMs],
+    [{ comments: topComments, pullReactionGroups }, topCommentsMs],
     [reviewThreads, reviewThreadsMs],
-    [pull, pullMs],
+    [restPull, pullMs],
     [files, filesMs],
     [reviews, reviewsMs],
   ] = await Promise.all([
     timed(() => fetchTopComments(client, owner, repoName, prNumber)),
     timed(() => fetchReviewThreads(client, owner, repoName, prNumber)),
-    timed(() => ghApi(`${base}/pulls/${prNumber}`) as Promise<PullRequest>),
+    timed(
+      () =>
+        ghApi(`${base}/pulls/${prNumber}`) as Promise<
+          Omit<PullRequest, "reactionGroups">
+        >,
+    ),
     timed(
       () =>
         ghApiArray(`${base}/pulls/${prNumber}/files`) as Promise<ChangedFile[]>,
@@ -230,6 +246,8 @@ export async function fetchPRData(
         ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Promise<Review[]>,
     ),
   ]);
+
+  const pull: PullRequest = { ...restPull, reactionGroups: pullReactionGroups };
 
   const totalMs = performance.now() - totalStart;
 

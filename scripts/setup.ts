@@ -3,8 +3,9 @@
  * each rendering scenario: minimized top-level comment, minimized diff thread
  * root (skips whole thread), outdated thread, resolved thread, thread with
  * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
- * an APPROVED review, a label, and reactions (multiple groups on a top-level
- * comment, a single group on a diff-thread reply).
+ * an APPROVED review, a label, and reactions (on the PR description, on a
+ * top-level comment with multiple reaction groups, and on a diff-thread
+ * reply).
  *
  * Usage: npm run setup [-- --owner <owner>]
  * Default owner: the currently authenticated gh user.
@@ -244,6 +245,7 @@ async function addScenarioReactions(prNumber: number): Promise<void> {
   const result = await gql<{
     repository: {
       pullRequest: {
+        id: string;
         comments: { nodes: Array<{ id: string; body: string }> };
         reviewThreads: {
           nodes: Array<{
@@ -256,6 +258,7 @@ async function addScenarioReactions(prNumber: number): Promise<void> {
     `query($owner: String!, $repo: String!, $number: Int!) {
       repository(owner: $owner, name: $repo) {
         pullRequest(number: $number) {
+          id
           comments(first: 100) { nodes { id body } }
           reviewThreads(first: 100) {
             nodes { comments(first: 100) { nodes { id body } } }
@@ -267,6 +270,9 @@ async function addScenarioReactions(prNumber: number): Promise<void> {
   );
 
   const pr = result.repository.pullRequest;
+
+  await addReaction(pr.id, "ROCKET");
+  log("  Reacted 🚀 to the PR description.");
 
   const commentA = pr.comments.nodes.find((c) =>
     c.body.startsWith("Overall looks good!"),

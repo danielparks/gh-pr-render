@@ -17,6 +17,7 @@ export interface PullRequest {
   html_url: string;
   created_at: string;
   labels: Label[];
+  reactionGroups: ReactionGroup[];
 }
 
 export interface ChangedFile {
