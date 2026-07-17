@@ -4,20 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
-- Render emoji reactions to comments and PRs.
-- Add `--version` option to display gh-pr-render version.
-- Fixed release process.
-- Use metadata from package in `--help` to ensure consistency.
+- Updated to render PR descriptions and comments with blockquotes to ensure a distinction between content and structure.
+- Added emoji reactions to comments and PRs.
+- Added PR labels.
+- Added ID to all comments to make it easy for Claude to update them.
+- Added `snapshots/` directory with example output.
+- Added `--version` option to display gh-pr-render version.
+- Fixed release process; version 0.3.0 was actually just a copy of 0.2.0.
+- Used metadata from package in `--help` to ensure consistency.
 - Set minimum Node version in `package.json`: 20.18.3.
 
 ## Release 0.3.0 (2026-07-14)
 
-_This was incorrectly released and the published version was actually just version 0.2.0 again._
-
-- Render PR labels.
-- Render descriptions and comments with blockquotes to ensure a distinction between content and structure.
-- Add ID to all comments to make it easy for Claude to update them.
-- Add `snapshots/` directory with example output.
+_Accidentally republished version 0.2.0 as 0.3.0._
 
 ## Release 0.2.0 (2026-05-12)
 
