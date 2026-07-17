@@ -50,9 +50,9 @@ if git rev-parse --quiet --verify "refs/tags/v${version}" >/dev/null ; then
   exit 1
 fi
 
-if ! grep '^## ' CHANGELOG.md | head -1 | grep -v '## Release ' >/dev/null ; then
+if grep '^## ' CHANGELOG.md | head -1 | grep -v '^## Release ' >/dev/null ; then
   echo 'Found non-release ## heading near start of CHANGELOG.md:' >&2
-  grep '^## ' CHANGELOG.md | head -1 | grep -v '## Release ' >&2
+  grep '^## ' CHANGELOG.md | head -1 | grep -v '^## Release ' >&2
   # grep should fail and cause an exit, but just in case:
   exit 1
 fi
