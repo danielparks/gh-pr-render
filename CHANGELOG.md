@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+- Render emoji reactions to comments and PRs.
 - Add `--version` option to display gh-pr-render version.
+- Fixed release process.
 - Use metadata from package in `--help` to ensure consistency.
 - Set minimum Node version in `package.json`: 20.18.3.
 
 ## Release 0.3.0 (2026-07-14)
+
+_This was incorrectly released and the published version was actually just version 0.2.0 again._
 
 - Render PR labels.
 - Render descriptions and comments with blockquotes to ensure a distinction between content and structure.
