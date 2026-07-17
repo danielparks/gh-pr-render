@@ -32,22 +32,17 @@ Auth falls back through `GH_TOKEN` → `GITHUB_TOKEN` → `gh auth token`.
 
 ## Testing
 
-Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Expected output is stored as rendered markdown files in `snapshots/{owner}/{repo}/{prNumber}[.variant].md` (via `toMatchFileSnapshot`) rather than in a single `.snap` file, so a PR's rendered output can be viewed directly on GitHub.
+Snapshot tests run against recorded fixtures in `fixtures/{owner}/{repo}/{prNumber}.json`. Expected output is stored as rendered markdown files in `snapshots/{owner}-{repo}-{prNumber}[.variant].md` (via `toMatchFileSnapshot`) rather than in a single `.snap` file, so a PR's rendered output can be viewed directly on GitHub.
 
 - **Run tests**: `npm test`
-- **Update snapshots** (after intentional render changes): `npx vitest run --update`
-- **Re-record a fixture** (if GitHub API responses change): `npm run record <owner/repo> <pr-number>`
-- **Recreate the synthetic fixture repo** from scratch: `npm run setup [-- --owner <owner>]` (defaults to the authenticated `gh` user), then re-record PR #1
+- **Recreate fixtures, snapshots, and README**: `scripts/update-tests.sh`
 
 ### Updating test PR fixture generation
 
 Adding a new rendering scenario, e.g. a new comment type or a label, means adding it to `scripts/setup.ts`. That script is idempotent — it doesn't recreate the PR if it already exists, it just applies whatever new step you added — so the full loop for the canonical `danielparks-test/gh-pr-render-fixtures` PR #1 fixture is:
 
 ```sh
-npm run setup
-npm run record danielparks-test/gh-pr-render-fixtures 1
-npm run update-readme
-npx vitest run --update
+scripts/update-tests.sh
 ```
 
 Requires `gh` auth with write access to that repo (`gh auth login`). If `npm run setup` fails cloning with `Permission denied (publickey)`, `gh` is set to clone over SSH but no SSH key is configured — fix with `gh config set -h github.com git_protocol https`.

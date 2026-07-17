@@ -7,8 +7,7 @@
  * top-level comment with multiple reaction groups, and on a diff-thread
  * reply).
  *
- * Usage: npm run setup [-- --owner <owner>]
- * Default owner: the currently authenticated gh user.
+ * Usage: npm run setup -- --owner <owner>
  */
 
 import { execSync } from "child_process";
@@ -21,9 +20,8 @@ import { graphql } from "@octokit/graphql";
 
 const ownerIdx = process.argv.indexOf("--owner");
 const owner: string =
-  ownerIdx !== -1
-    ? (process.argv[ownerIdx + 1] ?? die("--owner requires a value"))
-    : sh("gh api user --jq .login");
+  (ownerIdx !== -1 && process.argv[ownerIdx + 1]) ||
+  die("Usage: npm run setup -- --owner <owner>");
 
 const REPO = "gh-pr-render-fixtures";
 const FULL = `${owner}/${REPO}`;
