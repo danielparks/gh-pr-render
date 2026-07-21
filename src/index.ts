@@ -31,19 +31,20 @@ new Command()
   .option(
     "--include-minimized",
     "include minimized comments (marked with reason)",
+    false,
   )
   .option("--no-files", "omit the changed-files list")
   .option("--no-commits", "omit the commit list")
-  .option("--timings", "print request timings to stderr")
+  .option("--timings", "print request timings to stderr", false)
   .action(
     async (
       repoOrPr: string,
       prArg: string | undefined,
       opts: {
-        includeMinimized?: boolean;
-        files?: boolean;
-        commits?: boolean;
-        timings?: boolean;
+        includeMinimized: boolean;
+        files: boolean;
+        commits: boolean;
+        timings: boolean;
       },
     ) => {
       let repo: string;
@@ -69,12 +70,12 @@ new Command()
       }
 
       const data = await fetchPRData(repo, prNumber, {
-        timings: opts.timings ?? false,
+        timings: opts.timings,
       });
       const renderOptions: RenderOptions = {
-        includeMinimized: opts.includeMinimized ?? false,
-        includeFiles: opts.files ?? true,
-        includeCommits: opts.commits ?? true,
+        includeMinimized: opts.includeMinimized,
+        includeFiles: opts.files,
+        includeCommits: opts.commits,
       };
       process.stdout.write(renderPR(data, renderOptions));
     },
