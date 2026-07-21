@@ -1,7 +1,8 @@
 # PR #2: Add unit tests for calculator
 
 **Author:** danielparks
-**State:** open, draft
+**State:** closed, draft
+**Closed:** about 1 hour later
 **Branch:** `feat/add-tests` → `main`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/2
 **Requested reviewers:** reviewers (team)
