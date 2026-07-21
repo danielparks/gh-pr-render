@@ -10,9 +10,21 @@ import type {
   ReactionGroup,
   Review,
   ReviewThread,
+  ThreadComment,
+  TruncatedCommentList,
 } from "./types.js";
+import {
+  DEFAULT_COMMENT_HEAD_LIMIT,
+  DEFAULT_COMMENT_TAIL_LIMIT,
+} from "./limits.js";
 
 const execAsync = promisify(exec);
+
+// GitHub GraphQL connections reject `first`/`last` above 100, regardless of
+// how high a caller sets --comment-head-limit/--comment-tail-limit.
+// Requesting more than this just yields a shorter head/tail than asked for,
+// rather than erroring.
+const MAX_PAGE_SIZE = 100;
 
 // Number of reactors to fetch (by login) per reaction emoji. GitHub returns
 // reactors as a `Reactor` union (User | Bot | Organization | Mannequin);
@@ -62,22 +74,31 @@ async function ghApiArray(endpoint: string): Promise<unknown[]> {
   return results;
 }
 
+const ISSUE_COMMENT_FIELDS = `
+  databaseId
+  author { login }
+  body
+  createdAt
+  isMinimized
+  minimizedReason
+  ${REACTIONS_FIELDS}
+`;
+
+// Fetches head and tail slices of the PR's top-level comments directly, via
+// aliased `first`/`last` connection arguments, rather than paginating
+// through the whole list — a PR with hundreds of comments only costs
+// head + tail of them, not all of them.
 const TOP_COMMENTS_QUERY = `
-  query PullRequestComments($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
+  query PullRequestComments($owner: String!, $repo: String!, $number: Int!, $head: Int!, $tail: Int!) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $number) {
         ${REACTIONS_FIELDS}
-        comments(first: 100, after: $cursor) {
-          pageInfo { hasNextPage endCursor }
-          nodes {
-            databaseId
-            author { login }
-            body
-            createdAt
-            isMinimized
-            minimizedReason
-            ${REACTIONS_FIELDS}
-          }
+        headComments: comments(first: $head) {
+          totalCount
+          nodes { ${ISSUE_COMMENT_FIELDS} }
+        }
+        tailComments: comments(last: $tail) {
+          nodes { ${ISSUE_COMMENT_FIELDS} }
         }
       }
     }
@@ -88,16 +109,29 @@ interface TopCommentsResult {
   repository: {
     pullRequest: {
       reactionGroups: ReactionGroup[];
-      comments: {
-        pageInfo: { hasNextPage: boolean; endCursor: string | null };
-        nodes: IssueComment[];
-      };
+      headComments: { totalCount: number; nodes: IssueComment[] };
+      tailComments: { nodes: IssueComment[] };
     };
   };
 }
 
+const THREAD_COMMENT_FIELDS = `
+  databaseId
+  author { login }
+  body
+  createdAt
+  isMinimized
+  minimizedReason
+  diffHunk
+  ${REACTIONS_FIELDS}
+`;
+
+// The thread list itself is always fetched in full (it isn't subject to
+// head/tail truncation — see limits.ts), but each thread's comments are
+// fetched as head/tail slices the same way top-level comments are, via
+// aliased `first`/`last` arguments.
 const REVIEW_THREADS_QUERY = `
-  query PullRequestThreads($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
+  query PullRequestThreads($owner: String!, $repo: String!, $number: Int!, $cursor: String, $head: Int!, $tail: Int!) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $number) {
         reviewThreads(first: 100, after: $cursor) {
@@ -108,17 +142,12 @@ const REVIEW_THREADS_QUERY = `
             isOutdated
             path
             line
-            comments(first: 100) {
-              nodes {
-                databaseId
-                author { login }
-                body
-                createdAt
-                isMinimized
-                minimizedReason
-                diffHunk
-                ${REACTIONS_FIELDS}
-              }
+            headComments: comments(first: $head) {
+              totalCount
+              nodes { ${THREAD_COMMENT_FIELDS} }
+            }
+            tailComments: comments(last: $tail) {
+              nodes { ${THREAD_COMMENT_FIELDS} }
             }
           }
         }
@@ -127,75 +156,105 @@ const REVIEW_THREADS_QUERY = `
   }
 `;
 
+// Shape of a review thread as returned directly by REVIEW_THREADS_QUERY.
+interface RawReviewThread extends Omit<ReviewThread, "comments"> {
+  headComments: { totalCount: number; nodes: ThreadComment[] };
+  tailComments: { nodes: ThreadComment[] };
+}
+
 interface ReviewThreadsResult {
   repository: {
     pullRequest: {
       reviewThreads: {
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
-        nodes: ReviewThread[];
+        nodes: RawReviewThread[];
       };
     };
   };
 }
 
-interface TopCommentsFetch {
-  comments: IssueComment[];
-  // Reported on every page of the same query; only the PR itself has just
-  // one set of reactions, so any page's value is the correct one.
+export interface TopCommentsFetch {
+  comments: TruncatedCommentList<IssueComment>;
+  // Only the PR itself has just one set of reactions (unlike per-comment
+  // reactions), so this is read once off the head-comments query.
   pullReactionGroups: ReactionGroup[];
 }
 
-async function fetchTopComments(
+export async function fetchTopComments(
   client: typeof graphql,
   owner: string,
   repo: string,
   number: number,
+  commentHeadLimit: number,
+  commentTailLimit: number,
 ): Promise<TopCommentsFetch> {
-  const comments: IssueComment[] = [];
-  let pullReactionGroups: ReactionGroup[];
-  let cursor: string | null = null;
+  const result = await client<TopCommentsResult>(TOP_COMMENTS_QUERY, {
+    owner,
+    repo,
+    number,
+    head: Math.min(commentHeadLimit, MAX_PAGE_SIZE),
+    tail: Math.min(commentTailLimit, MAX_PAGE_SIZE),
+  });
+  const pullRequest = result.repository.pullRequest;
 
-  while (true) {
-    const result: TopCommentsResult = await client<TopCommentsResult>(
-      TOP_COMMENTS_QUERY,
-      { owner, repo, number, cursor },
-    );
-    const pullRequest = result.repository.pullRequest;
-    comments.push(...pullRequest.comments.nodes);
-    pullReactionGroups = pullRequest.reactionGroups;
-    if (!pullRequest.comments.pageInfo.hasNextPage) break;
-    cursor = pullRequest.comments.pageInfo.endCursor;
-  }
-
-  return { comments, pullReactionGroups };
+  return {
+    comments: {
+      totalCount: pullRequest.headComments.totalCount,
+      nodes: pullRequest.headComments.nodes,
+      tailNodes: pullRequest.tailComments.nodes,
+    },
+    pullReactionGroups: pullRequest.reactionGroups,
+  };
 }
 
-async function fetchReviewThreads(
+export async function fetchReviewThreads(
   client: typeof graphql,
   owner: string,
   repo: string,
   number: number,
+  commentHeadLimit: number,
+  commentTailLimit: number,
 ): Promise<ReviewThread[]> {
-  const threads: ReviewThread[] = [];
+  const rawThreads: RawReviewThread[] = [];
   let cursor: string | null = null;
 
   while (true) {
     const result: ReviewThreadsResult = await client<ReviewThreadsResult>(
       REVIEW_THREADS_QUERY,
-      { owner, repo, number, cursor },
+      {
+        owner,
+        repo,
+        number,
+        cursor,
+        head: Math.min(commentHeadLimit, MAX_PAGE_SIZE),
+        tail: Math.min(commentTailLimit, MAX_PAGE_SIZE),
+      },
     );
     const connection: ReviewThreadsResult["repository"]["pullRequest"]["reviewThreads"] =
       result.repository.pullRequest.reviewThreads;
-    threads.push(...connection.nodes);
+    rawThreads.push(...connection.nodes);
     if (!connection.pageInfo.hasNextPage) break;
     cursor = connection.pageInfo.endCursor;
   }
 
-  return threads;
+  return rawThreads.map(({ headComments, tailComments, ...thread }) => ({
+    ...thread,
+    comments: {
+      totalCount: headComments.totalCount,
+      nodes: headComments.nodes,
+      tailNodes: tailComments.nodes,
+    },
+  }));
 }
 
 export interface FetchOptions {
   timings: boolean;
+  // How many comments to fetch at the start/end of a comment list, for both
+  // top-level PR comments and each review thread's comments. Should match
+  // whatever render.ts will be asked to display (see RenderOptions) — a
+  // smaller fetch than that just yields a shorter head/tail than requested.
+  commentHeadLimit: number;
+  commentTailLimit: number;
 }
 
 function timed<T>(fn: () => Promise<T>): Promise<[T, number]> {
@@ -206,7 +265,11 @@ function timed<T>(fn: () => Promise<T>): Promise<[T, number]> {
 export async function fetchPRData(
   repo: string,
   prNumber: number,
-  options: FetchOptions = { timings: false },
+  options: FetchOptions = {
+    timings: false,
+    commentHeadLimit: DEFAULT_COMMENT_HEAD_LIMIT,
+    commentTailLimit: DEFAULT_COMMENT_TAIL_LIMIT,
+  },
 ): Promise<PRData> {
   const totalStart = performance.now();
 
@@ -232,8 +295,26 @@ export async function fetchPRData(
     [commits, commitsMs],
     [reviews, reviewsMs],
   ] = await Promise.all([
-    timed(() => fetchTopComments(client, owner, repoName, prNumber)),
-    timed(() => fetchReviewThreads(client, owner, repoName, prNumber)),
+    timed(() =>
+      fetchTopComments(
+        client,
+        owner,
+        repoName,
+        prNumber,
+        options.commentHeadLimit,
+        options.commentTailLimit,
+      ),
+    ),
+    timed(() =>
+      fetchReviewThreads(
+        client,
+        owner,
+        repoName,
+        prNumber,
+        options.commentHeadLimit,
+        options.commentTailLimit,
+      ),
+    ),
     timed(
       () =>
         ghApi(`${base}/pulls/${prNumber}`) as Promise<

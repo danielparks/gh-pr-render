@@ -843,152 +843,301 @@
       "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
     }
   ],
-  "topComments": [
-    {
-      "databaseId": 4427286000,
-      "author": {
-        "login": "danielparks"
+  "topComments": {
+    "totalCount": 2,
+    "nodes": [
+      {
+        "databaseId": 4427286000,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Overall looks good! The type hints are a nice addition.",
+        "createdAt": "2026-05-12T04:18:16Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 1,
+              "nodes": [
+                {
+                  "login": "danielparks"
+                }
+              ]
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 1,
+              "nodes": [
+                {
+                  "login": "danielparks"
+                }
+              ]
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
       },
-      "body": "Overall looks good! The type hints are a nice addition.",
-      "createdAt": "2026-05-12T04:18:16Z",
-      "isMinimized": false,
-      "minimizedReason": null,
-      "reactionGroups": [
-        {
-          "content": "THUMBS_UP",
-          "reactors": {
-            "totalCount": 1,
-            "nodes": [
-              {
-                "login": "danielparks"
-              }
-            ]
-          }
+      {
+        "databaseId": 4427286037,
+        "author": {
+          "login": "danielparks"
         },
-        {
-          "content": "THUMBS_DOWN",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
+        "body": "This is a duplicate of last week's PR.",
+        "createdAt": "2026-05-12T04:18:17Z",
+        "isMinimized": true,
+        "minimizedReason": "duplicate",
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
           }
+        ]
+      }
+    ],
+    "tailNodes": [
+      {
+        "databaseId": 4427286000,
+        "author": {
+          "login": "danielparks"
         },
-        {
-          "content": "LAUGH",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
+        "body": "Overall looks good! The type hints are a nice addition.",
+        "createdAt": "2026-05-12T04:18:16Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 1,
+              "nodes": [
+                {
+                  "login": "danielparks"
+                }
+              ]
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 1,
+              "nodes": [
+                {
+                  "login": "danielparks"
+                }
+              ]
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
           }
-        },
-        {
-          "content": "HOORAY",
-          "reactors": {
-            "totalCount": 1,
-            "nodes": [
-              {
-                "login": "danielparks"
-              }
-            ]
-          }
-        },
-        {
-          "content": "CONFUSED",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "HEART",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "ROCKET",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "EYES",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        }
-      ]
-    },
-    {
-      "databaseId": 4427286037,
-      "author": {
-        "login": "danielparks"
+        ]
       },
-      "body": "This is a duplicate of last week's PR.",
-      "createdAt": "2026-05-12T04:18:17Z",
-      "isMinimized": true,
-      "minimizedReason": "duplicate",
-      "reactionGroups": [
-        {
-          "content": "THUMBS_UP",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
+      {
+        "databaseId": 4427286037,
+        "author": {
+          "login": "danielparks"
         },
-        {
-          "content": "THUMBS_DOWN",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
+        "body": "This is a duplicate of last week's PR.",
+        "createdAt": "2026-05-12T04:18:17Z",
+        "isMinimized": true,
+        "minimizedReason": "duplicate",
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
           }
-        },
-        {
-          "content": "LAUGH",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "HOORAY",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "CONFUSED",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "HEART",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "ROCKET",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        },
-        {
-          "content": "EYES",
-          "reactors": {
-            "totalCount": 0,
-            "nodes": []
-          }
-        }
-      ]
-    }
-  ],
+        ]
+      }
+    ]
+  },
   "reviewThreads": [
     {
       "id": "PRRT_kwDOSa9ycc6BSipb",
@@ -997,7 +1146,79 @@
       "path": "calculator.py",
       "line": null,
       "comments": {
+        "totalCount": 1,
         "nodes": [
+          {
+            "databaseId": 3223656523,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "This loop runs in O(b) time. Python has a built-in `**` operator.",
+            "createdAt": "2026-05-12T04:18:18Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(a: float, b: int) -> float:\n+    result = 1.0",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
           {
             "databaseId": 3223656523,
             "author": {
@@ -1077,7 +1298,79 @@
       "path": "calculator.py",
       "line": 13,
       "comments": {
+        "totalCount": 1,
         "nodes": [
+          {
+            "databaseId": 3223656596,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Should we return `None` instead of raising for division by zero?",
+            "createdAt": "2026-05-12T04:18:19Z",
+            "isMinimized": true,
+            "minimizedReason": "outdated",
+            "diffHunk": "@@ -1,16 +1,29 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
           {
             "databaseId": 3223656596,
             "author": {
@@ -1157,7 +1450,79 @@
       "path": "calculator.py",
       "line": null,
       "comments": {
+        "totalCount": 1,
         "nodes": [
+          {
+            "databaseId": 3223656785,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Nice, much cleaner!",
+            "createdAt": "2026-05-12T04:18:22Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
           {
             "databaseId": 3223656785,
             "author": {
@@ -1237,7 +1602,152 @@
       "path": "calculator.py",
       "line": 23,
       "comments": {
+        "totalCount": 2,
         "nodes": [
+          {
+            "databaseId": 3223656851,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Good choice of parameter names.",
+            "createdAt": "2026-05-12T04:18:23Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          },
+          {
+            "databaseId": 3223656909,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Agreed — much clearer than `a` and `b`.",
+            "createdAt": "2026-05-12T04:18:24Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 1,
+                  "nodes": [
+                    {
+                      "login": "danielparks"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
           {
             "databaseId": 3223656851,
             "author": {

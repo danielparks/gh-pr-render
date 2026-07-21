@@ -2,6 +2,10 @@ import { readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { renderPR } from "../src/render.js";
+import {
+  DEFAULT_COMMENT_HEAD_LIMIT,
+  DEFAULT_COMMENT_TAIL_LIMIT,
+} from "../src/limits.js";
 import type { PRData } from "../src/types.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,6 +23,8 @@ const rendered = renderPR(data, {
   includeMinimized: false,
   includeFiles: true,
   includeCommits: true,
+  commentHeadLimit: DEFAULT_COMMENT_HEAD_LIMIT,
+  commentTailLimit: DEFAULT_COMMENT_TAIL_LIMIT,
 });
 
 const blockquote = rendered

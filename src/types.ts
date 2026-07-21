@@ -109,22 +109,37 @@ export interface ThreadComment {
   reactionGroups: ReactionGroup[];
 }
 
+// A comment list fetched as separate head and tail slices — via GraphQL's
+// `first`/`last` connection arguments — rather than in full, so a very long
+// list doesn't cost a full pagination crawl just to render a truncated
+// summary of it. See FetchOptions in fetch.ts for the limits that size these
+// slices, and truncateComments in render.ts for how they're reconciled into
+// what's actually displayed.
+export interface TruncatedCommentList<T> {
+  // Total comment count, independent of how many of `nodes`/`tailNodes` were
+  // actually fetched.
+  totalCount: number;
+  // Head slice, fetched via `first`. May already contain everything.
+  nodes: T[];
+  // Tail slice, fetched via `last`. Overlaps with `nodes` when totalCount is
+  // small enough that both slices reach into the same comments.
+  tailNodes: T[];
+}
+
 export interface ReviewThread {
   id: string;
   isResolved: boolean;
   isOutdated: boolean;
   path: string;
   line: number | null;
-  comments: {
-    nodes: ThreadComment[];
-  };
+  comments: TruncatedCommentList<ThreadComment>;
 }
 
 export interface PRData {
   pull: PullRequest;
   files: ChangedFile[];
   commits: Commit[];
-  topComments: IssueComment[];
+  topComments: TruncatedCommentList<IssueComment>;
   reviews: Review[];
   reviewThreads: ReviewThread[];
 }

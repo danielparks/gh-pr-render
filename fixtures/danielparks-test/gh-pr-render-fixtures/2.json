@@ -485,6 +485,10 @@
     }
   ],
   "reviews": [],
-  "topComments": [],
+  "topComments": {
+    "totalCount": 0,
+    "nodes": [],
+    "tailNodes": []
+  },
   "reviewThreads": []
 }

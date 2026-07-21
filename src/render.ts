@@ -64,6 +64,48 @@ export function formatReactions(
   return ["", heading, "", ...lines];
 }
 
+interface TruncatedComments<T> {
+  head: T[];
+  omittedCount: number;
+  tail: T[];
+}
+
+// Reconciles a comment list's separately fetched head and tail slices (see
+// TruncatedCommentList in types.ts) into what to actually render, so long
+// lists (e.g. a very active thread, or a PR with hundreds of top-level
+// comments) show as "first N ... M omitted ... last N" instead of in full.
+//
+// `headNodes`/`tailNodes` were fetched with their own head/tail sizes (see
+// FetchOptions in fetch.ts), which should be at least headLimit/tailLimit —
+// a smaller fetch just yields a shorter head/tail than requested here, not
+// an error. When totalCount is small enough that both slices were requested
+// past the end of the list, they overlap in the middle; that overlap is
+// trimmed out rather than deduplicated by identity, since connection
+// ordering guarantees the overlap is exactly the last
+// `headNodes.length + tailNodes.length - totalCount` entries of `headNodes`.
+function truncateComments<T>(
+  headNodes: T[],
+  tailNodes: T[],
+  totalCount: number,
+  headLimit: number,
+  tailLimit: number,
+): TruncatedComments<T> {
+  if (totalCount <= headLimit + tailLimit) {
+    const overlap = Math.max(
+      0,
+      headNodes.length + tailNodes.length - totalCount,
+    );
+    return {
+      head: [...headNodes, ...tailNodes.slice(overlap)],
+      omittedCount: 0,
+      tail: [],
+    };
+  }
+  const head = headNodes.slice(0, headLimit);
+  const tail = tailNodes.slice(-tailLimit);
+  return { head, omittedCount: totalCount - head.length - tail.length, tail };
+}
+
 // Returns open, closed, or merged with metadata.
 //
 // Does not return draft status.
@@ -163,6 +205,8 @@ function renderReviewThread(
   thread: ReviewThread,
   includeMinimized: boolean,
   baseDate: string,
+  commentHeadLimit: number,
+  commentTailLimit: number,
 ): string {
   const first = thread.comments.nodes[0];
   if (!first) return "";
@@ -185,9 +229,25 @@ function renderReviewThread(
     "```",
   ];
 
-  for (const comment of thread.comments.nodes) {
+  const { head, omittedCount, tail } = truncateComments(
+    thread.comments.nodes,
+    thread.comments.tailNodes,
+    thread.comments.totalCount,
+    commentHeadLimit,
+    commentTailLimit,
+  );
+
+  for (const comment of head) {
     if (comment.isMinimized && !includeMinimized) continue;
     lines.push("", renderThreadComment(comment, baseDate));
+  }
+
+  if (omittedCount > 0) {
+    lines.push("", `#### ${omittedCount} comments omitted`);
+    for (const comment of tail) {
+      if (comment.isMinimized && !includeMinimized) continue;
+      lines.push("", renderThreadComment(comment, baseDate));
+    }
   }
 
   return lines.join("\n");
@@ -215,11 +275,21 @@ export interface RenderOptions {
   includeMinimized: boolean;
   includeFiles: boolean;
   includeCommits: boolean;
+  // How many comments to show at the start/end of a comment list that
+  // exceeds commentHeadLimit + commentTailLimit (see truncateComments).
+  commentHeadLimit: number;
+  commentTailLimit: number;
 }
 
 export function renderPR(data: PRData, options: RenderOptions): string {
   const { pull, files, commits, topComments, reviews, reviewThreads } = data;
-  const { includeMinimized, includeFiles, includeCommits } = options;
+  const {
+    includeMinimized,
+    includeFiles,
+    includeCommits,
+    commentHeadLimit,
+    commentTailLimit,
+  } = options;
   const out: string[] = [];
 
   // Header
@@ -275,13 +345,41 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   // Timeline
   const timeline: TimelineEntry[] = [];
 
-  for (const comment of topComments) {
-    if (comment.isMinimized && !includeMinimized) continue;
+  const {
+    head: topCommentsHead,
+    omittedCount: topCommentsOmitted,
+    tail: topCommentsTail,
+  } = truncateComments(
+    topComments.nodes,
+    topComments.tailNodes,
+    topComments.totalCount,
+    commentHeadLimit,
+    commentTailLimit,
+  );
+
+  const pushIssueComment = (comment: IssueComment): void => {
+    if (comment.isMinimized && !includeMinimized) return;
     timeline.push({
       timestamp: comment.createdAt,
       content: renderIssueComment(comment, pull.created_at),
     });
+  };
+
+  topCommentsHead.forEach(pushIssueComment);
+
+  if (topCommentsOmitted > 0) {
+    // The first surviving tail comment's timestamp places this entry
+    // roughly where the omitted comments would otherwise have sorted into
+    // the timeline — pushed here, ahead of the tail entries, so it sorts
+    // first on an exact tie (Array#sort is stable).
+    const omittedAt = topCommentsTail[0]?.createdAt ?? pull.created_at;
+    timeline.push({
+      timestamp: omittedAt,
+      content: `### ${topCommentsOmitted} comments omitted`,
+    });
   }
+
+  topCommentsTail.forEach(pushIssueComment);
 
   for (const review of reviews) {
     if (isSignificantReview(review)) {
@@ -298,7 +396,13 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     if (first.isMinimized && !includeMinimized) continue;
     timeline.push({
       timestamp: first.createdAt,
-      content: renderReviewThread(thread, includeMinimized, pull.created_at),
+      content: renderReviewThread(
+        thread,
+        includeMinimized,
+        pull.created_at,
+        commentHeadLimit,
+        commentTailLimit,
+      ),
     });
   }
 

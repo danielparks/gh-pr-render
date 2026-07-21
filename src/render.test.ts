@@ -9,7 +9,24 @@ import {
   formatReactions,
   renderCommits,
 } from "./render.js";
-import type { Commit, PRData, PullRequest, ReactionGroup } from "./types.js";
+import {
+  DEFAULT_COMMENT_HEAD_LIMIT,
+  DEFAULT_COMMENT_TAIL_LIMIT,
+} from "./limits.js";
+import type {
+  Commit,
+  IssueComment,
+  PRData,
+  PullRequest,
+  ReactionGroup,
+  ReviewThread,
+  ThreadComment,
+} from "./types.js";
+
+const defaultCommentLimits = {
+  commentHeadLimit: DEFAULT_COMMENT_HEAD_LIMIT,
+  commentTailLimit: DEFAULT_COMMENT_TAIL_LIMIT,
+};
 
 function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   const fixturesDir = fileURLToPath(new URL("../fixtures", import.meta.url));
@@ -36,6 +53,7 @@ describe("renderPR - danielparks/htmlize #66", () => {
         includeMinimized: false,
         includeFiles: true,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(snapshotPath("danielparks", "htmlize", 66, ""));
   });
@@ -46,6 +64,7 @@ describe("renderPR - danielparks/htmlize #66", () => {
         includeMinimized: true,
         includeFiles: true,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks", "htmlize", 66, ".with-minimized"),
@@ -62,6 +81,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         includeMinimized: false,
         includeFiles: true,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks-test", "gh-pr-render-fixtures", 1, ""),
@@ -74,6 +94,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         includeMinimized: true,
         includeFiles: true,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath(
@@ -91,6 +112,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         includeMinimized: false,
         includeFiles: false,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks-test", "gh-pr-render-fixtures", 1, ".no-files"),
@@ -103,6 +125,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         includeMinimized: false,
         includeFiles: true,
         includeCommits: false,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath(
@@ -120,6 +143,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
         includeMinimized: false,
         includeFiles: false,
         includeCommits: false,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath(
@@ -141,6 +165,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #2", () => {
         includeMinimized: false,
         includeFiles: true,
         includeCommits: true,
+        ...defaultCommentLimits,
       }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks-test", "gh-pr-render-fixtures", 2, ""),
@@ -456,5 +481,169 @@ describe("blockquote", () => {
     expect(blockquote("first\r\n  \r\nthird")).toEqual(
       "> first\n>   \n> third",
     );
+  });
+});
+
+function baseThreadComment(
+  overrides: Partial<ThreadComment> = {},
+): ThreadComment {
+  return {
+    databaseId: 1,
+    author: { login: "alice" },
+    body: "comment",
+    createdAt: "2026-01-01T00:00:00Z",
+    isMinimized: false,
+    minimizedReason: null,
+    diffHunk: "@@ -1,1 +1,1 @@\n-old\n+new\n",
+    reactionGroups: [],
+    ...overrides,
+  };
+}
+
+function manyThreadComments(count: number, startId: number): ThreadComment[] {
+  return Array.from({ length: count }, (_, i) =>
+    baseThreadComment({
+      databaseId: startId + i,
+      createdAt: `2026-01-01T00:${String(i).padStart(2, "0")}:00Z`,
+    }),
+  );
+}
+
+function baseIssueComment(overrides: Partial<IssueComment> = {}): IssueComment {
+  return {
+    databaseId: 1,
+    author: { login: "alice" },
+    body: "comment",
+    createdAt: "2026-01-01T00:00:00Z",
+    isMinimized: false,
+    minimizedReason: null,
+    reactionGroups: [],
+    ...overrides,
+  };
+}
+
+function manyIssueComments(count: number, startId: number): IssueComment[] {
+  return Array.from({ length: count }, (_, i) =>
+    baseIssueComment({
+      databaseId: startId + i,
+      createdAt: `2026-01-01T00:${String(i).padStart(2, "0")}:00Z`,
+    }),
+  );
+}
+
+function baseThread(overrides: Partial<ReviewThread> = {}): ReviewThread {
+  return {
+    id: "THREAD_1",
+    isResolved: false,
+    isOutdated: false,
+    path: "file.py",
+    line: 10,
+    comments: {
+      totalCount: 1,
+      nodes: manyThreadComments(1, 1),
+      tailNodes: manyThreadComments(1, 1),
+    },
+    ...overrides,
+  };
+}
+
+function basePRData(overrides: Partial<PRData> = {}): PRData {
+  return {
+    pull: basePull(),
+    files: [],
+    commits: [],
+    topComments: { totalCount: 0, nodes: [], tailNodes: [] },
+    reviews: [],
+    reviewThreads: [],
+    ...overrides,
+  };
+}
+
+const renderOptions = {
+  includeMinimized: false,
+  includeFiles: false,
+  includeCommits: false,
+  ...defaultCommentLimits,
+};
+
+describe("renderPR - comment list truncation", () => {
+  it("renders a thread's comments in full when head and tail slices fully overlap", () => {
+    // A thread this small: both the head(20) and tail(20) queries return
+    // all 3 comments, so the slices are identical, not just overlapping.
+    const thread = baseThread({
+      comments: {
+        totalCount: 3,
+        nodes: manyThreadComments(3, 1),
+        tailNodes: manyThreadComments(3, 1),
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).not.toContain("omitted");
+    expect(output).toContain("id: 1)");
+    expect(output).toContain("id: 3)");
+  });
+
+  it("reconciles partially overlapping head/tail slices without duplicating comments", () => {
+    // totalCount(25) exceeds the head limit(20) alone, but not head + tail
+    // (40), so the head(1-20) and tail(6-25) queries partially overlap
+    // (6-20) — every comment should still appear exactly once, in order.
+    const thread = baseThread({
+      comments: {
+        totalCount: 25,
+        nodes: manyThreadComments(20, 1),
+        tailNodes: manyThreadComments(20, 6),
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).not.toContain("omitted");
+    for (let id = 1; id <= 25; id++) {
+      expect(output.match(new RegExp(`\\(id: ${id}\\)`, "g"))).toHaveLength(1);
+    }
+  });
+
+  it("truncates a thread's comments to head and tail when totalCount exceeds head + tail", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 150,
+        nodes: manyThreadComments(20, 1),
+        tailNodes: manyThreadComments(20, 131),
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).toContain("id: 1)");
+    expect(output).toContain("id: 20)");
+    expect(output).toContain("#### 110 comments omitted");
+    expect(output).toContain("id: 131)");
+    expect(output).toContain("id: 150)");
+    expect(output).not.toContain("id: 21)");
+    expect(output).not.toContain("id: 130)");
+  });
+
+  it("truncates top-level PR comments to head and tail", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 50,
+          nodes: manyIssueComments(20, 1),
+          tailNodes: manyIssueComments(20, 31),
+        },
+      }),
+      renderOptions,
+    );
+    expect(output).toContain("id: 1)");
+    expect(output).toContain("id: 20)");
+    expect(output).toContain("### 10 comments omitted");
+    expect(output).toContain("id: 31)");
+    expect(output).toContain("id: 50)");
+    expect(output).not.toContain("id: 21)");
   });
 });
