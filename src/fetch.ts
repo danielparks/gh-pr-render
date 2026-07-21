@@ -103,6 +103,7 @@ const REVIEW_THREADS_QUERY = `
         reviewThreads(first: 100, after: $cursor) {
           pageInfo { hasNextPage endCursor }
           nodes {
+            id
             isResolved
             isOutdated
             path

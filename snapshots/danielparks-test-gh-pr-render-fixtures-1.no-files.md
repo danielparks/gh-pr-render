@@ -30,7 +30,7 @@
 - 👍 danielparks
 - 🎉 danielparks
 
-### Diff comment on `calculator.py` (outdated):
+### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSipb, outdated):
 
 ```diff
 +
@@ -47,7 +47,7 @@
 
 > Please add docstrings to each function.
 
-### Diff comment on `calculator.py` (resolved, outdated):
+### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
 ```diff
 +
@@ -59,7 +59,7 @@
 
 > Nice, much cleaner!
 
-### Diff comment on `calculator.py` line 23:
+### Inline comment on `calculator.py` line 23 (id: PRRT_kwDOSa9ycc6BSitZ):
 
 ```diff
 +

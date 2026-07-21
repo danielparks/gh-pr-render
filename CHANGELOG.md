@@ -17,6 +17,8 @@ All notable changes to this project will be documented in this file.
 - Added requested reviewers (team and user), assignees, draft status, and milestone to PR rendering.
 - Added a `## Commits` list (short sha, subject, author) to PR rendering.
 - Added `--no-files` and `--no-commits` options to omit the changed-files and commits lists, respectively.
+- Renamed "Diff comment" to "Inline comment" in rendered output.
+- Added the review thread ID to each inline comment's header, needed to resolve a thread (as opposed to a comment's `databaseId`, which only supports replying).
 
 ## Release 0.4.0 (2026-07-17)
 

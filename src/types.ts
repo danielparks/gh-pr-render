@@ -110,6 +110,7 @@ export interface ThreadComment {
 }
 
 export interface ReviewThread {
+  id: string;
   isResolved: boolean;
   isOutdated: boolean;
   path: string;

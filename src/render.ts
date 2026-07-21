@@ -172,13 +172,13 @@ function renderReviewThread(
       ? `\`${thread.path}\` line ${thread.line}`
       : `\`${thread.path}\``;
 
-  const tags: string[] = [];
+  const tags: string[] = [`id: ${thread.id}`];
   if (thread.isResolved) tags.push("resolved");
   if (thread.isOutdated) tags.push("outdated");
-  const tagStr = tags.length ? ` (${tags.join(", ")})` : "";
+  const tagStr = ` (${tags.join(", ")})`;
 
   const lines: string[] = [
-    `### Diff comment on ${location}${tagStr}:`,
+    `### Inline comment on ${location}${tagStr}:`,
     "",
     "```diff",
     renderDiffHunk(first.diffHunk),

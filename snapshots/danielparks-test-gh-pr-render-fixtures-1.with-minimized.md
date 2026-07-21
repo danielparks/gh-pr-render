@@ -38,7 +38,7 @@
 
 > This is a duplicate of last week's PR.
 
-### Diff comment on `calculator.py` (outdated):
+### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSipb, outdated):
 
 ```diff
 +
@@ -51,7 +51,7 @@
 
 > This loop runs in O(b) time. Python has a built-in `**` operator.
 
-### Diff comment on `calculator.py` line 13:
+### Inline comment on `calculator.py` line 13 (id: PRRT_kwDOSa9ycc6BSiqV):
 
 ```diff
 -def divide(a, b):
@@ -64,7 +64,7 @@
 
 > Please add docstrings to each function.
 
-### Diff comment on `calculator.py` (resolved, outdated):
+### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
 ```diff
 +
@@ -76,7 +76,7 @@
 
 > Nice, much cleaner!
 
-### Diff comment on `calculator.py` line 23:
+### Inline comment on `calculator.py` line 23 (id: PRRT_kwDOSa9ycc6BSitZ):
 
 ```diff
 +
