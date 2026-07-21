@@ -84,6 +84,52 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
       ),
     );
   });
+
+  it("renders without the changed-files list", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: false,
+        includeCommits: true,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks-test", "gh-pr-render-fixtures", 1, ".no-files"),
+    );
+  });
+
+  it("renders without the commits list", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: true,
+        includeCommits: false,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".no-commits",
+      ),
+    );
+  });
+
+  it("renders without either the changed-files or commits list", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: false,
+        includeCommits: false,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".no-files-no-commits",
+      ),
+    );
+  });
 });
 
 describe("renderPR - danielparks-test/gh-pr-render-fixtures #2", () => {
