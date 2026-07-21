@@ -7,7 +7,8 @@
  * description, on a top-level comment with multiple reaction groups, and on
  * a diff-thread reply). A second, draft PR exercises requested reviewers:
  * a user (best-effort — GitHub disallows requesting the PR author) and a
- * team (best-effort — requires `owner` to be an organization).
+ * team (best-effort — requires `owner` to be an organization; the team is
+ * granted read access to the repo so GitHub will accept it as a reviewer).
  *
  * Usage: npm run setup -- --owner <owner>
  */
@@ -38,6 +39,11 @@ const TEAM_NAME = "reviewers";
 
 const token = sh("gh auth token");
 const gql = graphql.defaults({ headers: { authorization: `token ${token}` } });
+
+// `owner` is the repo's namespace, which may be an org (as it is for
+// danielparks-test) — orgs aren't users and can't be assigned to a PR or
+// requested as a reviewer. This is the actual authenticated account.
+const currentUser = sh("gh api user --jq .login");
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -78,15 +84,26 @@ function ghPatch(path: string, body: object): unknown {
   );
 }
 
+// PUT endpoints used here (team repo permissions) respond 204 No Content,
+// so there's no body to parse.
+function ghPut(path: string, body: object): void {
+  execSync(`gh api --method PUT "${path}" --input -`, {
+    input: JSON.stringify(body),
+    stdio: ["pipe", "pipe", "pipe"],
+  });
+}
+
 function git(cwd: string, ...args: string[]): string {
   return sh(`git ${args.map((a) => JSON.stringify(a)).join(" ")}`, { cwd });
 }
 
 // Team review requests need a real team, which only exists for
-// organization-owned repos. Reuses whatever team is already there so this
-// works without assuming naming; falls back to creating TEAM_NAME. Returns
-// undefined (rather than throwing) when `owner` is a personal account, since
-// that just means this scenario can't be demonstrated here.
+// organization-owned repos, *and* the team must already be a collaborator
+// on the repo (GitHub rejects review requests from non-collaborators).
+// Reuses whatever team is already there so this works without assuming
+// naming; falls back to creating TEAM_NAME. Returns undefined (rather than
+// throwing) when `owner` is a personal account, since that just means this
+// scenario can't be demonstrated here.
 function ensureReviewTeam(): string | undefined {
   let teams: Array<{ slug: string }>;
   try {
@@ -98,18 +115,26 @@ function ensureReviewTeam(): string | undefined {
     return undefined;
   }
 
+  let teamSlug: string;
   if (teams.length > 0) {
-    log(`  Using existing team "${teams[0]!.slug}" for team review request.`);
-    return teams[0]!.slug;
+    teamSlug = teams[0]!.slug;
+    log(`  Using existing team "${teamSlug}" for team review request.`);
+  } else {
+    const created = ghPost(`orgs/${owner}/teams`, {
+      name: TEAM_NAME,
+      description: "Fixture team for gh-pr-render tests",
+      privacy: "closed",
+    }) as { slug: string };
+    teamSlug = created.slug;
+    log(`  Created team "${teamSlug}".`);
   }
 
-  const created = ghPost(`orgs/${owner}/teams`, {
-    name: TEAM_NAME,
-    description: "Fixture team for gh-pr-render tests",
-    privacy: "closed",
-  }) as { slug: string };
-  log(`  Created team "${created.slug}".`);
-  return created.slug;
+  ghPut(`orgs/${owner}/teams/${teamSlug}/repos/${FULL}`, {
+    permission: "pull",
+  });
+  log(`  Granted team "${teamSlug}" read access to ${REPO}.`);
+
+  return teamSlug;
 }
 
 // Adding the same reactor+content pair again is a no-op on GitHub's side, so
@@ -584,9 +609,9 @@ try {
   log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
 
   ghPost(`repos/${FULL}/issues/${prNumber}/assignees`, {
-    assignees: [owner],
+    assignees: [currentUser],
   });
-  log(`  Assigned ${owner} to PR #${prNumber}.`);
+  log(`  Assigned ${currentUser} to PR #${prNumber}.`);
 
   log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
   const existingMilestones = JSON.parse(
@@ -630,9 +655,11 @@ try {
   // Requested reviewers on the draft PR — a user and, where possible, a team.
   try {
     ghPost(`repos/${FULL}/pulls/${draftPrNumber}/requested_reviewers`, {
-      reviewers: [owner],
+      reviewers: [currentUser],
     });
-    log(`  Requested review from ${owner} on draft PR #${draftPrNumber}.`);
+    log(
+      `  Requested review from ${currentUser} on draft PR #${draftPrNumber}.`,
+    );
   } catch {
     log(
       "  Note: requested reviewer skipped (GitHub disallows requesting " +
