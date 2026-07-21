@@ -25,6 +25,10 @@ export interface PullRequest {
   base: { ref: string; sha: string };
   html_url: string;
   created_at: string;
+  closed_at: string | null;
+  merged: boolean;
+  merged_at: string | null;
+  merged_by: User | null;
   labels: Label[];
   milestone: Milestone | null;
   assignees: User[];

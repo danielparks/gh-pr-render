@@ -2,6 +2,7 @@ import { formatDistance } from "date-fns";
 import type {
   IssueComment,
   PRData,
+  PullRequest,
   ReactionContent,
   ReactionGroup,
   Review,
@@ -60,6 +61,20 @@ export function formatReactions(
   });
 
   return ["", heading, "", ...lines];
+}
+
+// Reports when and how a closed PR was closed. Returns [] for an open PR.
+// The REST API only identifies who closed a PR when that close was a merge
+// (`merged_by`) — a plain close carries no actor, just a timestamp.
+export function formatCloseStatus(pull: PullRequest): string[] {
+  if (pull.merged && pull.merged_at) {
+    const by = pull.merged_by ? ` by ${pull.merged_by.login}` : "";
+    return [`**Merged:** ${formatDate(pull.merged_at, pull.created_at)}${by}`];
+  }
+  if (pull.state === "closed" && pull.closed_at) {
+    return [`**Closed:** ${formatDate(pull.closed_at, pull.created_at)}`];
+  }
+  return [];
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -186,6 +201,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   out.push(
     `**Author:** ${pull.user.login}`,
     `**State:** ${pull.state}${pull.draft ? ", draft" : ""}`,
+    ...formatCloseStatus(pull),
     `**Branch:** \`${pull.head.ref}\` → \`${pull.base.ref}\``,
     `**URL:** ${pull.html_url}`,
   );

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+- Added when and how a PR was closed (merged vs. closed without merging) to PR rendering.
 - Added requested reviewers (team and user), assignees, draft status, and milestone to PR rendering.
 
 ## Release 0.4.0 (2026-07-17)

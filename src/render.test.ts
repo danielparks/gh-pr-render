@@ -2,8 +2,13 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import { renderPR, blockquote, formatReactions } from "./render.js";
-import type { PRData, ReactionGroup } from "./types.js";
+import {
+  renderPR,
+  blockquote,
+  formatCloseStatus,
+  formatReactions,
+} from "./render.js";
+import type { PRData, PullRequest, ReactionGroup } from "./types.js";
 
 function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   const fixturesDir = fileURLToPath(new URL("../fixtures", import.meta.url));
@@ -173,6 +178,70 @@ describe("formatReactions", () => {
       "",
       "- 🚀 alice",
     ]);
+  });
+});
+
+function basePull(overrides: Partial<PullRequest> = {}): PullRequest {
+  return {
+    number: 1,
+    title: "Test PR",
+    state: "open",
+    draft: false,
+    body: null,
+    user: { login: "alice" },
+    head: { ref: "feature", sha: "abc123" },
+    base: { ref: "main", sha: "def456" },
+    html_url: "https://github.com/owner/repo/pull/1",
+    created_at: "2026-01-01T00:00:00Z",
+    closed_at: null,
+    merged: false,
+    merged_at: null,
+    merged_by: null,
+    labels: [],
+    milestone: null,
+    assignees: [],
+    requested_reviewers: [],
+    requested_teams: [],
+    reactionGroups: [],
+    ...overrides,
+  };
+}
+
+describe("formatCloseStatus", () => {
+  it("returns [] for an open PR", () => {
+    expect(formatCloseStatus(basePull())).toEqual([]);
+  });
+
+  it("reports a merge with who merged it", () => {
+    const pull = basePull({
+      state: "closed",
+      merged: true,
+      merged_at: "2026-01-03T00:00:00Z",
+      merged_by: { login: "bob" },
+      closed_at: "2026-01-03T00:00:00Z",
+    });
+    expect(formatCloseStatus(pull)).toEqual([
+      "**Merged:** 2 days later by bob",
+    ]);
+  });
+
+  it("reports a merge without a merger as a fallback", () => {
+    const pull = basePull({
+      state: "closed",
+      merged: true,
+      merged_at: "2026-01-03T00:00:00Z",
+      merged_by: null,
+      closed_at: "2026-01-03T00:00:00Z",
+    });
+    expect(formatCloseStatus(pull)).toEqual(["**Merged:** 2 days later"]);
+  });
+
+  it("reports a close without a merge", () => {
+    const pull = basePull({
+      state: "closed",
+      closed_at: "2026-01-02T00:00:00Z",
+    });
+    expect(formatCloseStatus(pull)).toEqual(["**Closed:** 1 day later"]);
   });
 });
 

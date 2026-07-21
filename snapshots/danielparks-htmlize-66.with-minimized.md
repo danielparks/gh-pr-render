@@ -2,6 +2,7 @@
 
 **Author:** dependabot[bot]
 **State:** closed
+**Merged:** 5 months later by danielparks
 **Branch:** `dependabot/github_actions/actions/checkout-4` → `main`
 **URL:** https://github.com/danielparks/htmlize/pull/66
 **Labels:** dependencies

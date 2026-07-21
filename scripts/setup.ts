@@ -9,6 +9,9 @@
  * a user (best-effort — GitHub disallows requesting the PR author) and a
  * team (best-effort — requires `owner` to be an organization; the team is
  * granted read access to the repo so GitHub will accept it as a reviewer).
+ * That second PR is then closed without merging, to exercise the
+ * "closed, not merged" render; the merged case is already covered by the
+ * real-world danielparks/htmlize#66 fixture, so it isn't reproduced here.
  *
  * Usage: npm run setup -- --owner <owner>
  */
@@ -679,6 +682,18 @@ try {
     } catch (err) {
       log(`  Note: team review request failed: ${err}`);
     }
+  }
+
+  // Close the draft PR without merging — exercises the "closed, not merged"
+  // render. Done last, after the (open-PR-only) reviewer requests above.
+  const draftState = JSON.parse(
+    sh(`gh api "repos/${FULL}/pulls/${draftPrNumber}" --jq "{state: .state}"`),
+  ) as { state: string };
+  if (draftState.state === "open") {
+    ghPatch(`repos/${FULL}/pulls/${draftPrNumber}`, { state: "closed" });
+    log(`  Closed draft PR #${draftPrNumber} without merging.`);
+  } else {
+    log(`  Draft PR #${draftPrNumber} already closed.`);
   }
 
   await addScenarioReactions(prNumber);
