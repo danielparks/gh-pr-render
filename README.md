@@ -16,6 +16,8 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > **Branch:** `feat/type-hints-and-ops` → `main`
 > **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1
 > **Labels:** feature
+> **Milestone:** v1.0
+> **Assignees:** danielparks
 >
 > > Adds type annotations to all functions and implements `power` and `modulo` operations.
 >

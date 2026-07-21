@@ -64,6 +64,18 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
   });
 });
 
+describe("renderPR - danielparks-test/gh-pr-render-fixtures #2", () => {
+  const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 2);
+
+  it("renders without minimized comments", async () => {
+    await expect(
+      renderPR(data, { includeMinimized: false }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks-test", "gh-pr-render-fixtures", 2, ""),
+    );
+  });
+});
+
 describe("formatReactions", () => {
   it("returns [] for no groups", () => {
     expect(formatReactions([], "#### Reactions")).toEqual([]);
