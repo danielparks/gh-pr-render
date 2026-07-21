@@ -259,7 +259,7 @@ function baseCommit(overrides: Partial<Commit> = {}): Commit {
 
 describe("renderCommits", () => {
   it("returns just the heading for no commits", () => {
-    expect(renderCommits([])).toEqual(["", "## Commits", ""]);
+    expect(renderCommits([])).toEqual(["", "## Commits", "", "No commits."]);
   });
 
   it("shortens the sha and uses the message's first line as the subject", () => {

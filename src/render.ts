@@ -204,6 +204,10 @@ export function renderCommits(commits: Commit[]): string[] {
       commit.author?.login ?? commit.commit.author?.name ?? "unknown";
     lines.push(`- \`${commit.sha.slice(0, 7)}\` ${subject} (${author})`);
   }
+  if (commits.length === 0) {
+    // This should not happen. Be explicit.
+    lines.push("No commits.");
+  }
   return lines;
 }
 
