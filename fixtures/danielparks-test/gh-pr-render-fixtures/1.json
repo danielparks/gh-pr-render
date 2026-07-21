@@ -34,7 +34,7 @@
     },
     "body": "Adds type annotations to all functions and implements `power` and `modulo` operations.",
     "created_at": "2026-05-12T04:18:15Z",
-    "updated_at": "2026-07-21T04:54:15Z",
+    "updated_at": "2026-07-21T08:13:15Z",
     "closed_at": null,
     "merged_at": null,
     "merge_commit_sha": "e71872e6c80ed1bb95717a0dca4ee3485c49e915",
@@ -518,23 +518,87 @@
   "commits": [
     {
       "sha": "997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+      "node_id": "C_kwDOSa9ycdoAKDk5N2ViOTIxY2QxNDg5NWJhNWYxMGU4NjEwZmI4YTU2NThlYjQ1ZTI",
       "commit": {
-        "message": "Add type hints and power/modulo operations",
         "author": {
-          "name": "gh-pr-render setup"
+          "name": "gh-pr-render setup",
+          "email": "setup@gh-pr-render",
+          "date": "2026-05-12T04:18:13Z"
+        },
+        "committer": {
+          "name": "gh-pr-render setup",
+          "email": "setup@gh-pr-render",
+          "date": "2026-05-12T04:18:13Z"
+        },
+        "message": "Add type hints and power/modulo operations",
+        "tree": {
+          "sha": "72f0219a03c2902f40cd0e3da3de7c3a3ab725cb",
+          "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees/72f0219a03c2902f40cd0e3da3de7c3a3ab725cb"
+        },
+        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits/997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "no_user",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\niQJPBAABCgA5FiEEQJbOWF3YrBywnESOPIXrsCNN6GQFAmoCqgUbFIAAAAAABAAO\nbWFudTIsMi41KzEuMTIsMCwzAAoJEDyF67AjTehku6gP+QEpmr3JRbMsY3O+fKq1\nTH5JZ+2EQjscX6glsGJsZcyxTjK+J+x4VdbujnUq1g5/moBiMpxOFj4KhnrIB1YI\nVOEHYiyZSMP/ULhBh2a7gSvQYU9Uj0SfQOXI7BhUWuCQpcZBc4N81Qaz6WFEzvQG\narxEgvc1JfHlgASbWmqEvdFftM6mhHdRtgfJKU+H1WF9alM24mkYN5govPaP50xS\nZ7XOU83815mUiBSuoE6m2s9fauRJm44l05rJGiAvo/UgvoDraE2D1G30zGWeM0gX\nVjpUmDhH/8IfGiYaMBYJuyaNdfp4IEyJohoIe/QvDjKQll2mPodI3L9LxdoI+A4a\nhzqlVO10msx9o0ln3AcEqwTw5VUZ8s2scQfXL11KbldeE75BI58Lon6whyJ8OkFr\nbAHsK6Fuj4uyQ4kyiqWiPUg/z/FzP7ia18DCG7yxCxl2jRECKjDM1yEOlIqBhG5r\n5s2x8obuGwfdTebHW29HEd/+ItpMsIbjrUdSvBChfMIzu314senyZY7hIDiqGZfZ\nX1BrFdNqvdvZ3Qhf3Fstlpm0lHfsa3ckGZvqf++pI1boJTO/qH7b0ZircWLFheNA\nTyQA4l4XNQp2B47QsJ16k0ly+wLBXFBtw47loi7HZqLMYsxTrUokKJbznv4BVsAg\nVewLn8Y81LJPMhg9SBvKPOgK\n=oNnW\n-----END PGP SIGNATURE-----",
+          "payload": "tree 72f0219a03c2902f40cd0e3da3de7c3a3ab725cb\nparent 6951a8116bb2bb27302529d348b3990c35de61db\nauthor gh-pr-render setup <setup@gh-pr-render> 1778559493 -0700\ncommitter gh-pr-render setup <setup@gh-pr-render> 1778559493 -0700\n\nAdd type hints and power/modulo operations\n",
+          "verified_at": null
         }
       },
-      "author": null
+      "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/commit/997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+      "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/997eb921cd14895ba5f10e8610fb8a5658eb45e2/comments",
+      "author": null,
+      "committer": null,
+      "parents": [
+        {
+          "sha": "6951a8116bb2bb27302529d348b3990c35de61db",
+          "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/6951a8116bb2bb27302529d348b3990c35de61db",
+          "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/commit/6951a8116bb2bb27302529d348b3990c35de61db"
+        }
+      ]
     },
     {
       "sha": "159bc540a03a63a77cefd7ca9e8282e431f299d5",
+      "node_id": "C_kwDOSa9ycdoAKDE1OWJjNTQwYTAzYTYzYTc3Y2VmZDdjYTllODI4MmU0MzFmMjk5ZDU",
       "commit": {
-        "message": "Simplify power and modulo using built-in operators",
         "author": {
-          "name": "gh-pr-render setup"
+          "name": "gh-pr-render setup",
+          "email": "setup@gh-pr-render",
+          "date": "2026-05-12T04:18:20Z"
+        },
+        "committer": {
+          "name": "gh-pr-render setup",
+          "email": "setup@gh-pr-render",
+          "date": "2026-05-12T04:18:20Z"
+        },
+        "message": "Simplify power and modulo using built-in operators",
+        "tree": {
+          "sha": "d37b3e970ac9036ef3a76b62f6c260a789bca67a",
+          "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees/d37b3e970ac9036ef3a76b62f6c260a789bca67a"
+        },
+        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits/159bc540a03a63a77cefd7ca9e8282e431f299d5",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "no_user",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\niQJPBAABCgA5FiEEQJbOWF3YrBywnESOPIXrsCNN6GQFAmoCqgwbFIAAAAAABAAO\nbWFudTIsMi41KzEuMTIsMCwzAAoJEDyF67AjTehk/d8QAIU/fN7AVK5eu4sTQqZw\nFLL3DuqtxiDp9LgmJCMLW1JC54op24/3XwzuoZGI4vW+EgrPTwuk2J0ZeWAyKuzH\n2l2h/V3eBJXP8bc9th1BsdERs/GLLpGZaX//b++Fh7xlygmIEG1+5HDy87qyP8Co\nf+oVemqUpLnBMr9kxsb1d4bnz8IHVY4MrF+LPgyzkzngitKhZmTLZ+dl1M1kQBcz\nFh7zwZYvO4hwpIs/6PekAFPs3sNfa9hL3C+n0dvkk/YmSxhabnPz3sKtnc2mR5Tm\n+LBmfM/tNXO1iRyu4UmU03HUmQWEsCDu7cusAYjurLNneCTiAz6ZbDb6WkmDXPYP\nbhPcxemehhF3jutK67qcB30WjFmYZ6B7gc0YXGFIYGg6drTS+8n07PNS0O0idxWd\nCLN4Nrf85hKpMXfnF/t1nZU6ek7zCc0fqflhmo1ph6qkbl/rS3E3IHmkj57St4tV\no8XAutfo++GvqlXTgtJmG3sr830eqMiTSV2lU5Pm1rb3SrVAyA/PLpwvjBEiC9QS\n09sm6yUjCnyVRTJWtiwlzAhACeJZHBpOMHuy+bwmnDgj83pSoFMSBgDygJTcy8kw\nxKhKsgMmv2D357x2TtTownoimKbrl+iNSTr6QTrZqcTeP4MsEtdivsVmjfvxRzzd\nWTMCK/MxJobn+N15ruPGsZzL\n=wUjo\n-----END PGP SIGNATURE-----",
+          "payload": "tree d37b3e970ac9036ef3a76b62f6c260a789bca67a\nparent 997eb921cd14895ba5f10e8610fb8a5658eb45e2\nauthor gh-pr-render setup <setup@gh-pr-render> 1778559500 -0700\ncommitter gh-pr-render setup <setup@gh-pr-render> 1778559500 -0700\n\nSimplify power and modulo using built-in operators\n",
+          "verified_at": null
         }
       },
-      "author": null
+      "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/159bc540a03a63a77cefd7ca9e8282e431f299d5",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/commit/159bc540a03a63a77cefd7ca9e8282e431f299d5",
+      "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/159bc540a03a63a77cefd7ca9e8282e431f299d5/comments",
+      "author": null,
+      "committer": null,
+      "parents": [
+        {
+          "sha": "997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+          "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits/997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+          "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/commit/997eb921cd14895ba5f10e8610fb8a5658eb45e2"
+        }
+      ]
     }
   ],
   "reviews": [
@@ -1244,7 +1308,7 @@
             "author": {
               "login": "danielparks"
             },
-            "body": "Agreed \u2014 much clearer than `a` and `b`.",
+            "body": "Agreed — much clearer than `a` and `b`.",
             "createdAt": "2026-05-12T04:18:24Z",
             "isMinimized": false,
             "minimizedReason": null,
