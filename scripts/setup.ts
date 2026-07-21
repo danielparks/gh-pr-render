@@ -179,108 +179,6 @@ def modulo(dividend: float, divisor: float) -> float:
     return dividend % divisor
 `;
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
-
-log(`Ensuring ${FULL} exists...`);
-try {
-  sh(`gh repo view ${FULL} --json name`);
-  log("  Repo already exists.");
-} catch {
-  log("  Creating repo...");
-  sh(
-    `gh repo create ${FULL} --public --add-readme ` +
-      `--description "Fixture repository for gh-pr-render tests"`,
-  );
-}
-
-log(`Ensuring label "${LABEL_NAME}" exists...`);
-sh(
-  `gh label create ${JSON.stringify(LABEL_NAME)} --repo ${FULL} ` +
-    `--color ${LABEL_COLOR} --description ${JSON.stringify(LABEL_DESCRIPTION)} --force`,
-);
-
-const tmpDir = join(tmpdir(), `gh-pr-render-setup-${Date.now()}`);
-mkdirSync(tmpDir, { recursive: true });
-
-try {
-  sh(`gh repo clone ${FULL} ${JSON.stringify(tmpDir)}`);
-  git(tmpDir, "config", "user.email", "setup@gh-pr-render");
-  git(tmpDir, "config", "user.name", "gh-pr-render setup");
-
-  const existingFiles = sh("git ls-files", { cwd: tmpDir })
-    .split("\n")
-    .filter(Boolean);
-  if (!existingFiles.includes("calculator.py")) {
-    log("Initializing main branch...");
-    writeFileSync(join(tmpDir, "calculator.py"), CALCULATOR_MAIN);
-    git(tmpDir, "add", "calculator.py");
-    git(tmpDir, "commit", "-m", "Add calculator module");
-    git(tmpDir, "push");
-  }
-
-  const PR_TITLE = "Add type hints and arithmetic operations";
-  const existing = JSON.parse(
-    sh(
-      `gh pr list --repo ${FULL} --state all ` +
-        `--search ${JSON.stringify(PR_TITLE)} --json number,title`,
-    ),
-  ) as Array<{ number: number; title: string }>;
-
-  const existingPR = existing.find((pr) => pr.title === PR_TITLE);
-  let prNumber: number;
-  if (existingPR) {
-    log(`PR "${PR_TITLE}" already exists — skipping creation.`);
-    prNumber = existingPR.number;
-  } else {
-    prNumber = await createScenarioPR(tmpDir, PR_TITLE);
-  }
-
-  ghPost(`repos/${FULL}/issues/${prNumber}/labels`, {
-    labels: [LABEL_NAME],
-  });
-  log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
-
-  log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
-  const existingMilestones = JSON.parse(
-    sh(`gh api "repos/${FULL}/milestones?state=all&per_page=100"`),
-  ) as Array<{ number: number; title: string }>;
-  let milestoneNumber: number;
-  const existingMilestone = existingMilestones.find(
-    (m) => m.title === MILESTONE_TITLE,
-  );
-  if (existingMilestone) {
-    log("  Milestone already exists.");
-    milestoneNumber = existingMilestone.number;
-  } else {
-    const created = ghPost(`repos/${FULL}/milestones`, {
-      title: MILESTONE_TITLE,
-    }) as { number: number };
-    milestoneNumber = created.number;
-    log("  Created milestone.");
-  }
-  ghPatch(`repos/${FULL}/issues/${prNumber}`, { milestone: milestoneNumber });
-  log(`  Applied milestone "${MILESTONE_TITLE}" to PR #${prNumber}.`);
-
-  const DRAFT_PR_TITLE = "Add unit tests for calculator";
-  const existingDraftPRs = JSON.parse(
-    sh(
-      `gh pr list --repo ${FULL} --state all ` +
-        `--search ${JSON.stringify(DRAFT_PR_TITLE)} --json number,title`,
-    ),
-  ) as Array<{ number: number; title: string }>;
-  if (existingDraftPRs.find((pr) => pr.title === DRAFT_PR_TITLE)) {
-    log(`Draft PR "${DRAFT_PR_TITLE}" already exists — skipping.`);
-  } else {
-    createDraftPR(tmpDir, DRAFT_PR_TITLE);
-  }
-
-  await addScenarioReactions(prNumber);
-} finally {
-  rmSync(tmpDir, { recursive: true, force: true });
-}
-
-log("Done.");
-
 // ─── Reactions ───────────────────────────────────────────────────────────────
 
 // Looked up fresh by comment body each run (rather than captured at creation
@@ -583,7 +481,111 @@ function createDraftPR(dir: string, title: string): number {
     draft: true,
   }) as { number: number };
 
-  log(`  Created draft PR #${pr.number}: https://github.com/${FULL}/pull/${pr.number}`);
+  log(
+    `  Created draft PR #${pr.number}: https://github.com/${FULL}/pull/${pr.number}`,
+  );
   log(`  Record: npm run record ${FULL} ${pr.number}`);
   return pr.number;
 }
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
+log(`Ensuring ${FULL} exists...`);
+try {
+  sh(`gh repo view ${FULL} --json name`);
+  log("  Repo already exists.");
+} catch {
+  log("  Creating repo...");
+  sh(
+    `gh repo create ${FULL} --public --add-readme ` +
+      `--description "Fixture repository for gh-pr-render tests"`,
+  );
+}
+
+log(`Ensuring label "${LABEL_NAME}" exists...`);
+sh(
+  `gh label create ${JSON.stringify(LABEL_NAME)} --repo ${FULL} ` +
+    `--color ${LABEL_COLOR} --description ${JSON.stringify(LABEL_DESCRIPTION)} --force`,
+);
+
+const tmpDir = join(tmpdir(), `gh-pr-render-setup-${Date.now()}`);
+mkdirSync(tmpDir, { recursive: true });
+
+try {
+  sh(`gh repo clone ${FULL} ${JSON.stringify(tmpDir)}`);
+  git(tmpDir, "config", "user.email", "setup@gh-pr-render");
+  git(tmpDir, "config", "user.name", "gh-pr-render setup");
+
+  const existingFiles = sh("git ls-files", { cwd: tmpDir })
+    .split("\n")
+    .filter(Boolean);
+  if (!existingFiles.includes("calculator.py")) {
+    log("Initializing main branch...");
+    writeFileSync(join(tmpDir, "calculator.py"), CALCULATOR_MAIN);
+    git(tmpDir, "add", "calculator.py");
+    git(tmpDir, "commit", "-m", "Add calculator module");
+    git(tmpDir, "push");
+  }
+
+  const PR_TITLE = "Add type hints and arithmetic operations";
+  const existing = JSON.parse(
+    sh(
+      `gh pr list --repo ${FULL} --state all ` +
+        `--search ${JSON.stringify(PR_TITLE)} --json number,title`,
+    ),
+  ) as Array<{ number: number; title: string }>;
+
+  const existingPR = existing.find((pr) => pr.title === PR_TITLE);
+  let prNumber: number;
+  if (existingPR) {
+    log(`PR "${PR_TITLE}" already exists — skipping creation.`);
+    prNumber = existingPR.number;
+  } else {
+    prNumber = await createScenarioPR(tmpDir, PR_TITLE);
+  }
+
+  ghPost(`repos/${FULL}/issues/${prNumber}/labels`, {
+    labels: [LABEL_NAME],
+  });
+  log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
+
+  log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
+  const existingMilestones = JSON.parse(
+    sh(`gh api "repos/${FULL}/milestones?state=all&per_page=100"`),
+  ) as Array<{ number: number; title: string }>;
+  let milestoneNumber: number;
+  const existingMilestone = existingMilestones.find(
+    (m) => m.title === MILESTONE_TITLE,
+  );
+  if (existingMilestone) {
+    log("  Milestone already exists.");
+    milestoneNumber = existingMilestone.number;
+  } else {
+    const created = ghPost(`repos/${FULL}/milestones`, {
+      title: MILESTONE_TITLE,
+    }) as { number: number };
+    milestoneNumber = created.number;
+    log("  Created milestone.");
+  }
+  ghPatch(`repos/${FULL}/issues/${prNumber}`, { milestone: milestoneNumber });
+  log(`  Applied milestone "${MILESTONE_TITLE}" to PR #${prNumber}.`);
+
+  const DRAFT_PR_TITLE = "Add unit tests for calculator";
+  const existingDraftPRs = JSON.parse(
+    sh(
+      `gh pr list --repo ${FULL} --state all ` +
+        `--search ${JSON.stringify(DRAFT_PR_TITLE)} --json number,title`,
+    ),
+  ) as Array<{ number: number; title: string }>;
+  if (existingDraftPRs.find((pr) => pr.title === DRAFT_PR_TITLE)) {
+    log(`Draft PR "${DRAFT_PR_TITLE}" already exists — skipping.`);
+  } else {
+    createDraftPR(tmpDir, DRAFT_PR_TITLE);
+  }
+
+  await addScenarioReactions(prNumber);
+} finally {
+  rmSync(tmpDir, { recursive: true, force: true });
+}
+
+log("Done.");
