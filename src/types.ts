@@ -46,6 +46,15 @@ export interface ChangedFile {
   patch?: string;
 }
 
+export interface Commit {
+  sha: string;
+  commit: {
+    message: string;
+    author: { name: string } | null;
+  };
+  author: User | null;
+}
+
 export type ReactionContent =
   | "THUMBS_UP"
   | "THUMBS_DOWN"
@@ -113,6 +122,7 @@ export interface ReviewThread {
 export interface PRData {
   pull: PullRequest;
   files: ChangedFile[];
+  commits: Commit[];
   topComments: IssueComment[];
   reviews: Review[];
   reviewThreads: ReviewThread[];

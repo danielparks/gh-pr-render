@@ -14,6 +14,11 @@
 
 - 🚀 danielparks
 
+## Commits
+
+- `997eb92` Add type hints and power/modulo operations (gh-pr-render setup)
+- `159bc54` Simplify power and modulo using built-in operators (gh-pr-render setup)
+
 ## Changed Files
 
 - `calculator.py` (modified) +12 / -4

@@ -15,7 +15,11 @@ const fixturePath = join(
 );
 const data = JSON.parse(readFileSync(fixturePath, "utf8")) as PRData;
 
-const rendered = renderPR(data, { includeMinimized: false });
+const rendered = renderPR(data, {
+  includeMinimized: false,
+  includeFiles: true,
+  includeCommits: true,
+});
 
 const blockquote = rendered
   .trimEnd()

@@ -515,6 +515,28 @@
       "patch": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:\n     if b == 0:\n         raise ValueError(\"Cannot divide by zero\")\n     return a / b\n+\n+\n+def power(base: float, exponent: int) -> float:\n+    return base ** exponent\n+\n+\n+def modulo(dividend: float, divisor: float) -> float:\n+    return dividend % divisor"
     }
   ],
+  "commits": [
+    {
+      "sha": "997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+      "commit": {
+        "message": "Add type hints and power/modulo operations",
+        "author": {
+          "name": "gh-pr-render setup"
+        }
+      },
+      "author": null
+    },
+    {
+      "sha": "159bc540a03a63a77cefd7ca9e8282e431f299d5",
+      "commit": {
+        "message": "Simplify power and modulo using built-in operators",
+        "author": {
+          "name": "gh-pr-render setup"
+        }
+      },
+      "author": null
+    }
+  ],
   "reviews": [
     {
       "id": 4269078684,
@@ -1222,7 +1244,7 @@
             "author": {
               "login": "danielparks"
             },
-            "body": "Agreed — much clearer than `a` and `b`.",
+            "body": "Agreed \u2014 much clearer than `a` and `b`.",
             "createdAt": "2026-05-12T04:18:24Z",
             "isMinimized": false,
             "minimizedReason": null,

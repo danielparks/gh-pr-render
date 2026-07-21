@@ -186,6 +186,10 @@
 > > **Note**
 > > Automatic rebases have been disabled on this pull request as it has been open for over 30 days.
 
+## Commits
+
+- `fec64e5` Bump actions/checkout from 3 to 4 (dependabot[bot])
+
 ## Changed Files
 
 - `.github/workflows/pr-checks.yaml` (modified) +5 / -5

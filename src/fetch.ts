@@ -3,6 +3,7 @@ import { promisify } from "util";
 import { graphql } from "@octokit/graphql";
 import type {
   ChangedFile,
+  Commit,
   IssueComment,
   PRData,
   PullRequest,
@@ -227,6 +228,7 @@ export async function fetchPRData(
     [reviewThreads, reviewThreadsMs],
     [restPull, pullMs],
     [files, filesMs],
+    [commits, commitsMs],
     [reviews, reviewsMs],
   ] = await Promise.all([
     timed(() => fetchTopComments(client, owner, repoName, prNumber)),
@@ -240,6 +242,10 @@ export async function fetchPRData(
     timed(
       () =>
         ghApiArray(`${base}/pulls/${prNumber}/files`) as Promise<ChangedFile[]>,
+    ),
+    timed(
+      () =>
+        ghApiArray(`${base}/pulls/${prNumber}/commits`) as Promise<Commit[]>,
     ),
     timed(
       () =>
@@ -257,6 +263,7 @@ export async function fetchPRData(
       ["review threads (graphql)", reviewThreadsMs],
       ["pr metadata (REST)", pullMs],
       ["changed files (REST)", filesMs],
+      ["commits (REST)", commitsMs],
       ["reviews (REST)", reviewsMs],
       ["total", totalMs],
     ];
@@ -269,5 +276,5 @@ export async function fetchPRData(
     process.stderr.write(`timings:\n${lines}\n`);
   }
 
-  return { pull, files, reviews, topComments, reviewThreads };
+  return { pull, files, commits, reviews, topComments, reviewThreads };
 }

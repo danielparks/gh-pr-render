@@ -1,5 +1,6 @@
 import { formatDistance } from "date-fns";
 import type {
+  Commit,
   IssueComment,
   PRData,
   PullRequest,
@@ -192,13 +193,29 @@ function renderReviewThread(
   return lines.join("\n");
 }
 
+// Lists commit subjects, short sha first (like `git log --oneline`).
+//
+// Returns string lines without newlines.
+export function renderCommits(commits: Commit[]): string[] {
+  const lines = ["", "## Commits", ""];
+  for (const commit of commits) {
+    const subject = commit.commit.message.split("\n")[0] ?? "";
+    const author =
+      commit.author?.login ?? commit.commit.author?.name ?? "unknown";
+    lines.push(`- \`${commit.sha.slice(0, 7)}\` ${subject} (${author})`);
+  }
+  return lines;
+}
+
 export interface RenderOptions {
   includeMinimized: boolean;
+  includeFiles: boolean;
+  includeCommits: boolean;
 }
 
 export function renderPR(data: PRData, options: RenderOptions): string {
-  const { pull, files, topComments, reviews, reviewThreads } = data;
-  const { includeMinimized } = options;
+  const { pull, files, commits, topComments, reviews, reviewThreads } = data;
+  const { includeMinimized, includeFiles, includeCommits } = options;
   const out: string[] = [];
 
   // Header
@@ -238,12 +255,17 @@ export function renderPR(data: PRData, options: RenderOptions): string {
 
   out.push(...formatReactions(pull.reactionGroups, "## Reactions"));
 
-  // Changed files
-  out.push("", "## Changed Files", "");
-  for (const file of files) {
-    out.push(
-      `- \`${file.filename}\` (${file.status}) +${file.additions} / -${file.deletions}`,
-    );
+  if (includeCommits) {
+    out.push(...renderCommits(commits));
+  }
+
+  if (includeFiles) {
+    out.push("", "## Changed Files", "");
+    for (const file of files) {
+      out.push(
+        `- \`${file.filename}\` (${file.status}) +${file.additions} / -${file.deletions}`,
+      );
+    }
   }
 
   // Timeline

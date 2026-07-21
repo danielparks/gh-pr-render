@@ -7,8 +7,9 @@ import {
   blockquote,
   formatState,
   formatReactions,
+  renderCommits,
 } from "./render.js";
-import type { PRData, PullRequest, ReactionGroup } from "./types.js";
+import type { Commit, PRData, PullRequest, ReactionGroup } from "./types.js";
 
 function loadFixture(owner: string, repo: string, prNumber: number): PRData {
   const fixturesDir = fileURLToPath(new URL("../fixtures", import.meta.url));
@@ -31,13 +32,21 @@ describe("renderPR - danielparks/htmlize #66", () => {
 
   it("renders without minimized comments", async () => {
     await expect(
-      renderPR(data, { includeMinimized: false }),
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: true,
+        includeCommits: true,
+      }),
     ).toMatchFileSnapshot(snapshotPath("danielparks", "htmlize", 66, ""));
   });
 
   it("renders with minimized comments", async () => {
     await expect(
-      renderPR(data, { includeMinimized: true }),
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+      }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks", "htmlize", 66, ".with-minimized"),
     );
@@ -49,7 +58,11 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
 
   it("renders without minimized comments", async () => {
     await expect(
-      renderPR(data, { includeMinimized: false }),
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: true,
+        includeCommits: true,
+      }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks-test", "gh-pr-render-fixtures", 1, ""),
     );
@@ -57,7 +70,11 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
 
   it("renders with minimized comments", async () => {
     await expect(
-      renderPR(data, { includeMinimized: true }),
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+      }),
     ).toMatchFileSnapshot(
       snapshotPath(
         "danielparks-test",
@@ -74,7 +91,11 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #2", () => {
 
   it("renders without minimized comments", async () => {
     await expect(
-      renderPR(data, { includeMinimized: false }),
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: true,
+        includeCommits: true,
+      }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks-test", "gh-pr-render-fixtures", 2, ""),
     );
@@ -177,6 +198,82 @@ describe("formatReactions", () => {
       "## Reactions",
       "",
       "- 🚀 alice",
+    ]);
+  });
+});
+
+function baseCommit(overrides: Partial<Commit> = {}): Commit {
+  return {
+    sha: "997eb921cd14895ba5f10e8610fb8a5658eb45e2",
+    commit: { message: "Add feature", author: { name: "alice" } },
+    author: { login: "alice" },
+    ...overrides,
+  };
+}
+
+describe("renderCommits", () => {
+  it("returns just the heading for no commits", () => {
+    expect(renderCommits([])).toEqual(["", "## Commits", ""]);
+  });
+
+  it("shortens the sha and uses the message's first line as the subject", () => {
+    const commit = baseCommit({
+      commit: {
+        message: "Add feature\n\nLonger explanation in the body.",
+        author: { name: "alice" },
+      },
+    });
+    expect(renderCommits([commit])).toEqual([
+      "",
+      "## Commits",
+      "",
+      "- `997eb92` Add feature (alice)",
+    ]);
+  });
+
+  it("falls back to the git author name when there's no GitHub account", () => {
+    const commit = baseCommit({
+      author: null,
+      commit: { message: "Bump dependency", author: { name: "bot-tool" } },
+    });
+    expect(renderCommits([commit])).toEqual([
+      "",
+      "## Commits",
+      "",
+      "- `997eb92` Bump dependency (bot-tool)",
+    ]);
+  });
+
+  it("falls back to 'unknown' when neither author is available", () => {
+    const commit = baseCommit({
+      author: null,
+      commit: { message: "Bump dependency", author: null },
+    });
+    expect(renderCommits([commit])).toEqual([
+      "",
+      "## Commits",
+      "",
+      "- `997eb92` Bump dependency (unknown)",
+    ]);
+  });
+
+  it("lists multiple commits in order", () => {
+    const commits = [
+      baseCommit({
+        sha: "zzzzzzz1234",
+        commit: { message: "First", author: { name: "alice" } },
+      }),
+      baseCommit({
+        sha: "aaaaaaa5678",
+        commit: { message: "Second", author: { name: "alice" } },
+      }),
+    ];
+    expect(renderCommits(commits)).toEqual([
+      "",
+      "## Commits",
+      "",
+      "- `zzzzzzz` First (alice)",
+      "- `aaaaaaa` Second (alice)",
     ]);
   });
 });

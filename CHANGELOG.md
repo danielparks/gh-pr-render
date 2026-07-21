@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 
 - Added when and how a PR was closed (merged vs. closed without merging) to PR rendering.
 - Added requested reviewers (team and user), assignees, draft status, and milestone to PR rendering.
+- Added a `## Commits` list (short sha, subject, author) to PR rendering.
+- Added `--no-files` and `--no-commits` options to omit the changed-files and commits lists, respectively.
 
 ## Release 0.4.0 (2026-07-17)
 

@@ -8,6 +8,10 @@
 
 > Work in progress: adding unit tests to verify all calculator operations.
 
+## Commits
+
+- `08751c7` Add unit tests for calculator module (gh-pr-render setup)
+
 ## Changed Files
 
 - `test_calculator.py` (added) +20 / -0

@@ -4,6 +4,28 @@ This is a CLI tool that downloads PR comments and reviews from GitHub and format
 
 The primary use case is helping LLMs keep track of the conversation on a PR when re-reviewing. My GitHub action [danielparks/claude-pr-review] uses `gh-pr-render` to provide context to Claude in automatic PR reviews.
 
+## Options
+
+- `--include-minimized` — include minimized comments, marked with their reason. Off by default: minimized comments are usually outdated or off-topic noise.
+- `--no-files` — omit the `## Changed Files` list.
+- `--no-commits` — omit the `## Commits` list.
+- `--timings` — print request timings to stderr.
+
+### When to use `--no-files` / `--no-commits`
+
+The changed-files and commits lists are included by default because they're cheap (a line or two per entry) and, in practice, get checked on nearly every review regardless of PR shape — an LLM reviewer tends to want an overview of scope before diving into any diff. Neither list embeds the diff itself; that still comes from wherever the consumer reads it (e.g. `git diff` against an already-checked-out PR branch, as in [danielparks/claude-pr-review]).
+
+Reasons to drop one or both:
+
+- **The consumer already has git access and you'd rather it choose when to spend a step on `git log` / `git diff --stat`,** instead of paying for that context on every render regardless of whether it's used.
+- **Squash-merge workflows**, where the single commit message just repeats the PR body — `--no-commits` costs nothing to add and removes pure duplication.
+- **Minimal-context surfaces** where only the discussion matters, not the scaffolding around it.
+
+Reasons to keep the defaults:
+
+- **Commits structured as logical units** (not "wip"/"fix typo" churn) — subjects describe the shape of the change, and are cheap to cross-reference against review-thread timestamps to check whether feedback was actually addressed.
+- **Large or noisy PRs** (generated files, lockfiles, vendored updates mixed with the real change) — the file list is how a reviewer decides what to skip _before_ opening any diff, human or LLM.
+
 ## Example output
 
 <!-- eslint-disable -->
@@ -24,6 +46,11 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 > ## Reactions
 >
 > - 🚀 danielparks
+>
+> ## Commits
+>
+> - `997eb92` Add type hints and power/modulo operations (gh-pr-render setup)
+> - `159bc54` Simplify power and modulo using built-in operators (gh-pr-render setup)
 >
 > ## Changed Files
 >
