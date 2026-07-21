@@ -11,6 +11,8 @@ Two strict flags are active beyond the defaults:
 
 These require specific patterns and are easy to violate accidentally. Run `npm run check` to verify.
 
+`npm run check` uses `tsconfig.check.json`, not `tsconfig.json` directly — the build config's `rootDir: "src"` can't include `scripts/` or emit `.test.ts` files into `dist`, so the check-only config widens `rootDir` to the repo root and adds `scripts/**/*.ts` with `noEmit`. Without this, `scripts/*.ts` and `src/**/*.test.ts` type errors (e.g. a helper call missing a newly required option) go unnoticed until something breaks at runtime.
+
 ## Data fetching
 
 Uses a mix of REST (`gh api` via `execSync`) and GraphQL (`@octokit/graphql`):
