@@ -63,18 +63,19 @@ export function formatReactions(
   return ["", heading, "", ...lines];
 }
 
-// Reports when and how a closed PR was closed. Returns [] for an open PR.
-// The REST API only identifies who closed a PR when that close was a merge
-// (`merged_by`) — a plain close carries no actor, just a timestamp.
-export function formatCloseStatus(pull: PullRequest): string[] {
+// Parenthetical suffix for the State line reporting when and how a closed PR
+// was closed. Returns "" for an open PR. The REST API only identifies who
+// closed a PR when that close was a merge (`merged_by`) — a plain close
+// carries no actor, just a timestamp.
+export function formatCloseStatus(pull: PullRequest): string {
   if (pull.merged && pull.merged_at) {
     const by = pull.merged_by ? ` by ${pull.merged_by.login}` : "";
-    return [`**Merged:** ${formatDate(pull.merged_at, pull.created_at)}${by}`];
+    return ` (merged${by}, ${formatDate(pull.merged_at, pull.created_at)})`;
   }
   if (pull.state === "closed" && pull.closed_at) {
-    return [`**Closed:** ${formatDate(pull.closed_at, pull.created_at)}`];
+    return ` (${formatDate(pull.closed_at, pull.created_at)})`;
   }
-  return [];
+  return "";
 }
 
 function reviewStateLabel(state: ReviewState): string {
@@ -200,8 +201,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   out.push(`# PR #${pull.number}: ${pull.title}`, "");
   out.push(
     `**Author:** ${pull.user.login}`,
-    `**State:** ${pull.state}${pull.draft ? ", draft" : ""}`,
-    ...formatCloseStatus(pull),
+    `**State:** ${pull.state}${pull.draft ? ", draft" : ""}${formatCloseStatus(pull)}`,
     `**Branch:** \`${pull.head.ref}\` → \`${pull.base.ref}\``,
     `**URL:** ${pull.html_url}`,
   );

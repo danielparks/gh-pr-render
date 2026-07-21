@@ -208,8 +208,8 @@ function basePull(overrides: Partial<PullRequest> = {}): PullRequest {
 }
 
 describe("formatCloseStatus", () => {
-  it("returns [] for an open PR", () => {
-    expect(formatCloseStatus(basePull())).toEqual([]);
+  it("returns '' for an open PR", () => {
+    expect(formatCloseStatus(basePull())).toEqual("");
   });
 
   it("reports a merge with who merged it", () => {
@@ -220,9 +220,7 @@ describe("formatCloseStatus", () => {
       merged_by: { login: "bob" },
       closed_at: "2026-01-03T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual([
-      "**Merged:** 2 days later by bob",
-    ]);
+    expect(formatCloseStatus(pull)).toEqual(" (merged by bob, 2 days later)");
   });
 
   it("reports a merge without a merger as a fallback", () => {
@@ -233,7 +231,7 @@ describe("formatCloseStatus", () => {
       merged_by: null,
       closed_at: "2026-01-03T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual(["**Merged:** 2 days later"]);
+    expect(formatCloseStatus(pull)).toEqual(" (merged, 2 days later)");
   });
 
   it("reports a close without a merge", () => {
@@ -241,7 +239,7 @@ describe("formatCloseStatus", () => {
       state: "closed",
       closed_at: "2026-01-02T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual(["**Closed:** 1 day later"]);
+    expect(formatCloseStatus(pull)).toEqual(" (1 day later)");
   });
 });
 
