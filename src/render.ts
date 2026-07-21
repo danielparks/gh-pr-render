@@ -185,7 +185,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   out.push(`# PR #${pull.number}: ${pull.title}`, "");
   out.push(
     `**Author:** ${pull.user.login}`,
-    `**State:** ${pull.state}`,
+    `**State:** ${pull.state}${pull.draft ? ", draft" : ""}`,
     `**Branch:** \`${pull.head.ref}\` → \`${pull.base.ref}\``,
     `**URL:** ${pull.html_url}`,
   );
@@ -193,6 +193,20 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   if (pull.labels.length > 0) {
     out.push(
       `**Labels:** ${pull.labels.map((label) => label.name).join(", ")}`,
+    );
+  }
+
+  if (pull.milestone) {
+    out.push(`**Milestone:** ${pull.milestone.title}`);
+  }
+
+  if (pull.assignees.length > 0) {
+    out.push(`**Assignees:** ${pull.assignees.map((u) => u.login).join(", ")}`);
+  }
+
+  if (pull.requested_reviewers.length > 0) {
+    out.push(
+      `**Requested reviewers:** ${pull.requested_reviewers.map((u) => u.login).join(", ")}`,
     );
   }
 

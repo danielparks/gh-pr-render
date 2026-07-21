@@ -6,10 +6,15 @@ export interface Label {
   name: string;
 }
 
+export interface Milestone {
+  title: string;
+}
+
 export interface PullRequest {
   number: number;
   title: string;
   state: string;
+  draft: boolean;
   body: string | null;
   user: User;
   head: { ref: string; sha: string };
@@ -17,6 +22,9 @@ export interface PullRequest {
   html_url: string;
   created_at: string;
   labels: Label[];
+  milestone: Milestone | null;
+  assignees: User[];
+  requested_reviewers: User[];
   reactionGroups: ReactionGroup[];
 }
 

@@ -30,6 +30,8 @@ const LABEL_NAME = "feature";
 const LABEL_COLOR = "1d76db";
 const LABEL_DESCRIPTION = "New feature or request";
 
+const MILESTONE_TITLE = "v1.0";
+
 const token = sh("gh auth token");
 const gql = graphql.defaults({ headers: { authorization: `token ${token}` } });
 
@@ -55,6 +57,16 @@ function log(msg: string): void {
 function ghPost(path: string, body: object): unknown {
   return JSON.parse(
     execSync(`gh api --method POST "${path}" --input -`, {
+      encoding: "utf8",
+      input: JSON.stringify(body),
+      stdio: ["pipe", "pipe", "pipe"],
+    }),
+  );
+}
+
+function ghPatch(path: string, body: object): unknown {
+  return JSON.parse(
+    execSync(`gh api --method PATCH "${path}" --input -`, {
       encoding: "utf8",
       input: JSON.stringify(body),
       stdio: ["pipe", "pipe", "pipe"],
@@ -227,6 +239,40 @@ try {
     labels: [LABEL_NAME],
   });
   log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
+
+  log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
+  const existingMilestones = JSON.parse(
+    sh(`gh api "repos/${FULL}/milestones?state=all&per_page=100"`),
+  ) as Array<{ number: number; title: string }>;
+  let milestoneNumber: number;
+  const existingMilestone = existingMilestones.find(
+    (m) => m.title === MILESTONE_TITLE,
+  );
+  if (existingMilestone) {
+    log("  Milestone already exists.");
+    milestoneNumber = existingMilestone.number;
+  } else {
+    const created = ghPost(`repos/${FULL}/milestones`, {
+      title: MILESTONE_TITLE,
+    }) as { number: number };
+    milestoneNumber = created.number;
+    log("  Created milestone.");
+  }
+  ghPatch(`repos/${FULL}/issues/${prNumber}`, { milestone: milestoneNumber });
+  log(`  Applied milestone "${MILESTONE_TITLE}" to PR #${prNumber}.`);
+
+  const DRAFT_PR_TITLE = "Add unit tests for calculator";
+  const existingDraftPRs = JSON.parse(
+    sh(
+      `gh pr list --repo ${FULL} --state all ` +
+        `--search ${JSON.stringify(DRAFT_PR_TITLE)} --json number,title`,
+    ),
+  ) as Array<{ number: number; title: string }>;
+  if (existingDraftPRs.find((pr) => pr.title === DRAFT_PR_TITLE)) {
+    log(`Draft PR "${DRAFT_PR_TITLE}" already exists — skipping.`);
+  } else {
+    createDraftPR(tmpDir, DRAFT_PR_TITLE);
+  }
 
   await addScenarioReactions(prNumber);
 } finally {
@@ -491,4 +537,53 @@ async function createScenarioPR(dir: string, title: string): Promise<number> {
   log(`\nPR #${n}: https://github.com/${FULL}/pull/${n}`);
   log(`Record: npm run record ${FULL} ${n}`);
   return n;
+}
+
+// ─── Draft PR ─────────────────────────────────────────────────────────────────
+
+const TEST_CALCULATOR = `\
+import unittest
+from calculator import add, subtract, multiply, divide
+
+
+class TestCalculator(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(add(2.0, 3.0), 5.0)
+
+    def test_subtract(self):
+        self.assertEqual(subtract(5.0, 3.0), 2.0)
+
+    def test_multiply(self):
+        self.assertEqual(multiply(3.0, 4.0), 12.0)
+
+    def test_divide(self):
+        self.assertEqual(divide(10.0, 2.0), 5.0)
+
+
+if __name__ == "__main__":
+    unittest.main()
+`;
+
+function createDraftPR(dir: string, title: string): number {
+  const branch = "feat/add-tests";
+
+  log(`Creating draft PR "${title}"...`);
+  git(dir, "checkout", "main");
+  git(dir, "checkout", "-b", branch);
+  writeFileSync(join(dir, "test_calculator.py"), TEST_CALCULATOR);
+  git(dir, "add", "test_calculator.py");
+  git(dir, "commit", "-m", "Add unit tests for calculator module");
+  git(dir, "push", "--force", "-u", "origin", branch);
+
+  const pr = ghPost(`repos/${FULL}/pulls`, {
+    title,
+    head: branch,
+    base: "main",
+    body: "Work in progress: adding unit tests to verify all calculator operations.",
+    draft: true,
+  }) as { number: number };
+
+  log(`  Created draft PR #${pr.number}: https://github.com/${FULL}/pull/${pr.number}`);
+  log(`  Record: npm run record ${FULL} ${pr.number}`);
+  return pr.number;
 }
