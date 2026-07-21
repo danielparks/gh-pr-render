@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+### Security
+
+- Minor: updated transitive dev dependency [brace-expansion] to avoid denial of service vulnerability ([GHSA-3jxr-9vmj-r5cp]). Realistically this could not have been exploited, since it was only used by eslint.
+
+[brace-expansion]: https://www.npmjs.com/package/brace-expansion
+[GHSA-3jxr-9vmj-r5cp]: https://github.com/advisories/GHSA-3jxr-9vmj-r5cp
+
+### Changes
+
 - Added when and how a PR was closed (merged vs. closed without merging) to PR rendering.
 - Added requested reviewers (team and user), assignees, draft status, and milestone to PR rendering.
 
