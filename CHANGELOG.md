@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+- Render requested team reviewers alongside requested user reviewers.
+
 ## Release 0.4.0 (2026-07-17)
 
 - Updated to render PR descriptions and comments with blockquotes to ensure a distinction between content and structure.

@@ -10,6 +10,10 @@ export interface Milestone {
   title: string;
 }
 
+export interface Team {
+  name: string;
+}
+
 export interface PullRequest {
   number: number;
   title: string;
@@ -25,6 +29,7 @@ export interface PullRequest {
   milestone: Milestone | null;
   assignees: User[];
   requested_reviewers: User[];
+  requested_teams: Team[];
   reactionGroups: ReactionGroup[];
 }
 

@@ -204,10 +204,12 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     out.push(`**Assignees:** ${pull.assignees.map((u) => u.login).join(", ")}`);
   }
 
-  if (pull.requested_reviewers.length > 0) {
-    out.push(
-      `**Requested reviewers:** ${pull.requested_reviewers.map((u) => u.login).join(", ")}`,
-    );
+  if (pull.requested_reviewers.length > 0 || pull.requested_teams.length > 0) {
+    const reviewers = [
+      ...pull.requested_reviewers.map((u) => u.login),
+      ...pull.requested_teams.map((t) => `${t.name} (team)`),
+    ];
+    out.push(`**Requested reviewers:** ${reviewers.join(", ")}`);
   }
 
   if (pull.body?.trim()) {

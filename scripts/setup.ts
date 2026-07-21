@@ -3,9 +3,11 @@
  * each rendering scenario: minimized top-level comment, minimized diff thread
  * root (skips whole thread), outdated thread, resolved thread, thread with
  * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
- * an APPROVED review, a label, and reactions (on the PR description, on a
- * top-level comment with multiple reaction groups, and on a diff-thread
- * reply).
+ * an APPROVED review, a label, an assignee, and reactions (on the PR
+ * description, on a top-level comment with multiple reaction groups, and on
+ * a diff-thread reply). A second, draft PR exercises requested reviewers:
+ * a user (best-effort — GitHub disallows requesting the PR author) and a
+ * team (best-effort — requires `owner` to be an organization).
  *
  * Usage: npm run setup -- --owner <owner>
  */
@@ -31,6 +33,8 @@ const LABEL_COLOR = "1d76db";
 const LABEL_DESCRIPTION = "New feature or request";
 
 const MILESTONE_TITLE = "v1.0";
+
+const TEAM_NAME = "reviewers";
 
 const token = sh("gh auth token");
 const gql = graphql.defaults({ headers: { authorization: `token ${token}` } });
@@ -76,6 +80,36 @@ function ghPatch(path: string, body: object): unknown {
 
 function git(cwd: string, ...args: string[]): string {
   return sh(`git ${args.map((a) => JSON.stringify(a)).join(" ")}`, { cwd });
+}
+
+// Team review requests need a real team, which only exists for
+// organization-owned repos. Reuses whatever team is already there so this
+// works without assuming naming; falls back to creating TEAM_NAME. Returns
+// undefined (rather than throwing) when `owner` is a personal account, since
+// that just means this scenario can't be demonstrated here.
+function ensureReviewTeam(): string | undefined {
+  let teams: Array<{ slug: string }>;
+  try {
+    teams = JSON.parse(
+      sh(`gh api "orgs/${owner}/teams?per_page=100"`),
+    ) as Array<{ slug: string }>;
+  } catch {
+    log(`  Note: team review request skipped ("${owner}" is not an org).`);
+    return undefined;
+  }
+
+  if (teams.length > 0) {
+    log(`  Using existing team "${teams[0]!.slug}" for team review request.`);
+    return teams[0]!.slug;
+  }
+
+  const created = ghPost(`orgs/${owner}/teams`, {
+    name: TEAM_NAME,
+    description: "Fixture team for gh-pr-render tests",
+    privacy: "closed",
+  }) as { slug: string };
+  log(`  Created team "${created.slug}".`);
+  return created.slug;
 }
 
 // Adding the same reactor+content pair again is a no-op on GitHub's side, so
@@ -549,6 +583,11 @@ try {
   });
   log(`  Added label "${LABEL_NAME}" to PR #${prNumber}.`);
 
+  ghPost(`repos/${FULL}/issues/${prNumber}/assignees`, {
+    assignees: [owner],
+  });
+  log(`  Assigned ${owner} to PR #${prNumber}.`);
+
   log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
   const existingMilestones = JSON.parse(
     sh(`gh api "repos/${FULL}/milestones?state=all&per_page=100"`),
@@ -577,10 +616,42 @@ try {
         `--search ${JSON.stringify(DRAFT_PR_TITLE)} --json number,title`,
     ),
   ) as Array<{ number: number; title: string }>;
-  if (existingDraftPRs.find((pr) => pr.title === DRAFT_PR_TITLE)) {
-    log(`Draft PR "${DRAFT_PR_TITLE}" already exists — skipping.`);
+  const existingDraftPR = existingDraftPRs.find(
+    (pr) => pr.title === DRAFT_PR_TITLE,
+  );
+  let draftPrNumber: number;
+  if (existingDraftPR) {
+    log(`Draft PR "${DRAFT_PR_TITLE}" already exists — skipping creation.`);
+    draftPrNumber = existingDraftPR.number;
   } else {
-    createDraftPR(tmpDir, DRAFT_PR_TITLE);
+    draftPrNumber = createDraftPR(tmpDir, DRAFT_PR_TITLE);
+  }
+
+  // Requested reviewers on the draft PR — a user and, where possible, a team.
+  try {
+    ghPost(`repos/${FULL}/pulls/${draftPrNumber}/requested_reviewers`, {
+      reviewers: [owner],
+    });
+    log(`  Requested review from ${owner} on draft PR #${draftPrNumber}.`);
+  } catch {
+    log(
+      "  Note: requested reviewer skipped (GitHub disallows requesting " +
+        "review from the PR author; needs a second account to demonstrate).",
+    );
+  }
+
+  const teamSlug = ensureReviewTeam();
+  if (teamSlug) {
+    try {
+      ghPost(`repos/${FULL}/pulls/${draftPrNumber}/requested_reviewers`, {
+        team_reviewers: [teamSlug],
+      });
+      log(
+        `  Requested review from team "${teamSlug}" on draft PR #${draftPrNumber}.`,
+      );
+    } catch (err) {
+      log(`  Note: team review request failed: ${err}`);
+    }
   }
 
   await addScenarioReactions(prNumber);
