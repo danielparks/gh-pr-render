@@ -1,7 +1,7 @@
 # PR #66: Bump actions/checkout from 3 to 4
 
 **Author:** dependabot[bot]
-**State:** closed (merged by danielparks, 5 months later)
+**State:** merged 5 months later by danielparks
 **Branch:** `dependabot/github_actions/actions/checkout-4` → `main`
 **URL:** https://github.com/danielparks/htmlize/pull/66
 **Labels:** dependencies

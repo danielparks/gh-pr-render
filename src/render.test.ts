@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import {
   renderPR,
   blockquote,
-  formatCloseStatus,
+  formatState,
   formatReactions,
 } from "./render.js";
 import type { PRData, PullRequest, ReactionGroup } from "./types.js";
@@ -207,9 +207,9 @@ function basePull(overrides: Partial<PullRequest> = {}): PullRequest {
   };
 }
 
-describe("formatCloseStatus", () => {
-  it("returns '' for an open PR", () => {
-    expect(formatCloseStatus(basePull())).toEqual("");
+describe("formatState", () => {
+  it("returns 'open' for an open PR", () => {
+    expect(formatState(basePull())).toEqual("open");
   });
 
   it("reports a merge with who merged it", () => {
@@ -220,7 +220,7 @@ describe("formatCloseStatus", () => {
       merged_by: { login: "bob" },
       closed_at: "2026-01-03T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual(" (merged by bob, 2 days later)");
+    expect(formatState(pull)).toEqual("merged 2 days later by bob");
   });
 
   it("reports a merge without a merger as a fallback", () => {
@@ -231,15 +231,40 @@ describe("formatCloseStatus", () => {
       merged_by: null,
       closed_at: "2026-01-03T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual(" (merged, 2 days later)");
+    expect(formatState(pull)).toEqual("merged 2 days later");
+  });
+
+  it("reports a merge without time metadata", () => {
+    const pull = basePull({
+      state: "closed",
+      merged: true,
+      merged_at: null,
+      merged_by: null,
+      closed_at: null,
+    });
+    expect(formatState(pull)).toEqual("merged");
   });
 
   it("reports a close without a merge", () => {
     const pull = basePull({
       state: "closed",
+      merged: false,
+      merged_at: null,
+      merged_by: null,
       closed_at: "2026-01-02T00:00:00Z",
     });
-    expect(formatCloseStatus(pull)).toEqual(" (1 day later)");
+    expect(formatState(pull)).toEqual("closed without merge 1 day later");
+  });
+
+  it("reports a close without a merge without time metadata", () => {
+    const pull = basePull({
+      state: "closed",
+      merged: false,
+      merged_at: null,
+      merged_by: null,
+      closed_at: null,
+    });
+    expect(formatState(pull)).toEqual("closed without merge");
   });
 });
 
