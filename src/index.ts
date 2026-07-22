@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
-import { fetchPRData } from "./fetch.js";
-import { renderPR, type RenderOptions } from "./render.js";
+import { fetchPRData, fetchSingleThread, createClient } from "./fetch.js";
+import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
@@ -36,7 +36,7 @@ function detectRepo(): string {
   return match[1];
 }
 
-new Command()
+const program = new Command()
   .name(metadata.name)
   .version(metadata.version)
   .description(metadata.description)
@@ -114,5 +114,29 @@ new Command()
       };
       process.stdout.write(renderPR(data, renderOptions));
     },
+  );
+
+program
+  .command("thread <thread-id>")
+  .description(
+    "Fetch and display all comments in a single review thread. " +
+      "Pass the thread ID shown in `gh-pr-render` output (e.g. RT_kwDO...).",
   )
-  .parse();
+  .option(
+    "--include-minimized",
+    "include minimized comments (marked with reason)",
+    false,
+  )
+  .action(
+    async (
+      threadId: string,
+      opts: { includeMinimized: boolean },
+    ) => {
+      const data = await fetchSingleThread(createClient(), threadId);
+      process.stdout.write(
+        renderSingleThread(data.thread, data.pullRequest, opts.includeMinimized),
+      );
+    },
+  );
+
+program.parse();

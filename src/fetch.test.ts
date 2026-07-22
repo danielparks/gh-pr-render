@@ -1,6 +1,6 @@
 import { graphql } from "@octokit/graphql";
 import { describe, expect, it } from "vitest";
-import { fetchReviewThreads, fetchTopComments } from "./fetch.js";
+import { fetchReviewThreads, fetchSingleThread, fetchTopComments } from "./fetch.js";
 import type { IssueComment, ReactionGroup, ThreadComment } from "./types.js";
 
 // Wraps a GraphQL response body the way GitHub's API does: the actual
@@ -256,5 +256,102 @@ describe("fetchReviewThreads", () => {
     await fetchReviewThreads(client, "acme", "widgets", 42, 500, 500);
 
     expect(calls[0]?.variables).toMatchObject({ head: 100, tail: 100 });
+  });
+});
+
+describe("fetchSingleThread", () => {
+  const pullRequest = {
+    number: 42,
+    url: "https://github.com/acme/widgets/pull/42",
+    createdAt: "2026-01-01T00:00:00Z",
+  };
+
+  it("fetches a thread by node ID and returns all comments", async () => {
+    const { client } = mockClient(() => ({
+      node: {
+        id: "THREAD_1",
+        isResolved: true,
+        isOutdated: false,
+        path: "a.py",
+        line: 5,
+        pullRequest,
+        comments: {
+          pageInfo: { hasNextPage: false, endCursor: null },
+          totalCount: 2,
+          nodes: [threadComment(1), threadComment(2)],
+        },
+      },
+    }));
+
+    const result = await fetchSingleThread(client, "THREAD_1");
+
+    expect(result.thread).toEqual({
+      id: "THREAD_1",
+      isResolved: true,
+      isOutdated: false,
+      path: "a.py",
+      line: 5,
+      comments: {
+        totalCount: 2,
+        nodes: [threadComment(1), threadComment(2)],
+        tailNodes: [],
+      },
+    });
+    expect(result.pullRequest).toEqual(pullRequest);
+  });
+
+  it("paginates through all comment pages until exhausted", async () => {
+    const { client, calls } = mockClient(({ variables }) => {
+      if (variables["cursor"] === null) {
+        return {
+          node: {
+            id: "THREAD_1",
+            isResolved: false,
+            isOutdated: false,
+            path: "a.py",
+            line: 1,
+            pullRequest,
+            comments: {
+              pageInfo: { hasNextPage: true, endCursor: "CURSOR_1" },
+              totalCount: 3,
+              nodes: [threadComment(1), threadComment(2)],
+            },
+          },
+        };
+      }
+      return {
+        node: {
+          id: "THREAD_1",
+          isResolved: false,
+          isOutdated: false,
+          path: "a.py",
+          line: 1,
+          pullRequest,
+          comments: {
+            pageInfo: { hasNextPage: false, endCursor: null },
+            totalCount: 3,
+            nodes: [threadComment(3)],
+          },
+        },
+      };
+    });
+
+    const result = await fetchSingleThread(client, "THREAD_1");
+
+    expect(calls.map((c) => c.variables["cursor"])).toEqual([
+      null,
+      "CURSOR_1",
+    ]);
+    expect(result.thread.comments.nodes.map((c) => c.databaseId)).toEqual([
+      1, 2, 3,
+    ]);
+  });
+
+  it("throws when the thread node is not found", async () => {
+    const { client } = mockClient(() => ({ node: null }));
+
+    await expect(fetchSingleThread(client, "MISSING_ID")).rejects.toThrow(
+      "Thread not found: MISSING_ID",
+    );
   });
 });

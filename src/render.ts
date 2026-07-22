@@ -246,7 +246,10 @@ function renderReviewThread(
   }
 
   if (omittedCount > 0) {
-    lines.push("", `#### ${omittedCount} comments omitted`);
+    lines.push(
+      "",
+      `#### ${omittedCount} comments omitted — run \`gh-pr-render thread ${thread.id}\` to see all`,
+    );
     for (const comment of tail) {
       if (comment.isMinimized && !includeMinimized) continue;
       lines.push("", renderThreadComment(comment, baseDate));
@@ -272,6 +275,33 @@ export function renderCommits(commits: Commit[]): string[] {
     lines.push("No commits.");
   }
   return lines;
+}
+
+// Renders all comments for a single review thread, with a brief PR context
+// header. Used by the `thread` subcommand so an LLM can zoom in on a thread
+// whose comments were truncated in the full PR output.
+export function renderSingleThread(
+  thread: ReviewThread,
+  pullRequest: { number: number; url: string; createdAt: string },
+  includeMinimized: boolean,
+): string {
+  const allCount = thread.comments.totalCount;
+  // Pass allCount as head limit so truncateComments never truncates — all
+  // comments were fetched and are in `nodes`; `tailNodes` is empty.
+  const headLimit = Math.max(allCount, 1);
+  const threadContent = renderReviewThread(
+    thread,
+    includeMinimized,
+    pullRequest.createdAt,
+    headLimit,
+    0,
+  );
+  return [
+    `Part of [PR #${pullRequest.number}](${pullRequest.url})`,
+    "",
+    threadContent,
+    "",
+  ].join("\n");
 }
 
 export interface RenderOptions {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderPR } from "./render.js";
+import { renderPR, renderSingleThread } from "./render.js";
 import type { ReviewThread, ThreadComment } from "./types.js";
 import { basePRData } from "./test-helpers.js";
 
@@ -118,6 +118,24 @@ describe("renderPR - thread comment list truncation", () => {
     expect(output).not.toContain("id: 130)");
   });
 
+  it("includes the thread command hint in the omission message", () => {
+    const thread = baseThread({
+      id: "RT_kwDOExampleThread",
+      comments: {
+        totalCount: 150,
+        nodes: manyThreadComments(20, 1),
+        tailNodes: manyThreadComments(20, 131),
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).toContain(
+      "#### 110 comments omitted — run `gh-pr-render thread RT_kwDOExampleThread` to see all",
+    );
+  });
+
   it("displays all comments when limits are exactly the number of comments fetched", () => {
     const thread = baseThread({
       comments: {
@@ -218,5 +236,51 @@ describe("renderPR - thread comment list truncation", () => {
     expect(output).not.toContain("### Inline comment");
     expect(output).not.toContain("#### alice");
     expect(output).not.toContain("comments omitted");
+  });
+});
+
+describe("renderSingleThread", () => {
+  const pullRequest = {
+    number: 42,
+    url: "https://github.com/acme/widgets/pull/42",
+    createdAt: "2026-01-01T00:00:00Z",
+  };
+
+  it("includes PR context header linking to the pull request", () => {
+    const thread = baseThread();
+    const output = renderSingleThread(thread, pullRequest, false);
+    expect(output).toContain(
+      "Part of [PR #42](https://github.com/acme/widgets/pull/42)",
+    );
+  });
+
+  it("renders all comments without truncation", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 5,
+        nodes: manyThreadComments(5, 1),
+        tailNodes: [],
+      },
+    });
+    const output = renderSingleThread(thread, pullRequest, false);
+    expect(output).not.toContain("comments omitted");
+    for (let id = 1; id <= 5; id++) {
+      expect(output).toContain(`id: ${id})`);
+    }
+  });
+
+  it("includes the thread command hint only when comments are omitted via renderPR (not renderSingleThread)", () => {
+    // renderSingleThread never omits — all comments are in `nodes`.
+    const thread = baseThread({
+      id: "THREAD_1",
+      comments: {
+        totalCount: 50,
+        nodes: manyThreadComments(50, 1),
+        tailNodes: [],
+      },
+    });
+    const output = renderSingleThread(thread, pullRequest, false);
+    expect(output).not.toContain("comments omitted");
+    expect(output).toContainExactly("#### alice", 50);
   });
 });

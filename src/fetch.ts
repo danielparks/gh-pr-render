@@ -244,6 +244,103 @@ export async function fetchReviewThreads(
   }));
 }
 
+const SINGLE_THREAD_QUERY = `
+  query SingleReviewThread($id: ID!, $cursor: String) {
+    node(id: $id) {
+      ... on PullRequestReviewThread {
+        id
+        isResolved
+        isOutdated
+        path
+        line
+        pullRequest {
+          number
+          url
+          createdAt
+        }
+        comments(first: ${MAX_PAGE_SIZE}, after: $cursor) {
+          pageInfo { hasNextPage endCursor }
+          totalCount
+          nodes { ${THREAD_COMMENT_FIELDS} }
+        }
+      }
+    }
+  }
+`;
+
+interface SingleThreadNode {
+  id: string;
+  isResolved: boolean;
+  isOutdated: boolean;
+  path: string;
+  line: number | null;
+  pullRequest: { number: number; url: string; createdAt: string };
+  comments: {
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    totalCount: number;
+    nodes: ThreadComment[];
+  };
+}
+
+interface SingleThreadNodeResult {
+  node: SingleThreadNode | null;
+}
+
+export interface SingleThreadData {
+  thread: ReviewThread;
+  pullRequest: { number: number; url: string; createdAt: string };
+}
+
+export function createClient(): typeof graphql {
+  return graphql.defaults({
+    headers: { authorization: `token ${getAuthToken()}` },
+  });
+}
+
+export async function fetchSingleThread(
+  client: typeof graphql,
+  threadId: string,
+): Promise<SingleThreadData> {
+  const firstResult = await client<SingleThreadNodeResult>(
+    SINGLE_THREAD_QUERY,
+    { id: threadId, cursor: null },
+  );
+  const firstNode = firstResult.node;
+  if (!firstNode) throw new Error(`Thread not found: ${threadId}`);
+
+  const allComments: ThreadComment[] = [...firstNode.comments.nodes];
+  let hasNextPage = firstNode.comments.pageInfo.hasNextPage;
+  let endCursor = firstNode.comments.pageInfo.endCursor;
+
+  while (hasNextPage && endCursor !== null) {
+    const result = await client<SingleThreadNodeResult>(SINGLE_THREAD_QUERY, {
+      id: threadId,
+      cursor: endCursor,
+    });
+    const node = result.node;
+    if (!node) throw new Error(`Thread ${threadId} disappeared mid-pagination`);
+    allComments.push(...node.comments.nodes);
+    hasNextPage = node.comments.pageInfo.hasNextPage;
+    endCursor = node.comments.pageInfo.endCursor;
+  }
+
+  return {
+    thread: {
+      id: firstNode.id,
+      isResolved: firstNode.isResolved,
+      isOutdated: firstNode.isOutdated,
+      path: firstNode.path,
+      line: firstNode.line,
+      comments: {
+        totalCount: firstNode.comments.totalCount,
+        nodes: allComments,
+        tailNodes: [],
+      },
+    },
+    pullRequest: firstNode.pullRequest,
+  };
+}
+
 export interface FetchOptions {
   timings: boolean;
   // How many comments to fetch at the start/end of a comment list, for both
