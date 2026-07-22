@@ -16,15 +16,10 @@ import type {
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
+  MAX_PAGE_SIZE,
 } from "./limits.js";
 
 const execAsync = promisify(exec);
-
-// GitHub GraphQL connections reject `first`/`last` above 100, regardless of
-// how high a caller sets --comment-head-limit/--comment-tail-limit.
-// Requesting more than this just yields a shorter head/tail than asked for,
-// rather than erroring.
-const MAX_PAGE_SIZE = 100;
 
 // Number of reactors to fetch (by login) per reaction emoji. GitHub returns
 // reactors as a `Reactor` union (User | Bot | Organization | Mannequin);
@@ -226,7 +221,9 @@ export async function fetchReviewThreads(
         repo,
         number,
         cursor,
-        head: Math.min(commentHeadLimit, MAX_PAGE_SIZE),
+        // Ensure we always get the first comment so that the thread can be
+        // placed correctly in the timeline.
+        head: Math.max(Math.min(commentHeadLimit, MAX_PAGE_SIZE), 1),
         tail: Math.min(commentTailLimit, MAX_PAGE_SIZE),
       },
     );

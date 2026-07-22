@@ -102,7 +102,7 @@ function truncateComments<T>(
     };
   }
   const head = headNodes.slice(0, headLimit);
-  const tail = tailNodes.slice(-tailLimit);
+  const tail = tailLimit ? tailNodes.slice(-tailLimit) : [];
   return { head, omittedCount: totalCount - head.length - tail.length, tail };
 }
 
@@ -208,8 +208,11 @@ function renderReviewThread(
   commentHeadLimit: number,
   commentTailLimit: number,
 ): string {
-  const first = thread.comments.nodes[0];
-  if (!first) return "";
+  // Defensive coding: the fetch code always fetches the first comment so we can
+  // use its timestamp to place the thread in the timeline. If that ever changes
+  // this will handle having tail nodes but no head nodes.
+  const first = thread.comments.nodes[0] ?? thread.comments.tailNodes[0];
+  if (!first || (commentHeadLimit === 0 && commentTailLimit === 0)) return "";
 
   const location =
     thread.line !== null
@@ -367,12 +370,18 @@ export function renderPR(data: PRData, options: RenderOptions): string {
 
   topCommentsHead.forEach(pushIssueComment);
 
-  if (topCommentsOmitted > 0) {
-    // The first surviving tail comment's timestamp places this entry
-    // roughly where the omitted comments would otherwise have sorted into
-    // the timeline — pushed here, ahead of the tail entries, so it sorts
-    // first on an exact tie (Array#sort is stable).
-    const omittedAt = topCommentsTail[0]?.createdAt ?? pull.created_at;
+  if (
+    topCommentsOmitted > 0 &&
+    (topCommentsHead.length || topCommentsTail.length)
+  ) {
+    // The first surviving tail comment's timestamp, or the last head comment's
+    // timestamp, places this entry roughly where the omitted comments would
+    // otherwise have sorted into the timeline — pushed here, ahead of the tail
+    // entries, so it sorts first on an exact tie (Array#sort is stable).
+    const omittedAt =
+      topCommentsTail[0]?.createdAt ??
+      topCommentsHead.at(-1)?.createdAt ??
+      pull.created_at;
     timeline.push({
       timestamp: omittedAt,
       content: `### ${topCommentsOmitted} comments omitted`,
@@ -391,8 +400,10 @@ export function renderPR(data: PRData, options: RenderOptions): string {
   }
 
   for (const thread of reviewThreads) {
+    // The fetch code ensures the head limit is at least 1 so we can get the
+    // first timestamp to place the thread correctly in the timeline.
     const first = thread.comments.nodes[0];
-    if (!first) continue;
+    if (!first || (commentHeadLimit === 0 && commentTailLimit === 0)) continue;
     if (first.isMinimized && !includeMinimized) continue;
     timeline.push({
       timestamp: first.createdAt,

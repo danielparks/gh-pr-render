@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
+- Added configurable limits to the number of comments displayed at the top level and in each thread. By default 20 of the first comments are shown, then a marker if there are comments hidden, and then 20 of the last comments. One notable downside is that it is no longer possible to display more than 200 comments (100 in the head, 100 in the tail).
 - Added when and how a PR was closed (merged vs. closed without merging) to PR rendering.
 - Added requested reviewers (team and user), assignees, draft status, and milestone to PR rendering.
 - Added a `## Commits` list (short sha, subject, author) to PR rendering.

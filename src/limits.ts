@@ -9,3 +9,9 @@
 // configurable per invocation via RenderOptions/FetchOptions.
 export const DEFAULT_COMMENT_HEAD_LIMIT = 20;
 export const DEFAULT_COMMENT_TAIL_LIMIT = 20;
+
+// GitHub GraphQL connections reject `first`/`last` above 100, regardless of
+// how high a caller sets --comment-head-limit/--comment-tail-limit.
+// Requesting more than this just yields a shorter head/tail than asked for,
+// rather than erroring.
+export const MAX_PAGE_SIZE = 100;

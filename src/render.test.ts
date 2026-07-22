@@ -9,10 +9,6 @@ import {
   formatReactions,
   renderCommits,
 } from "./render.js";
-import {
-  DEFAULT_COMMENT_HEAD_LIMIT,
-  DEFAULT_COMMENT_TAIL_LIMIT,
-} from "./limits.js";
 import type {
   Commit,
   IssueComment,
@@ -23,9 +19,10 @@ import type {
   ThreadComment,
 } from "./types.js";
 
+// Various tests depend on these limits being 20.
 const defaultCommentLimits = {
-  commentHeadLimit: DEFAULT_COMMENT_HEAD_LIMIT,
-  commentTailLimit: DEFAULT_COMMENT_TAIL_LIMIT,
+  commentHeadLimit: 20,
+  commentTailLimit: 20,
 };
 
 function loadFixture(owner: string, repo: string, prNumber: number): PRData {
@@ -43,6 +40,19 @@ function snapshotPath(
   const snapshotsDir = fileURLToPath(new URL("../snapshots", import.meta.url));
   return join(snapshotsDir, `${owner}-${repo}-${prNumber}${variant}.md`);
 }
+
+expect.extend({
+  toContainExactly(received: string, substring: string, expectedCount: number) {
+    const count = received.split(substring).length - 1;
+    const pass = count === expectedCount;
+    return {
+      pass,
+      message: () =>
+        `expected "${received}" to contain "${substring}" exactly ` +
+        `${expectedCount} time(s), but found it ${count} time(s)`,
+    };
+  },
+});
 
 describe("renderPR - danielparks/htmlize #66", () => {
   const data = loadFixture("danielparks", "htmlize", 66);
@@ -68,6 +78,62 @@ describe("renderPR - danielparks/htmlize #66", () => {
       }),
     ).toMatchFileSnapshot(
       snapshotPath("danielparks", "htmlize", 66, ".with-minimized"),
+    );
+  });
+
+  it("renders with minimized comments and 0 head limit and 0 tail limit", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+        commentHeadLimit: 0,
+        commentTailLimit: 0,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks", "htmlize", 66, ".with-minimized.head0.tail0"),
+    );
+  });
+
+  it("renders with minimized comments and 0 head limit and 1 tail limit", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+        commentHeadLimit: 0,
+        commentTailLimit: 1,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks", "htmlize", 66, ".with-minimized.head0.tail1"),
+    );
+  });
+
+  it("renders with minimized comments and 1 head limit and 0 tail limit", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+        commentHeadLimit: 1,
+        commentTailLimit: 0,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks", "htmlize", 66, ".with-minimized.head1.tail0"),
+    );
+  });
+
+  it("renders with minimized comments and 1 head limit and 1 tail limit", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: true,
+        includeFiles: true,
+        includeCommits: true,
+        commentHeadLimit: 1,
+        commentTailLimit: 1,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath("danielparks", "htmlize", 66, ".with-minimized.head1.tail1"),
     );
   });
 });
@@ -566,8 +632,8 @@ const renderOptions = {
   ...defaultCommentLimits,
 };
 
-describe("renderPR - comment list truncation", () => {
-  it("renders a thread's comments in full when head and tail slices fully overlap", () => {
+describe("renderPR - thread comment list truncation", () => {
+  it("renders a comments in full when head and tail slices fully overlap", () => {
     // A thread this small: both the head(20) and tail(20) queries return
     // all 3 comments, so the slices are identical, not just overlapping.
     const thread = baseThread({
@@ -581,9 +647,12 @@ describe("renderPR - comment list truncation", () => {
       basePRData({ reviewThreads: [thread] }),
       renderOptions,
     );
-    expect(output).not.toContain("omitted");
-    expect(output).toContain("id: 1)");
-    expect(output).toContain("id: 3)");
+    expect(output).toContainExactly("## Discussion", 1);
+    expect(output).toContainExactly("### Inline comment", 1);
+    expect(output).toContainExactly("#### alice", 3);
+    expect(output).not.toContain("comments omitted");
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 3)", 1);
   });
 
   it("reconciles partially overlapping head/tail slices without duplicating comments", () => {
@@ -601,13 +670,14 @@ describe("renderPR - comment list truncation", () => {
       basePRData({ reviewThreads: [thread] }),
       renderOptions,
     );
-    expect(output).not.toContain("omitted");
+    expect(output).not.toContain("comments omitted");
+    expect(output).toContainExactly("#### alice", 25);
     for (let id = 1; id <= 25; id++) {
-      expect(output.match(new RegExp(`\\(id: ${id}\\)`, "g"))).toHaveLength(1);
+      expect(output).toContainExactly(`id: ${id})`, 1);
     }
   });
 
-  it("truncates a thread's comments to head and tail when totalCount exceeds head + tail", () => {
+  it("displays comments omitted when totalCount exceeds head + tail", () => {
     const thread = baseThread({
       comments: {
         totalCount: 150,
@@ -619,13 +689,292 @@ describe("renderPR - comment list truncation", () => {
       basePRData({ reviewThreads: [thread] }),
       renderOptions,
     );
-    expect(output).toContain("id: 1)");
-    expect(output).toContain("id: 20)");
-    expect(output).toContain("#### 110 comments omitted");
-    expect(output).toContain("id: 131)");
-    expect(output).toContain("id: 150)");
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 20)", 1);
+    expect(output).toContainExactly("#### 110 comments omitted", 1);
+    expect(output).toContainExactly("id: 131)", 1);
+    expect(output).toContainExactly("id: 150)", 1);
     expect(output).not.toContain("id: 21)");
     expect(output).not.toContain("id: 130)");
+  });
+
+  it("displays all comments when limits are exactly the number of comments fetched", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 10,
+        nodes: manyThreadComments(10, 1),
+        tailNodes: manyThreadComments(10, 26),
+      },
+    });
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      commentHeadLimit: 10,
+      commentTailLimit: 10,
+    });
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 10)", 1);
+    expect(output).not.toContain("id: 11)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).not.toContain("comments omitted");
+  });
+
+  it("truncates comments when limits are smaller than the number of comments fetched", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 50,
+        nodes: manyThreadComments(25, 1),
+        tailNodes: manyThreadComments(25, 26),
+      },
+    });
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      commentHeadLimit: 5,
+      commentTailLimit: 5,
+    });
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 5)", 1);
+    expect(output).not.toContain("id: 6)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).toContainExactly("#### 40 comments omitted", 1);
+    expect(output).toContainExactly("id: 46)", 1);
+    expect(output).toContainExactly("id: 50)", 1);
+    expect(output).not.toContain("id: 51)");
+  });
+
+  it("shows only tail comments when head limit is 0", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 50,
+        nodes: manyThreadComments(25, 1),
+        tailNodes: manyThreadComments(25, 26),
+      },
+    });
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      commentHeadLimit: 0,
+      commentTailLimit: 5,
+    });
+    expect(output).not.toContain("id: 1)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).toContainExactly("#### 45 comments omitted", 1);
+    expect(output).toContainExactly("id: 46)", 1);
+    expect(output).toContainExactly("id: 50)", 1);
+    expect(output).not.toContain("id: 51)");
+  });
+
+  it("shows only head comments when tail limit is 0", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 50,
+        nodes: manyThreadComments(25, 1),
+        tailNodes: manyThreadComments(25, 26),
+      },
+    });
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      commentHeadLimit: 5,
+      commentTailLimit: 0,
+    });
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 5)", 1);
+    expect(output).toContainExactly("#### 45 comments omitted", 1);
+    expect(output).not.toContain("id: 6)");
+  });
+
+  it("shows nothing when head and tail limits are both 0", () => {
+    const thread = baseThread({
+      comments: {
+        totalCount: 50,
+        nodes: manyThreadComments(1, 1),
+        tailNodes: manyThreadComments(0, 46),
+      },
+    });
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      commentHeadLimit: 0,
+      commentTailLimit: 0,
+    });
+    expect(output).not.toContain("## Discussion");
+    expect(output).not.toContain("### Inline comment");
+    expect(output).not.toContain("#### alice");
+    expect(output).not.toContain("comments omitted");
+  });
+});
+
+describe("renderPR - top-level comment list truncation", () => {
+  it("renders a comments in full when head and tail slices fully overlap", () => {
+    // A thread this small: both the head(20) and tail(20) queries return
+    // all 3 comments, so the slices are identical, not just overlapping.
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 3,
+          nodes: manyIssueComments(3, 1),
+          tailNodes: manyIssueComments(3, 1),
+        },
+      }),
+      renderOptions,
+    );
+    expect(output).toContainExactly("## Discussion", 1);
+    expect(output).toContainExactly("### Comment by alice", 3);
+    expect(output).not.toContain("comments omitted");
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 3)", 1);
+    expect(output).not.toContain("id: 4)");
+  });
+
+  it("reconciles partially overlapping head/tail slices without duplicating comments", () => {
+    // totalCount(25) exceeds the head limit(20) alone, but not head + tail
+    // (40), so the head(1-20) and tail(6-25) queries partially overlap
+    // (6-20) — every comment should still appear exactly once, in order.
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 25,
+          nodes: manyIssueComments(20, 1),
+          tailNodes: manyIssueComments(20, 6),
+        },
+      }),
+      renderOptions,
+    );
+    expect(output).toContainExactly("### Comment by alice", 25);
+    expect(output).not.toContain("comments omitted");
+    for (let id = 1; id <= 25; id++) {
+      expect(output).toContainExactly(`id: ${id})`, 1);
+    }
+  });
+
+  it("displays comments omitted when totalCount exceeds head + tail", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 150,
+          nodes: manyIssueComments(20, 1),
+          tailNodes: manyIssueComments(20, 131),
+        },
+      }),
+      renderOptions,
+    );
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 20)", 1);
+    expect(output).toContainExactly("### 110 comments omitted", 1);
+    expect(output).toContainExactly("id: 131)", 1);
+    expect(output).toContainExactly("id: 150)", 1);
+    expect(output).not.toContain("id: 21)");
+    expect(output).not.toContain("id: 130)");
+  });
+
+  it("displays all comments when limits are exactly the number of comments fetched", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 10,
+          nodes: manyIssueComments(10, 1),
+          tailNodes: manyIssueComments(10, 26),
+        },
+      }),
+      {
+        ...renderOptions,
+        commentHeadLimit: 10,
+        commentTailLimit: 10,
+      },
+    );
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 10)", 1);
+    expect(output).not.toContain("id: 11)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).not.toContain("comments omitted");
+  });
+
+  it("truncates comments when limits are smaller than the number of comments fetched", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 50,
+          nodes: manyIssueComments(25, 1),
+          tailNodes: manyIssueComments(25, 26),
+        },
+      }),
+      {
+        ...renderOptions,
+        commentHeadLimit: 5,
+        commentTailLimit: 5,
+      },
+    );
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 5)", 1);
+    expect(output).not.toContain("id: 6)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).toContainExactly("### 40 comments omitted", 1);
+    expect(output).toContainExactly("id: 46)", 1);
+    expect(output).toContainExactly("id: 50)", 1);
+    expect(output).not.toContain("id: 51)");
+  });
+
+  it("shows only tail comments when head limit is 0", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 50,
+          nodes: manyIssueComments(25, 1),
+          tailNodes: manyIssueComments(25, 26),
+        },
+      }),
+      {
+        ...renderOptions,
+        commentHeadLimit: 0,
+        commentTailLimit: 5,
+      },
+    );
+    expect(output).not.toContain("id: 1)");
+    expect(output).not.toContain("id: 45)");
+    expect(output).toContainExactly("### 45 comments omitted", 1);
+    expect(output).toContainExactly("id: 46)", 1);
+    expect(output).toContainExactly("id: 50)", 1);
+    expect(output).not.toContain("id: 51)");
+  });
+
+  it("shows only head comments when tail limit is 0", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 50,
+          nodes: manyIssueComments(25, 1),
+          tailNodes: manyIssueComments(25, 26),
+        },
+      }),
+      {
+        ...renderOptions,
+        commentHeadLimit: 5,
+        commentTailLimit: 0,
+      },
+    );
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 5)", 1);
+    expect(output).toContainExactly("### 45 comments omitted", 1);
+    expect(output).not.toContain("id: 6)");
+  });
+
+  it("shows nothing when head and tail limits are both 0", () => {
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 50,
+          nodes: manyIssueComments(1, 1),
+          tailNodes: manyIssueComments(0, 46),
+        },
+      }),
+      {
+        ...renderOptions,
+        commentHeadLimit: 0,
+        commentTailLimit: 0,
+      },
+    );
+    expect(output).not.toContain("## Discussion");
+    expect(output).not.toContain("### Comment by alice");
+    expect(output).not.toContain("### Inline comment");
+    expect(output).not.toContain("#### alice");
+    expect(output).not.toContain("comments omitted");
   });
 
   it("truncates top-level PR comments to head and tail", () => {
@@ -637,13 +986,19 @@ describe("renderPR - comment list truncation", () => {
           tailNodes: manyIssueComments(20, 31),
         },
       }),
-      renderOptions,
+      {
+        ...renderOptions,
+        commentHeadLimit: 5,
+        commentTailLimit: 5,
+      },
     );
-    expect(output).toContain("id: 1)");
-    expect(output).toContain("id: 20)");
-    expect(output).toContain("### 10 comments omitted");
-    expect(output).toContain("id: 31)");
-    expect(output).toContain("id: 50)");
-    expect(output).not.toContain("id: 21)");
+    expect(output).toContainExactly("### Comment by alice", 10);
+    expect(output).toContainExactly("id: 1)", 1);
+    expect(output).toContainExactly("id: 5)", 1);
+    expect(output).not.toContain("id: 6)");
+    expect(output).toContainExactly("### 40 comments omitted", 1);
+    expect(output).not.toContain("id: 45)");
+    expect(output).toContainExactly("id: 46)", 1);
+    expect(output).toContainExactly("id: 50)", 1);
   });
 });

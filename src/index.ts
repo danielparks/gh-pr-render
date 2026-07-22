@@ -6,18 +6,16 @@ import { renderPR, type RenderOptions } from "./render.js";
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
+  MAX_PAGE_SIZE,
 } from "./limits.js";
 import metadata from "../package.json" with { type: "json" };
 
-// `min` isn't just cosmetic for the head limit: renderReviewThread relies on
-// a thread's first fetched comment for its diff-hunk header, so a head of 0
-// would leave threads with no anchor comment to render at all.
-function parseIntArg(min: number) {
+function parseIntArg(min: number, max: number) {
   return (value: string): number => {
     const parsed = parseInt(value, 10);
-    if (isNaN(parsed) || parsed < min) {
+    if (isNaN(parsed) || parsed < min || parsed > max) {
       throw new InvalidArgumentError(
-        `"${value}" is not a valid integer >= ${min}`,
+        `"${value}" is not a valid integer >= ${min} and <= ${max}`,
       );
     }
     return parsed;
@@ -58,13 +56,13 @@ new Command()
   .option(
     "--comment-head-limit <n>",
     "comments to show at the start of a long comment list",
-    parseIntArg(1),
+    parseIntArg(0, MAX_PAGE_SIZE),
     DEFAULT_COMMENT_HEAD_LIMIT,
   )
   .option(
     "--comment-tail-limit <n>",
     "comments to show at the end of a long comment list",
-    parseIntArg(0),
+    parseIntArg(0, MAX_PAGE_SIZE),
     DEFAULT_COMMENT_TAIL_LIMIT,
   )
   .action(
@@ -97,7 +95,7 @@ new Command()
         prNumber = parseInt(repoOrPr, 10);
       }
 
-      if (isNaN(prNumber)) {
+      if (isNaN(prNumber) || prNumber <= 0) {
         console.error(`Error: "${repoOrPr}" is not a valid PR number`);
         process.exit(1);
       }
