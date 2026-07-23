@@ -39,5 +39,5 @@
 
     "resolveJsonModule": true
   },
-  "exclude": ["dist", "eslint.config.mts", "scripts", "src/**/*.test.ts"]
+  "exclude": ["dist", "scripts", "*.mts", "*.ts", "src/**/*.test.ts"]
 }
