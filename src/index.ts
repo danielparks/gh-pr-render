@@ -100,7 +100,7 @@ const program = new Command()
         process.exit(1);
       }
 
-      const data = await fetchPRData(repo, prNumber, {
+      const data = await fetchPRData(createClient(), repo, prNumber, {
         timings: opts.timings,
         commentHeadLimit: opts.commentHeadLimit,
         commentTailLimit: opts.commentTailLimit,
@@ -127,16 +127,11 @@ program
     "include minimized comments (marked with reason)",
     false,
   )
-  .action(
-    async (
-      threadId: string,
-      opts: { includeMinimized: boolean },
-    ) => {
-      const data = await fetchSingleThread(createClient(), threadId);
-      process.stdout.write(
-        renderSingleThread(data.thread, data.pullRequest, opts.includeMinimized),
-      );
-    },
-  );
+  .action(async (threadId: string, opts: { includeMinimized: boolean }) => {
+    const data = await fetchSingleThread(createClient(), threadId);
+    process.stdout.write(
+      renderSingleThread(data.thread, data.pullRequest, opts.includeMinimized),
+    );
+  });
 
 program.parse();

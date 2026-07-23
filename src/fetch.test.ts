@@ -1,6 +1,10 @@
 import { graphql } from "@octokit/graphql";
 import { describe, expect, it } from "vitest";
-import { fetchReviewThreads, fetchSingleThread, fetchTopComments } from "./fetch.js";
+import {
+  fetchReviewThreads,
+  fetchSingleThread,
+  fetchTopComments,
+} from "./fetch.js";
 import type { IssueComment, ReactionGroup, ThreadComment } from "./types.js";
 
 // Wraps a GraphQL response body the way GitHub's API does: the actual
@@ -338,10 +342,7 @@ describe("fetchSingleThread", () => {
 
     const result = await fetchSingleThread(client, "THREAD_1");
 
-    expect(calls.map((c) => c.variables["cursor"])).toEqual([
-      null,
-      "CURSOR_1",
-    ]);
+    expect(calls.map((c) => c.variables["cursor"])).toEqual([null, "CURSOR_1"]);
     expect(result.thread.comments.nodes.map((c) => c.databaseId)).toEqual([
       1, 2, 3,
     ]);

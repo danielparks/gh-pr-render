@@ -4,6 +4,7 @@ import type {
   IssueComment,
   PRData,
   PullRequest,
+  PullRequestRef,
   ReactionContent,
   ReactionGroup,
   Review,
@@ -282,7 +283,7 @@ export function renderCommits(commits: Commit[]): string[] {
 // whose comments were truncated in the full PR output.
 export function renderSingleThread(
   thread: ReviewThread,
-  pullRequest: { number: number; url: string; createdAt: string },
+  pullRequest: PullRequestRef,
   includeMinimized: boolean,
 ): string {
   const allCount = thread.comments.totalCount;

@@ -7,6 +7,7 @@ import type {
   IssueComment,
   PRData,
   PullRequest,
+  PullRequestRef,
   ReactionGroup,
   Review,
   ReviewThread,
@@ -100,13 +101,28 @@ const TOP_COMMENTS_QUERY = `
   }
 `;
 
+// Shape shared by every GraphQL response that fetches a comment connection as
+// aliased headComments/tailComments (see toTruncatedCommentList).
+interface RawTruncatedComments<T> {
+  headComments: { totalCount: number; nodes: T[] };
+  tailComments: { nodes: T[] };
+}
+
+function toTruncatedCommentList<T>(
+  raw: RawTruncatedComments<T>,
+): TruncatedCommentList<T> {
+  return {
+    totalCount: raw.headComments.totalCount,
+    nodes: raw.headComments.nodes,
+    tailNodes: raw.tailComments.nodes,
+  };
+}
+
 interface TopCommentsResult {
   repository: {
     pullRequest: {
       reactionGroups: ReactionGroup[];
-      headComments: { totalCount: number; nodes: IssueComment[] };
-      tailComments: { nodes: IssueComment[] };
-    };
+    } & RawTruncatedComments<IssueComment>;
   };
 }
 
@@ -152,10 +168,8 @@ const REVIEW_THREADS_QUERY = `
 `;
 
 // Shape of a review thread as returned directly by REVIEW_THREADS_QUERY.
-interface RawReviewThread extends Omit<ReviewThread, "comments"> {
-  headComments: { totalCount: number; nodes: ThreadComment[] };
-  tailComments: { nodes: ThreadComment[] };
-}
+interface RawReviewThread
+  extends Omit<ReviewThread, "comments">, RawTruncatedComments<ThreadComment> {}
 
 interface ReviewThreadsResult {
   repository: {
@@ -193,11 +207,7 @@ export async function fetchTopComments(
   const pullRequest = result.repository.pullRequest;
 
   return {
-    comments: {
-      totalCount: pullRequest.headComments.totalCount,
-      nodes: pullRequest.headComments.nodes,
-      tailNodes: pullRequest.tailComments.nodes,
-    },
+    comments: toTruncatedCommentList(pullRequest),
     pullReactionGroups: pullRequest.reactionGroups,
   };
 }
@@ -236,11 +246,7 @@ export async function fetchReviewThreads(
 
   return rawThreads.map(({ headComments, tailComments, ...thread }) => ({
     ...thread,
-    comments: {
-      totalCount: headComments.totalCount,
-      nodes: headComments.nodes,
-      tailNodes: tailComments.nodes,
-    },
+    comments: toTruncatedCommentList({ headComments, tailComments }),
   }));
 }
 
@@ -268,13 +274,8 @@ const SINGLE_THREAD_QUERY = `
   }
 `;
 
-interface SingleThreadNode {
-  id: string;
-  isResolved: boolean;
-  isOutdated: boolean;
-  path: string;
-  line: number | null;
-  pullRequest: { number: number; url: string; createdAt: string };
+interface SingleThreadNode extends Omit<ReviewThread, "comments"> {
+  pullRequest: PullRequestRef;
   comments: {
     pageInfo: { hasNextPage: boolean; endCursor: string | null };
     totalCount: number;
@@ -288,7 +289,7 @@ interface SingleThreadNodeResult {
 
 export interface SingleThreadData {
   thread: ReviewThread;
-  pullRequest: { number: number; url: string; createdAt: string };
+  pullRequest: PullRequestRef;
 }
 
 export function createClient(): typeof graphql {
@@ -324,20 +325,17 @@ export async function fetchSingleThread(
     endCursor = node.comments.pageInfo.endCursor;
   }
 
+  const { pullRequest, comments, ...threadFields } = firstNode;
   return {
     thread: {
-      id: firstNode.id,
-      isResolved: firstNode.isResolved,
-      isOutdated: firstNode.isOutdated,
-      path: firstNode.path,
-      line: firstNode.line,
+      ...threadFields,
       comments: {
-        totalCount: firstNode.comments.totalCount,
+        totalCount: comments.totalCount,
         nodes: allComments,
         tailNodes: [],
       },
     },
-    pullRequest: firstNode.pullRequest,
+    pullRequest,
   };
 }
 
@@ -357,6 +355,7 @@ function timed<T>(fn: () => Promise<T>): Promise<[T, number]> {
 }
 
 export async function fetchPRData(
+  client: typeof graphql,
   repo: string,
   prNumber: number,
   options: FetchOptions = {
@@ -374,10 +373,6 @@ export async function fetchPRData(
     );
   const owner = repo.slice(0, slash);
   const repoName = repo.slice(slash + 1);
-
-  const client = graphql.defaults({
-    headers: { authorization: `token ${getAuthToken()}` },
-  });
 
   const base = `repos/${repo}`;
 

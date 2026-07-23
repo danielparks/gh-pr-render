@@ -135,6 +135,14 @@ export interface ReviewThread {
   comments: TruncatedCommentList<ThreadComment>;
 }
 
+// Just enough of a PR to place a single fetched thread in context (see
+// fetchSingleThread/renderSingleThread) — not the full PullRequest.
+export interface PullRequestRef {
+  number: number;
+  url: string;
+  createdAt: string;
+}
+
 export interface PRData {
   pull: PullRequest;
   files: ChangedFile[];

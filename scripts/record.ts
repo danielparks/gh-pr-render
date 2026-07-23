@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import { mkdirSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { fetchPRData } from "../src/fetch.js";
+import { createClient, fetchPRData } from "../src/fetch.js";
 
 function detectRepo(): string {
   const url = execSync("git remote get-url origin", {
@@ -44,7 +44,7 @@ const owner = repo.slice(0, slash);
 const repoName = repo.slice(slash + 1);
 
 console.error(`Fetching ${repo} PR #${prNumber}...`);
-const data = await fetchPRData(repo, prNumber);
+const data = await fetchPRData(createClient(), repo, prNumber);
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dir = join(root, "fixtures", owner, repoName);
