@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
-import { fetchPRData, fetchSingleThread, createClient } from "./fetch.js";
+import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
 import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,

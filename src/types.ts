@@ -143,6 +143,11 @@ export interface PullRequestRef {
   createdAt: string;
 }
 
+export interface SingleThreadData {
+  thread: ReviewThread;
+  pullRequest: PullRequestRef;
+}
+
 export interface PRData {
   pull: PullRequest;
   files: ChangedFile[];

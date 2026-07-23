@@ -286,15 +286,13 @@ export function renderSingleThread(
   pullRequest: PullRequestRef,
   includeMinimized: boolean,
 ): string {
-  const allCount = thread.comments.totalCount;
-  // Pass allCount as head limit so truncateComments never truncates — all
-  // comments were fetched and are in `nodes`; `tailNodes` is empty.
-  const headLimit = Math.max(allCount, 1);
+  // Pass totalCount as head limit so truncateComments never truncates. All
+  // comments were fetched into `nodes`; `tailNodes` is empty.
   const threadContent = renderReviewThread(
     thread,
     includeMinimized,
     pullRequest.createdAt,
-    headLimit,
+    thread.comments.totalCount,
     0,
   );
   return [

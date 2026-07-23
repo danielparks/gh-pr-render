@@ -11,6 +11,7 @@ import type {
   ReactionGroup,
   Review,
   ReviewThread,
+  SingleThreadData,
   ThreadComment,
   TruncatedCommentList,
 } from "./types.js";
@@ -126,6 +127,14 @@ interface TopCommentsResult {
   };
 }
 
+const THREAD_FIELDS = `
+  id
+  isResolved
+  isOutdated
+  path
+  line
+`;
+
 const THREAD_COMMENT_FIELDS = `
   databaseId
   author { login }
@@ -148,11 +157,7 @@ const REVIEW_THREADS_QUERY = `
         reviewThreads(first: 100, after: $cursor) {
           pageInfo { hasNextPage endCursor }
           nodes {
-            id
-            isResolved
-            isOutdated
-            path
-            line
+            ${THREAD_FIELDS}
             headComments: comments(first: $head) {
               totalCount
               nodes { ${THREAD_COMMENT_FIELDS} }
@@ -254,11 +259,7 @@ const SINGLE_THREAD_QUERY = `
   query SingleReviewThread($id: ID!, $cursor: String) {
     node(id: $id) {
       ... on PullRequestReviewThread {
-        id
-        isResolved
-        isOutdated
-        path
-        line
+        ${THREAD_FIELDS}
         pullRequest {
           number
           url
@@ -287,11 +288,6 @@ interface SingleThreadNodeResult {
   node: SingleThreadNode | null;
 }
 
-export interface SingleThreadData {
-  thread: ReviewThread;
-  pullRequest: PullRequestRef;
-}
-
 export function createClient(): typeof graphql {
   return graphql.defaults({
     headers: { authorization: `token ${getAuthToken()}` },
@@ -310,8 +306,7 @@ export async function fetchSingleThread(
   if (!firstNode) throw new Error(`Thread not found: ${threadId}`);
 
   const allComments: ThreadComment[] = [...firstNode.comments.nodes];
-  let hasNextPage = firstNode.comments.pageInfo.hasNextPage;
-  let endCursor = firstNode.comments.pageInfo.endCursor;
+  let { hasNextPage, endCursor } = firstNode.comments.pageInfo;
 
   while (hasNextPage && endCursor !== null) {
     const result = await client<SingleThreadNodeResult>(SINGLE_THREAD_QUERY, {
@@ -321,8 +316,7 @@ export async function fetchSingleThread(
     const node = result.node;
     if (!node) throw new Error(`Thread ${threadId} disappeared mid-pagination`);
     allComments.push(...node.comments.nodes);
-    hasNextPage = node.comments.pageInfo.hasNextPage;
-    endCursor = node.comments.pageInfo.endCursor;
+    ({ hasNextPage, endCursor } = node.comments.pageInfo);
   }
 
   const { pullRequest, comments, ...threadFields } = firstNode;
