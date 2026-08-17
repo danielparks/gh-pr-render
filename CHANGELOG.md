@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+- Display errors with “::error::” prefix when `$GITHUB_ACTIONS` is “true”.
+
 ## Release 0.5.0 (2026-07-23)
 
 ### Security

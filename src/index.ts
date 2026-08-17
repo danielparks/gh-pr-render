@@ -10,6 +10,23 @@ import {
 } from "./limits.js";
 import metadata from "../package.json" with { type: "json" };
 
+function fail(message: string): never {
+  if (process.env.GITHUB_ACTIONS === "true") {
+    console.error(`::error::${message}`);
+  } else {
+    console.error(`Error: ${message}`);
+  }
+  process.exit(1);
+}
+
+function handleError(error: unknown): never {
+  if (process.env.GITHUB_ACTIONS === "true") {
+    fail(error instanceof Error ? error.message : String(error));
+  } else {
+    throw error;
+  }
+}
+
 function parseIntArg(min: number, max: number) {
   return (value: string): number => {
     const parsed = parseInt(value, 10);
@@ -40,6 +57,12 @@ const program = new Command()
   .name(metadata.name)
   .version(metadata.version)
   .description(metadata.description)
+  .configureOutput({
+    outputError:
+      process.env.GITHUB_ACTIONS === "true"
+        ? (str, write) => write(`::error::${str.replace(/^error:\s*/i, "")}`)
+        : (str, write) => write(str),
+  })
   .argument(
     "<repo-or-pr>",
     "GitHub PR URL, repository (owner/repo), or PR number",
@@ -96,23 +119,25 @@ const program = new Command()
       }
 
       if (isNaN(prNumber) || prNumber <= 0) {
-        console.error(`Error: "${repoOrPr}" is not a valid PR number`);
-        process.exit(1);
+        fail(`"${repoOrPr}" is not a valid PR number`);
       }
-
-      const data = await fetchPRData(createClient(), repo, prNumber, {
-        timings: opts.timings,
-        commentHeadLimit: opts.commentHeadLimit,
-        commentTailLimit: opts.commentTailLimit,
-      });
-      const renderOptions: RenderOptions = {
-        includeMinimized: opts.includeMinimized,
-        includeFiles: opts.files,
-        includeCommits: opts.commits,
-        commentHeadLimit: opts.commentHeadLimit,
-        commentTailLimit: opts.commentTailLimit,
-      };
-      process.stdout.write(renderPR(data, renderOptions));
+      try {
+        const data = await fetchPRData(createClient(), repo, prNumber, {
+          timings: opts.timings,
+          commentHeadLimit: opts.commentHeadLimit,
+          commentTailLimit: opts.commentTailLimit,
+        });
+        const renderOptions: RenderOptions = {
+          includeMinimized: opts.includeMinimized,
+          includeFiles: opts.files,
+          includeCommits: opts.commits,
+          commentHeadLimit: opts.commentHeadLimit,
+          commentTailLimit: opts.commentTailLimit,
+        };
+        process.stdout.write(renderPR(data, renderOptions));
+      } catch (error) {
+        handleError(error);
+      }
     },
   );
 
@@ -128,10 +153,18 @@ program
     false,
   )
   .action(async (threadId: string, opts: { includeMinimized: boolean }) => {
-    const data = await fetchSingleThread(createClient(), threadId);
-    process.stdout.write(
-      renderSingleThread(data.thread, data.pullRequest, opts.includeMinimized),
-    );
+    try {
+      const data = await fetchSingleThread(createClient(), threadId);
+      process.stdout.write(
+        renderSingleThread(
+          data.thread,
+          data.pullRequest,
+          opts.includeMinimized,
+        ),
+      );
+    } catch (error) {
+      handleError(error);
+    }
   });
 
 program.parse();
