@@ -53,6 +53,26 @@ function detectRepo(): string {
   return match[1];
 }
 
+function detectPrNumber(): number {
+  let output: string;
+  try {
+    output = execSync("gh pr view --json number --jq .number", {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    throw new Error(
+      "Cannot determine PR for the current branch.\n" +
+        "Pass a PR number explicitly: gh-pr-render 123",
+    );
+  }
+  const prNumber = parseInt(output, 10);
+  if (isNaN(prNumber) || prNumber <= 0) {
+    throw new Error(`Unexpected output from "gh pr view": "${output}"`);
+  }
+  return prNumber;
+}
+
 const program = new Command()
   .name(metadata.name)
   .version(metadata.version)
@@ -64,8 +84,9 @@ const program = new Command()
         : (str, write) => write(str),
   })
   .argument(
-    "<repo-or-pr>",
-    "GitHub PR URL, repository (owner/repo), or PR number",
+    "[repo-or-pr]",
+    "GitHub PR URL, repository (owner/repo), or PR number; " +
+      "detected from the current branch if omitted",
   )
   .argument("[pr]", "PR number when first argument is a repository")
   .option(
@@ -90,7 +111,7 @@ const program = new Command()
   )
   .action(
     async (
-      repoOrPr: string,
+      repoOrPr: string | undefined,
       prArg: string | undefined,
       opts: {
         includeMinimized: boolean;
@@ -104,22 +125,27 @@ const program = new Command()
       let repo: string;
       let prNumber: number;
 
-      const urlMatch = repoOrPr.match(
-        /github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/,
-      );
-      if (urlMatch?.[1] && urlMatch[2]) {
-        repo = urlMatch[1];
-        prNumber = parseInt(urlMatch[2], 10);
-      } else if (prArg !== undefined) {
-        repo = repoOrPr;
-        prNumber = parseInt(prArg, 10);
-      } else {
+      if (repoOrPr === undefined) {
         repo = detectRepo();
-        prNumber = parseInt(repoOrPr, 10);
-      }
+        prNumber = detectPrNumber();
+      } else {
+        const urlMatch = repoOrPr.match(
+          /github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/,
+        );
+        if (urlMatch?.[1] && urlMatch[2]) {
+          repo = urlMatch[1];
+          prNumber = parseInt(urlMatch[2], 10);
+        } else if (prArg !== undefined) {
+          repo = repoOrPr;
+          prNumber = parseInt(prArg, 10);
+        } else {
+          repo = detectRepo();
+          prNumber = parseInt(repoOrPr, 10);
+        }
 
-      if (isNaN(prNumber) || prNumber <= 0) {
-        fail(`"${repoOrPr}" is not a valid PR number`);
+        if (isNaN(prNumber) || prNumber <= 0) {
+          fail(`"${repoOrPr}" is not a valid PR number`);
+        }
       }
       try {
         const data = await fetchPRData(createClient(), repo, prNumber, {
