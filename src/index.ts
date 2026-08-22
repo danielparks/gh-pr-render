@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
 import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
 import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
@@ -54,21 +54,27 @@ function detectRepo(): string {
 }
 
 function detectPrNumber(): number {
-  let output: string;
-  try {
-    output = execSync("gh pr view --json number --jq .number", {
+  const { status, stdout, stderr } = spawnSync(
+    "gh pr view --json number --jq .number",
+    {
       encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
-    }).trim();
-  } catch {
+      shell: true,
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+
+  if (status === null) {
+    fail("gh pr view killed by signal");
+  } else if (status !== 0) {
     fail(
-      "Cannot determine PR for the current branch.\n" +
-        "Pass a PR number explicitly: gh-pr-render 123",
+      (stderr.trim() || "gh pr view failed with no output") +
+        "\n\nTry passing a PR number or URL explicitly: gh-pr-render 123",
     );
   }
-  const prNumber = parseInt(output, 10);
+
+  const prNumber = parseInt(stdout.trim(), 10);
   if (isNaN(prNumber) || prNumber <= 0) {
-    fail(`Unexpected output from "gh pr view": "${output}"`);
+    fail(`Unexpected output from "gh pr view": "${stdout.trim()}"`);
   }
   return prNumber;
 }
