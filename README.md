@@ -4,11 +4,26 @@ This is a CLI tool that downloads PR comments and reviews from GitHub and format
 
 The primary use case is helping LLMs keep track of the conversation on a PR when re-reviewing. My GitHub action [danielparks/claude-pr-review] uses `gh-pr-render` to provide context to Claude in automatic PR reviews.
 
-## Options
+## Using to render a PR
 
+```text
+gh-pr-render [options] <pr-url>
+gh-pr-render [options] <owner/repo> <pr-number>
+gh-pr-render [options] <pr-number>
+gh-pr-render [options]
+```
+
+If the PR number or repo isn’t specified, `gh-pr-render` will determine them based on the branch name and remote URL.
+
+Options:
+
+- `--help` — show usage information.
+- `--version` — show release version.
 - `--include-minimized` — include minimized comments, marked with their reason. Off by default: minimized comments are usually outdated or off-topic noise.
 - `--no-files` — omit the `## Changed Files` list.
 - `--no-commits` — omit the `## Commits` list.
+- `--comment-head-limit <n>` — comments to show at the start of a long comment list (default: 20).
+- `--comment-tail-limit <n>` — comments to show at the end of a long comment list (default: 20).
 - `--timings` — print request timings to stderr.
 
 ### When to use `--no-files` / `--no-commits`
@@ -25,6 +40,14 @@ Reasons to keep the defaults:
 
 - **Commits structured as logical units** (not "wip"/"fix typo" churn) — subjects describe the shape of the change, and are cheap to cross-reference against review-thread timestamps to check whether feedback was actually addressed.
 - **Large or noisy PRs** (generated files, lockfiles, vendored updates mixed with the real change) — the file list is how a reviewer decides what to skip _before_ opening any diff, human or LLM.
+
+## Using to render a comment thread
+
+```text
+gh-pr-render thread <thread-id>
+```
+
+Fetch and display all comments in a single review thread. Pass the thread ID shown in `gh-pr-render` output, e.g. `RT_kwDO...`.
 
 ## Example output
 
