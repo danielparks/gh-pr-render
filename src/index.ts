@@ -45,7 +45,7 @@ function detectRepo(): string {
   }).trim();
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/);
   if (!match?.[1]) {
-    throw new Error(
+    fail(
       `Cannot parse GitHub repository from remote URL: ${url}\n` +
         `Pass repository explicitly: gh-pr-render owner/repo 123`,
     );
@@ -61,14 +61,14 @@ function detectPrNumber(): number {
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
   } catch {
-    throw new Error(
+    fail(
       "Cannot determine PR for the current branch.\n" +
         "Pass a PR number explicitly: gh-pr-render 123",
     );
   }
   const prNumber = parseInt(output, 10);
   if (isNaN(prNumber) || prNumber <= 0) {
-    throw new Error(`Unexpected output from "gh pr view": "${output}"`);
+    fail(`Unexpected output from "gh pr view": "${output}"`);
   }
   return prNumber;
 }
