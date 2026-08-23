@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { execSync, spawnSync } from "child_process";
+import { spawnSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
 import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
 import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
@@ -39,26 +39,16 @@ function parseIntArg(min: number, max: number) {
   };
 }
 
-function detectRepo(): string {
-  const url = execSync("git remote get-url origin", {
-    encoding: "utf8",
-  }).trim();
-  const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/);
-  if (!match?.[1]) {
-    fail(
-      `Cannot parse GitHub repository from remote URL: ${url}\n` +
-        `Pass repository explicitly: gh-pr-render owner/repo 123`,
-    );
-  }
-  return match[1];
-}
-
-function detectPrNumber(): number {
+// prRef can be a branch name or a PR name
+function detectRepoAndPr(
+  prRef: string | undefined = undefined,
+): [string, number] {
+  const prSuffix = prRef === undefined ? [] : [prRef];
   const { status, stdout, stderr } = spawnSync(
-    "gh pr view --json number --jq .number",
+    "gh",
+    ["pr", "view", "--json", "url", "--jq", ".url", ...prSuffix],
     {
       encoding: "utf8",
-      shell: true,
       stdio: ["ignore", "pipe", "pipe"],
     },
   );
@@ -68,15 +58,25 @@ function detectPrNumber(): number {
   } else if (status !== 0) {
     fail(
       (stderr.trim() || "gh pr view failed with no output") +
-        "\n\nTry passing a PR number or URL explicitly: gh-pr-render 123",
+        (prRef === undefined
+          ? "\n\nTry passing a PR number or URL explicitly: gh-pr-render 123"
+          : ""),
     );
   }
 
-  const prNumber = parseInt(stdout.trim(), 10);
-  if (isNaN(prNumber) || prNumber <= 0) {
+  const repoPr = parsePrUrl(stdout.trim());
+  if (!repoPr) {
     fail(`Unexpected output from "gh pr view": "${stdout.trim()}"`);
   }
-  return prNumber;
+  return repoPr;
+}
+
+function parsePrUrl(url: string): [string, number] | undefined {
+  const match = url.match(/github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/);
+  if (match) {
+    return [match[1]!, parseInt(match[2]!, 10)];
+  }
+  return undefined;
 }
 
 const program = new Command()
@@ -91,7 +91,7 @@ const program = new Command()
   })
   .argument(
     "[repo-or-pr]",
-    "GitHub PR URL, repository (owner/repo), or PR number; " +
+    "GitHub PR URL, repository (owner/repo), branch name, or PR number; " +
       "detected from the current branch if omitted",
   )
   .argument("[pr]", "PR number when first argument is a repository")
@@ -132,21 +132,16 @@ const program = new Command()
       let prNumber: number;
 
       if (repoOrPr === undefined) {
-        repo = detectRepo();
-        prNumber = detectPrNumber();
+        [repo, prNumber] = detectRepoAndPr();
       } else {
-        const urlMatch = repoOrPr.match(
-          /github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/,
-        );
-        if (urlMatch?.[1] && urlMatch[2]) {
-          repo = urlMatch[1];
-          prNumber = parseInt(urlMatch[2], 10);
+        const match = parsePrUrl(repoOrPr);
+        if (match) {
+          [repo, prNumber] = match;
         } else if (prArg !== undefined) {
           repo = repoOrPr;
           prNumber = parseInt(prArg, 10);
         } else {
-          repo = detectRepo();
-          prNumber = parseInt(repoOrPr, 10);
+          [repo, prNumber] = detectRepoAndPr(repoOrPr);
         }
 
         if (isNaN(prNumber) || prNumber <= 0) {

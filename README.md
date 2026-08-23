@@ -9,7 +9,7 @@ The primary use case is helping LLMs keep track of the conversation on a PR when
 ```text
 gh-pr-render [options] <pr-url>
 gh-pr-render [options] <owner/repo> <pr-number>
-gh-pr-render [options] <pr-number>
+gh-pr-render [options] <pr-number | branch-name>
 gh-pr-render [options]
 ```
 
