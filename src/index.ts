@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from "child_process";
+import { statSync } from "fs";
+import path from "path";
 import { Command, InvalidArgumentError } from "commander";
 import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
 import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
@@ -39,11 +41,70 @@ function parseIntArg(min: number, max: number) {
   };
 }
 
+/** Find this directory or a parent with a .jj dir. */
+function findJj(): string | undefined {
+  let dir = path.resolve(".");
+  while (
+    !statSync(path.join(dir, ".jj"), { throwIfNoEntry: false })?.isDirectory()
+  ) {
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      return undefined;
+    }
+    dir = parent;
+  }
+  return dir;
+}
+
+function detectJjRemoteBookmarks(): string[] {
+  if (!findJj()) {
+    return [];
+  }
+
+  const { status, stdout } = spawnSync(
+    "jj",
+    [
+      "log",
+      "-r",
+      "latest(~empty() & ::@)",
+      "-GT",
+      `remote_bookmarks
+        .filter(|b| b.remote() != "git")
+        .map(|b| b.name())
+        .join("\n")`,
+    ],
+    {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    },
+  );
+  if (status !== 0) {
+    return [];
+  }
+
+  return stdout.split("\n").filter(Boolean);
+}
+
 // prRef can be a branch name or a PR name
 function detectRepoAndPr(
   prRef: string | undefined = undefined,
 ): [string, number] {
-  const prSuffix = prRef === undefined ? [] : [prRef];
+  let prSuffix: string[] = [];
+  if (prRef) {
+    prSuffix = [prRef];
+  } else {
+    const bookmarks = detectJjRemoteBookmarks();
+    if (bookmarks.length > 1) {
+      // FIXME Possibly we should filter by origin that includes GitHub, or just
+      // try each bookmark with `gh pr view ...`.
+      console.error("Multiple jj bookmarks detected; falling back to git");
+    } else {
+      // Either 0 or 1 bookmark. 0 bookmarks will fall back to git. (Usually
+      // jj repos are collocated with git.)
+      prSuffix = bookmarks;
+    }
+  }
+
   const { status, stdout, stderr } = spawnSync(
     "gh",
     ["pr", "view", "--json", "url", "--jq", ".url", ...prSuffix],

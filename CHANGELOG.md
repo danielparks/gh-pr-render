@@ -7,7 +7,9 @@ All notable changes to this project will be documented in this file.
 - Display errors with “::error::” prefix when `$GITHUB_ACTIONS` is “true”.
 - Detect PR with `gh` to handle forks correctly.
 - Accept branch name for PR specification.
-- Attempt to detect the relevant PR based on branch name if not specified on the command line.
+- Attempt to detect the relevant PR based on branch name if not specified on the command line. Supports `git` and [`jj`] repos.
+
+[`jj`]: https://www.jj-vcs.dev/
 
 ## Release 0.5.0 (2026-07-23)
 
