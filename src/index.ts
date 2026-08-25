@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 import { spawnSync } from "child_process";
-import { statSync } from "fs";
-import path from "path";
 import { Command, InvalidArgumentError } from "commander";
 import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
 import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
@@ -41,27 +39,48 @@ function parseIntArg(min: number, max: number) {
   };
 }
 
-/** Find this directory or a parent with a .jj dir. */
-function findJj(): string | undefined {
-  let dir = path.resolve(".");
-  while (
-    !statSync(path.join(dir, ".jj"), { throwIfNoEntry: false })?.isDirectory()
-  ) {
-    const parent = path.dirname(dir);
-    if (parent === dir) {
-      return undefined;
+const JJ_NOT_A_REPO = "There is no jj repo in";
+
+/**
+ * Check whether the current directory is inside a `jj` repo.
+ *
+ * `jj root` is a cheap, local call, so it's worth using as a pre-flight
+ * check: it lets us tell "jj isn't installed" and "this isn't a jj repo"
+ * (both routine, silently skipped) apart from a genuine `jj` error (which is
+ * worth surfacing, since it means something unexpected happened in a repo
+ * that does have jj).
+ */
+function isJjRepo(): boolean {
+  const { status, stderr, error } = spawnSync("jj", ["root"], {
+    encoding: "utf8",
+    stdio: ["ignore", "ignore", "pipe"],
+  });
+
+  if (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      console.error(`Failed to run "jj root": ${error.message}`);
     }
-    dir = parent;
+    return false;
   }
-  return dir;
+
+  if (status === 0) {
+    return true;
+  }
+
+  if (!stderr.includes(JJ_NOT_A_REPO)) {
+    console.error(
+      `"jj root" failed: ${stderr.trim() || `exit code ${status}`}`,
+    );
+  }
+  return false;
 }
 
 function detectJjRemoteBookmarks(): string[] {
-  if (!findJj()) {
+  if (!isJjRepo()) {
     return [];
   }
 
-  const { status, stdout } = spawnSync(
+  const { status, stdout, stderr } = spawnSync(
     "jj",
     [
       "log",
@@ -75,10 +94,11 @@ function detectJjRemoteBookmarks(): string[] {
     ],
     {
       encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
+      stdio: ["ignore", "pipe", "pipe"],
     },
   );
   if (status !== 0) {
+    console.error(`"jj log" failed: ${stderr.trim() || `exit code ${status}`}`);
     return [];
   }
 
