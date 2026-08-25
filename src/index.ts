@@ -123,9 +123,11 @@ function detectRepoAndPr(
   } else {
     const bookmarks = detectJjRemoteBookmarks();
     if (bookmarks.length > 1) {
-      // FIXME Possibly we should filter by origin that includes GitHub, or just
-      // try each bookmark with `gh pr view ...`.
-      console.error("Multiple jj bookmarks detected; falling back to git");
+      fail(
+        "Multiple jj bookmarks found. Specify which to render:\n\n  " +
+          bookmarks.join("\n  ") +
+          "\n\nTry gh-pr-render <bookmark>",
+      );
     } else {
       // Either 0 or 1 bookmark. 0 bookmarks will fall back to git. (Usually
       // jj repos are collocated with git.)
@@ -148,7 +150,7 @@ function detectRepoAndPr(
     fail(
       (stderr.trim() || "gh pr view failed with no output") +
         (prRef === undefined
-          ? "\n\nTry passing a PR number or URL explicitly: gh-pr-render 123"
+          ? "\n\nTry: gh-pr-render <branch | pr-number | url>"
           : ""),
     );
   }
