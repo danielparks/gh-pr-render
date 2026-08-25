@@ -39,6 +39,8 @@ function parseIntArg(min: number, max: number) {
   };
 }
 
+// Currently the best way to check for a JJ repo is to verify that `jj root`
+// standard error output doesn’t contain this phrase.
 const JJ_NOT_A_REPO = "There is no jj repo in";
 
 /**
@@ -51,7 +53,7 @@ const JJ_NOT_A_REPO = "There is no jj repo in";
  * that does have jj).
  */
 function isJjRepo(): boolean {
-  const { status, stderr, error } = spawnSync("jj", ["root"], {
+  const { signal, status, stderr, error } = spawnSync("jj", ["root"], {
     encoding: "utf8",
     stdio: ["ignore", "ignore", "pipe"],
   });
@@ -68,9 +70,15 @@ function isJjRepo(): boolean {
   }
 
   if (!stderr.includes(JJ_NOT_A_REPO)) {
-    console.error(
-      `"jj root" failed: ${stderr.trim() || `exit code ${status}`}`,
-    );
+    if (stderr.trim()) {
+      console.error(`"jj root" failed: ${stderr.trim()}`);
+    } else if (signal) {
+      console.error(`"jj root" killed by signal ${signal}`);
+    } else if (status) {
+      console.error(`"jj root" failed with exit code ${status}`);
+    } else {
+      console.error(`"jj root" failed for unknown reason`);
+    }
   }
   return false;
 }
