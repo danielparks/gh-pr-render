@@ -83,7 +83,7 @@ function isJjRepo(): boolean {
   return false;
 }
 
-function detectJjRemoteBookmarks(): string[] {
+function detectJjBookmarks(): string[] {
   if (!isJjRepo()) {
     return [];
   }
@@ -95,7 +95,7 @@ function detectJjRemoteBookmarks(): string[] {
       "-r",
       "latest(~empty() & ::@)",
       "-GT",
-      `remote_bookmarks
+      `bookmarks
         .filter(|b| b.remote() != "git")
         .map(|b| b.name())
         .join("\n")`,
@@ -110,7 +110,7 @@ function detectJjRemoteBookmarks(): string[] {
     return [];
   }
 
-  return stdout.split("\n").filter(Boolean);
+  return [...new Set(stdout.split("\n").filter(Boolean))];
 }
 
 // prRef can be a branch name or a PR name
@@ -121,7 +121,7 @@ function detectRepoAndPr(
   if (prRef) {
     prSuffix = [prRef];
   } else {
-    const bookmarks = detectJjRemoteBookmarks();
+    const bookmarks = detectJjBookmarks();
     if (bookmarks.length > 1) {
       fail(
         "Multiple jj bookmarks found. Specify which to render:\n\n  " +
