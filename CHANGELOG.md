@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+I will no longer include notes in the CHANGELOG for security updates for dev dependencies that don’t affect the published package.
+
 - Display errors with “::error::” prefix when `$GITHUB_ACTIONS` is “true”.
 - Attempt to detect the relevant PR based on branch name if not specified on the command line. Supports `git` and [`jj`] repos.
 - Detect PR with `gh` to handle forks correctly.
