@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## main branch
+## Release 0.6.0 (2026-08-26)
 
 I will no longer include notes in the CHANGELOG for security updates for dev dependencies that don’t affect the published package.
 
