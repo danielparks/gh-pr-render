@@ -2,14 +2,24 @@
   "name": "gh-pr-render",
   "version": "0.6.0",
   "description": "Render GitHub PRs with comments for LLM PR reviews",
-  "files": [
-    "dist"
+  "keywords": [
+    "ai",
+    "cli",
+    "code-review",
+    "github",
+    "llm",
+    "pull-request"
   ],
-  "main": "dist/index.js",
-  "prepare": "tsc",
+  "license": "MIT OR Apache-2.0",
+  "author": "Daniel Parks <oss-gh-pr-render@demonhorse.org> (https://demon.horse)",
   "bin": {
     "gh-pr-render": "dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "start": "jiti src/index.ts",
     "build": "tsc",
@@ -22,20 +32,6 @@
     "record": "jiti scripts/record.ts",
     "setup": "jiti scripts/setup.ts",
     "update-readme": "jiti scripts/update-readme.ts"
-  },
-  "keywords": [
-    "github",
-    "pull-request",
-    "llm",
-    "ai",
-    "code-review",
-    "cli"
-  ],
-  "author": "Daniel Parks <oss-gh-pr-render@demonhorse.org> (https://demon.horse)",
-  "license": "MIT OR Apache-2.0",
-  "type": "module",
-  "engines": {
-    "node": ">=20.18.3"
   },
   "dependencies": {
     "@octokit/graphql": "^9.0.3",
@@ -50,5 +46,9 @@
     "rumdl": "^0.3.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
-  }
+  },
+  "engines": {
+    "node": ">=20.18.3"
+  },
+  "prepare": "tsc"
 }
