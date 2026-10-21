@@ -54,7 +54,7 @@ repos:
         name: lint
         language: system
         entry: npm run lint
-        files: \.([mc]?[tj]sx?|jsonc?|md)$
+        files: \.([mc]?[tj]sx?|md)$
         exclude: "^snapshots/"
         stages: [pre-commit, pre-merge-commit]
         require_serial: true

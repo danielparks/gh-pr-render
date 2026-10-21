@@ -1,0 +1,6 @@
+[global]
+exclude = ["snapshots", "fixtures", "node_modules", "dist"]
+disable = [
+  "MD013", # Long lines are fine; prose isn't hard-wrapped.
+  "MD038", # CLAUDE.md deliberately shows the blockquote prefix as `> `.
+]

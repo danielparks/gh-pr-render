@@ -15,8 +15,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "check": "tsc -p tsconfig.check.json",
-    "lint": "eslint",
-    "format": "prettier --write .",
+    "lint": "oxlint && rumdl check .",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "test": "vitest run",
     "record": "jiti scripts/record.ts",
     "setup": "jiti scripts/setup.ts",
@@ -42,20 +43,12 @@
     "date-fns": "^4.1.0"
   },
   "devDependencies": {
-    "@eslint/css": "^1.2.0",
-    "@eslint/js": "^10.0.1",
-    "@eslint/json": "^1.2.0",
-    "@eslint/markdown": "^8.0.1",
     "@types/node": "^25.6.2",
-    "@typescript-eslint/eslint-plugin": "^8.59.2",
-    "@typescript-eslint/parser": "^8.59.2",
-    "eslint": "^10.3.0",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.6.0",
     "jiti": "^2.7.0",
-    "prettier": "^3.8.3",
+    "oxfmt": "^0.74.0",
+    "oxlint": "^1.89.0",
+    "rumdl": "^0.3.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.2",
     "vitest": "^4.1.8"
   }
 }

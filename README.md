@@ -51,7 +51,7 @@ Fetch and display all comments in a single review thread. Pass the thread ID sho
 
 ## Example output
 
-<!-- eslint-disable -->
+<!-- rumdl-disable -->
 <!-- example-output-start -->
 
 > # PR #1: Add type hints and arithmetic operations
@@ -144,7 +144,7 @@ Fetch and display all comments in a single review thread. Pass the thread ID sho
 > - 👀 danielparks
 
 <!-- example-output-end -->
-<!-- eslint-enable -->
+<!-- rumdl-enable -->
 
 See [`snapshots/`] for more examples of rendered output, including inline comments, reviews, and minimized comments.
 
