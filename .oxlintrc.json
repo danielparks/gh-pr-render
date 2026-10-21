@@ -8,7 +8,7 @@
     "builtin": true
   },
   "rules": {
-    "no-unused-vars": [
+    "typescript/no-unused-vars": [
       "warn",
       {
         "argsIgnorePattern": "^_",
