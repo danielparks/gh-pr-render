@@ -347,16 +347,17 @@ export interface RenderOptions {
   diffHunkLimit?: number;
 }
 
-export function renderPR(data: PRData, options: RenderOptions): string {
-  const { pull, files, commits, topComments, reviews, reviewThreads } = data;
-  const {
+export function renderPR(
+  { pull, files, commits, topComments, reviews, reviewThreads }: PRData,
+  {
     includeMinimized,
     includeFiles,
     includeCommits,
     commentHeadLimit,
     commentTailLimit,
-  } = options;
-  const diffHunkLimit = options.diffHunkLimit ?? DEFAULT_DIFF_HUNK_LIMIT;
+    diffHunkLimit = DEFAULT_DIFF_HUNK_LIMIT,
+  }: RenderOptions,
+): string {
   const out: string[] = [];
 
   // Header
