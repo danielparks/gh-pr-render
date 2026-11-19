@@ -284,3 +284,98 @@ describe("renderSingleThread", () => {
     expect(output).toContainExactly("#### alice", 50);
   });
 });
+
+describe("renderPR - diff hunk limit", () => {
+  const hunk = [
+    "@@ -0,0 +1,30 @@",
+    ...Array.from({ length: 30 }, (_, i) => `+l${i + 1}`),
+  ].join("\n");
+  const data = (thread: Partial<ReviewThread> = {}) =>
+    basePRData({
+      reviewThreads: [
+        baseThread({
+          comments: {
+            totalCount: 1,
+            nodes: [baseThreadComment({ diffHunk: hunk })],
+            tailNodes: [],
+          },
+          ...thread,
+        }),
+      ],
+    });
+
+  it("caps the hunk at the default limit with an omitted note", () => {
+    const out = renderPR(data(), renderOptions);
+    expect(out).toContain("… 20 more lines above\n+l21\n");
+    expect(out).not.toContain("+l20\n");
+    expect(out).toContain("+l21\n");
+  });
+
+  it("honors a custom limit, and 0 for unlimited", () => {
+    expect(renderPR(data(), { ...renderOptions, diffHunkLimit: 2 })).toContain(
+      "… 28 more lines above\n+l29\n+l30\n",
+    );
+    expect(renderPR(data(), { ...renderOptions, diffHunkLimit: 0 })).toContain(
+      "```diff\n+l1\n+l2\n",
+    );
+  });
+
+  it("keeps the whole commented range from the thread's original lines", () => {
+    const out = renderPR(
+      data({ originalStartLine: 5, originalLine: 30, diffSide: "RIGHT" }),
+      renderOptions,
+    );
+    expect(out).toContain("… 4 more lines above\n+l5\n");
+  });
+
+  it("applies the limit to renderSingleThread", () => {
+    const out = renderSingleThread(
+      data().reviewThreads[0]!,
+      {
+        number: 1,
+        url: "https://example.com/1",
+        createdAt: "2026-01-01T00:00:00Z",
+      },
+      false,
+      3,
+    );
+    expect(out).toContain("… 27 more lines above");
+  });
+});
+
+describe("renderPR - thread location", () => {
+  const location = (thread: Partial<ReviewThread>): string => {
+    const out = renderPR(
+      basePRData({ reviewThreads: [baseThread(thread)] }),
+      renderOptions,
+    );
+    return /### Inline comment on (.*?) \(id:/.exec(out)?.[1] ?? "";
+  };
+
+  it("shows a single line", () => {
+    expect(location({ line: 10 })).toBe("`file.py` line 10");
+  });
+
+  it("shows a multi-line range", () => {
+    expect(location({ line: 10, startLine: 4 })).toBe("`file.py` lines 4–10");
+  });
+
+  it("falls back to the original lines for outdated threads", () => {
+    expect(
+      location({ line: null, originalLine: 12, originalStartLine: 8 }),
+    ).toBe("`file.py` lines 8–12 (original)");
+  });
+
+  it("notes comments on the old side of the diff", () => {
+    expect(location({ line: 10, diffSide: "LEFT" })).toBe(
+      "`file.py` line 10 (old file)",
+    );
+    expect(location({ line: null, originalLine: 3, diffSide: "LEFT" })).toBe(
+      "`file.py` line 3 (original, old file)",
+    );
+  });
+
+  it("shows just the path when no line is known", () => {
+    expect(location({ line: null })).toBe("`file.py`");
+  });
+});

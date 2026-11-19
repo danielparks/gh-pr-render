@@ -6,6 +6,7 @@ import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
+  DEFAULT_DIFF_HUNK_LIMIT,
   MAX_PAGE_SIZE,
 } from "./limits.js";
 import metadata from "../package.json" with { type: "json" };
@@ -206,6 +207,12 @@ const program = new Command()
     parseIntArg(0, MAX_PAGE_SIZE),
     DEFAULT_COMMENT_TAIL_LIMIT,
   )
+  .option(
+    "--diff-hunk-limit <n>",
+    "max lines of diff to show above each inline comment (0 for no limit)",
+    parseIntArg(0, Number.MAX_SAFE_INTEGER),
+    DEFAULT_DIFF_HUNK_LIMIT,
+  )
   .action(
     async (
       repoOrPr: string | undefined,
@@ -217,6 +224,7 @@ const program = new Command()
         timings: boolean;
         commentHeadLimit: number;
         commentTailLimit: number;
+        diffHunkLimit: number;
       },
     ) => {
       let repo: string;
@@ -251,6 +259,7 @@ const program = new Command()
           includeCommits: opts.commits,
           commentHeadLimit: opts.commentHeadLimit,
           commentTailLimit: opts.commentTailLimit,
+          diffHunkLimit: opts.diffHunkLimit,
         };
         process.stdout.write(renderPR(data, renderOptions));
       } catch (error) {
@@ -270,19 +279,31 @@ program
     "include minimized comments (marked with reason)",
     false,
   )
-  .action(async (threadId: string, opts: { includeMinimized: boolean }) => {
-    try {
-      const data = await fetchSingleThread(createClient(), threadId);
-      process.stdout.write(
-        renderSingleThread(
-          data.thread,
-          data.pullRequest,
-          opts.includeMinimized,
-        ),
-      );
-    } catch (error) {
-      handleError(error);
-    }
-  });
+  .option(
+    "--diff-hunk-limit <n>",
+    "max lines of diff to show above the comment (0 for no limit)",
+    parseIntArg(0, Number.MAX_SAFE_INTEGER),
+    DEFAULT_DIFF_HUNK_LIMIT,
+  )
+  .action(
+    async (
+      threadId: string,
+      opts: { includeMinimized: boolean; diffHunkLimit: number },
+    ) => {
+      try {
+        const data = await fetchSingleThread(createClient(), threadId);
+        process.stdout.write(
+          renderSingleThread(
+            data.thread,
+            data.pullRequest,
+            opts.includeMinimized,
+            opts.diffHunkLimit,
+          ),
+        );
+      } catch (error) {
+        handleError(error);
+      }
+    },
+  );
 
 program.parse();

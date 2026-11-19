@@ -15,3 +15,8 @@ export const DEFAULT_COMMENT_TAIL_LIMIT = 20;
 // Requesting more than this just yields a shorter head/tail than asked for,
 // rather than erroring.
 export const MAX_PAGE_SIZE = 100;
+
+// Maximum number of lines of the diff hunk to show above an inline comment
+// thread. The commented range itself is never cut, even if it is longer than
+// this. 0 means unlimited. Configurable via --diff-hunk-limit.
+export const DEFAULT_DIFF_HUNK_LIMIT = 10;

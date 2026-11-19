@@ -133,6 +133,11 @@ const THREAD_FIELDS = `
   isOutdated
   path
   line
+  startLine
+  originalLine
+  originalStartLine
+  diffSide
+  startDiffSide
 `;
 
 const THREAD_COMMENT_FIELDS = `

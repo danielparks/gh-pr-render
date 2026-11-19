@@ -1,4 +1,6 @@
 import { formatDistance } from "date-fns";
+import { DEFAULT_DIFF_HUNK_LIMIT } from "./limits.js";
+import { trimDiffHunk } from "./hunk.js";
 import type {
   Commit,
   IssueComment,
@@ -180,9 +182,38 @@ function renderReview(review: Review, baseDate: string): string {
     : header;
 }
 
-// Trim everything up to the last block of changes.
-function renderDiffHunk(hunk: string): string {
-  return hunk.replace(/.*^ [^\n\r]*[\n\r]+/ms, "");
+// Describes where a thread is anchored, e.g. "`a.py` lines 4–9". Notes when
+// the numbers are from the original diff (outdated threads) or refer to the old
+// version of the file (comments on deleted lines).
+function renderLocation(thread: ReviewThread): string {
+  const path = `\`${thread.path}\``;
+  const current = thread.line !== null;
+  const end = thread.line ?? thread.originalLine ?? null;
+  if (end === null) return path;
+
+  const start = (current ? thread.startLine : thread.originalStartLine) ?? end;
+  const numbers = start < end ? `lines ${start}–${end}` : `line ${end}`;
+
+  const notes: string[] = [];
+  if (!current) notes.push("original");
+  if (thread.diffSide === "LEFT") notes.push("old file");
+  const suffix = notes.length > 0 ? ` (${notes.join(", ")})` : "";
+  return `${path} ${numbers}${suffix}`;
+}
+
+function renderDiffHunk(thread: ReviewThread, limit: number): string {
+  const first = thread.comments.nodes[0] ?? thread.comments.tailNodes[0];
+  const { originalLine, originalStartLine, diffSide, startDiffSide } = thread;
+  const rangeLines =
+    typeof originalLine === "number" &&
+    typeof originalStartLine === "number" &&
+    originalLine >= originalStartLine
+      ? originalLine - originalStartLine + 1
+      : 1;
+  // A range that spans both sides can’t be counted on one side.
+  const side =
+    diffSide && (startDiffSide ?? diffSide) === diffSide ? diffSide : null;
+  return trimDiffHunk(first?.diffHunk ?? "", { limit, rangeLines, side });
 }
 
 function renderThreadComment(comment: ThreadComment, baseDate: string): string {
@@ -208,6 +239,7 @@ function renderReviewThread(
   baseDate: string,
   commentHeadLimit: number,
   commentTailLimit: number,
+  diffHunkLimit: number,
 ): string {
   // Defensive coding: the fetch code always fetches the first comment so we can
   // use its timestamp to place the thread in the timeline. If that ever changes
@@ -215,10 +247,7 @@ function renderReviewThread(
   const first = thread.comments.nodes[0] ?? thread.comments.tailNodes[0];
   if (!first || (commentHeadLimit === 0 && commentTailLimit === 0)) return "";
 
-  const location =
-    thread.line !== null
-      ? `\`${thread.path}\` line ${thread.line}`
-      : `\`${thread.path}\``;
+  const location = renderLocation(thread);
 
   const tags: string[] = [`id: ${thread.id}`];
   if (thread.isResolved) tags.push("resolved");
@@ -229,7 +258,7 @@ function renderReviewThread(
     `### Inline comment on ${location}${tagStr}:`,
     "",
     "```diff",
-    renderDiffHunk(first.diffHunk),
+    renderDiffHunk(thread, diffHunkLimit),
     "```",
   ];
 
@@ -285,6 +314,7 @@ export function renderSingleThread(
   thread: ReviewThread,
   pullRequest: PullRequestRef,
   includeMinimized: boolean,
+  diffHunkLimit: number = DEFAULT_DIFF_HUNK_LIMIT,
 ): string {
   // Pass totalCount as head limit so truncateComments never truncates. All
   // comments were fetched into `nodes`; `tailNodes` is empty.
@@ -294,6 +324,7 @@ export function renderSingleThread(
     pullRequest.createdAt,
     thread.comments.totalCount,
     0,
+    diffHunkLimit,
   );
   return [
     `Part of [PR #${pullRequest.number}](${pullRequest.url})`,
@@ -311,6 +342,9 @@ export interface RenderOptions {
   // exceeds commentHeadLimit + commentTailLimit (see truncateComments).
   commentHeadLimit: number;
   commentTailLimit: number;
+  // Maximum lines of diff hunk to show per inline thread (0 = unlimited).
+  // Defaults to DEFAULT_DIFF_HUNK_LIMIT.
+  diffHunkLimit?: number;
 }
 
 export function renderPR(data: PRData, options: RenderOptions): string {
@@ -322,6 +356,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
     commentHeadLimit,
     commentTailLimit,
   } = options;
+  const diffHunkLimit = options.diffHunkLimit ?? DEFAULT_DIFF_HUNK_LIMIT;
   const out: string[] = [];
 
   // Header
@@ -442,6 +477,7 @@ export function renderPR(data: PRData, options: RenderOptions): string {
         pull.created_at,
         commentHeadLimit,
         commentTailLimit,
+        diffHunkLimit,
       ),
     });
   }

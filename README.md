@@ -24,6 +24,7 @@ Options:
 - `--no-commits` — omit the `## Commits` list.
 - `--comment-head-limit <n>` — comments to show at the start of a long comment list (default: 20).
 - `--comment-tail-limit <n>` — comments to show at the end of a long comment list (default: 20).
+- `--diff-hunk-limit <n>` — maximum lines of diff to show above each inline comment; the commented lines are never cut (default: 10, 0 for no limit). Also accepted by `thread`.
 - `--timings` — print request timings to stderr.
 
 ### When to use `--no-files` / `--no-commits`

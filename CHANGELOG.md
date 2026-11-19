@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Cap the diff hunk shown above each inline comment thread at 10 lines, with a `… N more lines above` note when lines are cut. The commented line range is never cut. Configure with `--diff-hunk-limit <n>` (0 for no limit), which `thread` also accepts.
+- Never show the diff hunk’s `@@` header; it was only sometimes present and wrong once trimmed.
+- Show the full line range for multi-line inline comments (`lines 4–9`), the original lines for outdated threads, and mark comments on the old side of the diff.
+
 ## Release 0.6.0 (2026-08-26)
 
 I will no longer include notes in the CHANGELOG for security updates for dev dependencies that don’t affect the published package.

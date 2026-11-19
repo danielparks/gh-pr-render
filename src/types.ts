@@ -98,6 +98,8 @@ export interface Review {
   submitted_at: string;
 }
 
+export type DiffSide = "LEFT" | "RIGHT";
+
 export interface ThreadComment {
   databaseId: number;
   author: { login: string } | null;
@@ -132,6 +134,15 @@ export interface ReviewThread {
   isOutdated: boolean;
   path: string;
   line: number | null;
+  // Range and side of the comment. `line`/`startLine` are null when the thread
+  // is outdated, in which case the `original*` lines (the position in the
+  // original diff, which is what `diffHunk` describes) are all that's known.
+  // Optional because older recorded fixtures predate them.
+  startLine?: number | null;
+  originalLine?: number | null;
+  originalStartLine?: number | null;
+  diffSide?: DiffSide;
+  startDiffSide?: DiffSide | null;
   comments: TruncatedCommentList<ThreadComment>;
 }
 
