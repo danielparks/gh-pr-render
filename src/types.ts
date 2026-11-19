@@ -84,11 +84,7 @@ export interface IssueComment {
 }
 
 export type ReviewState =
-  | "APPROVED"
-  | "CHANGES_REQUESTED"
-  | "COMMENTED"
-  | "DISMISSED"
-  | "PENDING";
+  "APPROVED" | "CHANGES_REQUESTED" | "COMMENTED" | "DISMISSED" | "PENDING";
 
 export interface Review {
   id: number;
@@ -156,6 +152,11 @@ export interface PullRequestRef {
 
 export interface SingleThreadData {
   thread: ReviewThread;
+  pullRequest: PullRequestRef;
+}
+
+export interface AllTopCommentsData {
+  comments: IssueComment[];
   pullRequest: PullRequestRef;
 }
 

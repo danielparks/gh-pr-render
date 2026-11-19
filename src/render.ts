@@ -461,7 +461,7 @@ export function renderPR(
       pull.created_at;
     timeline.push({
       timestamp: omittedAt,
-      content: `### ${topCommentsOmitted} comments omitted`,
+      content: `### ${topCommentsOmitted} comments omitted — run \`gh-pr-render comments ${pull.html_url}\` to see all`,
     });
   }
 
@@ -508,4 +508,28 @@ export function renderPR(
 
   out.push("");
   return out.join("\n");
+}
+
+// Renders every top-level comment on a PR, with a brief PR context header. Used
+// by the `comments` subcommand so an LLM can see the comments that were
+// omitted from the middle of a long list in the full PR output.
+export function renderAllTopComments(
+  comments: IssueComment[],
+  pullRequest: PullRequestRef,
+  includeMinimized: boolean,
+): string {
+  const lines = [
+    `Part of [PR #${pullRequest.number}](${pullRequest.url})`,
+    "",
+    "## Comments",
+  ];
+  const shown = comments.filter((c) => includeMinimized || !c.isMinimized);
+  for (const comment of shown) {
+    lines.push("", renderIssueComment(comment, pullRequest.createdAt));
+  }
+  if (shown.length === 0) {
+    lines.push("", "No comments.");
+  }
+  lines.push("");
+  return lines.join("\n");
 }

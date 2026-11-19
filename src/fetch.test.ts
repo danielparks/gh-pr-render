@@ -1,6 +1,7 @@
 import { graphql } from "@octokit/graphql";
 import { describe, expect, it } from "vitest";
 import {
+  fetchAllTopComments,
   fetchReviewThreads,
   fetchSingleThread,
   fetchTopComments,
@@ -353,6 +354,53 @@ describe("fetchSingleThread", () => {
 
     await expect(fetchSingleThread(client, "MISSING_ID")).rejects.toThrow(
       "Thread not found: MISSING_ID",
+    );
+  });
+});
+
+describe("fetchAllTopComments", () => {
+  const ref = {
+    number: 7,
+    url: "https://github.com/acme/widgets/pull/7",
+    createdAt: "2026-01-01T00:00:00Z",
+  };
+
+  it("paginates through every page and returns the PR ref", async () => {
+    const { client, calls } = mockClient(({ variables }) => {
+      const first = variables["cursor"] === null;
+      return {
+        repository: {
+          pullRequest: {
+            ...ref,
+            comments: {
+              pageInfo: first
+                ? { hasNextPage: true, endCursor: "CURSOR_1" }
+                : { hasNextPage: false, endCursor: null },
+              nodes: first
+                ? [issueComment(1), issueComment(2)]
+                : [issueComment(3)],
+            },
+          },
+        },
+      };
+    });
+
+    const result = await fetchAllTopComments(client, "acme/widgets", 7);
+
+    expect(calls.map((c) => c.variables["cursor"])).toEqual([null, "CURSOR_1"]);
+    expect(calls[0]?.variables).toMatchObject({
+      owner: "acme",
+      repo: "widgets",
+      number: 7,
+    });
+    expect(result.comments.map((c) => c.databaseId)).toEqual([1, 2, 3]);
+    expect(result.pullRequest).toEqual(ref);
+  });
+
+  it("rejects a repository that is not owner/repo", async () => {
+    const { client } = mockClient(() => ({}));
+    await expect(fetchAllTopComments(client, "widgets", 7)).rejects.toThrow(
+      "Invalid repository format",
     );
   });
 });

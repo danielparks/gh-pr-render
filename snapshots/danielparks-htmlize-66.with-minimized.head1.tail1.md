@@ -201,7 +201,7 @@
 
 > Added #67 (Commit Cargo.lock) to this to fix the CI issue. Not sure it’s the right way to deal with this.
 
-### 3 comments omitted
+### 3 comments omitted — run `gh-pr-render comments https://github.com/danielparks/htmlize/pull/66` to see all
 
 ### Comment by danielparks 5 months later (id: 1951796878):
 

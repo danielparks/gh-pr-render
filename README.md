@@ -50,6 +50,14 @@ gh-pr-render thread <thread-id>
 
 Fetch and display all comments in a single review thread. Pass the thread ID shown in `gh-pr-render` output, e.g. `RT_kwDO...`.
 
+## Using to render all top-level comments
+
+```text
+gh-pr-render comments [repo-or-pr] [pr]
+```
+
+Fetch and display every top-level comment on a PR, including the ones omitted from the middle of a long list in `gh-pr-render` output. Takes the same PR arguments as `gh-pr-render`, and `--include-minimized`.
+
 ## Example output
 
 <!-- rumdl-disable -->

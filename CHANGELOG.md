@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Added `comments` subcommand to render every top-level comment on a PR, including those omitted from the middle of a long list. The “N comments omitted” marker now names it.
+
 ## Release 0.7.0 (2026-11-18)
 
 - Cap the diff hunk shown above each inline comment thread at 10 lines, with a `… N more lines above` note when lines are cut. The commented line range is never cut. Configure with `--diff-hunk-limit <n>` (0 for no limit), which `thread` also accepts.

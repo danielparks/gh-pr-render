@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 import { spawnSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
-import { createClient, fetchPRData, fetchSingleThread } from "./fetch.js";
-import { renderPR, renderSingleThread, type RenderOptions } from "./render.js";
+import {
+  createClient,
+  fetchAllTopComments,
+  fetchPRData,
+  fetchSingleThread,
+} from "./fetch.js";
+import {
+  renderAllTopComments,
+  renderPR,
+  renderSingleThread,
+  type RenderOptions,
+} from "./render.js";
 import {
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
@@ -163,6 +173,34 @@ function detectRepoAndPr(
   return repoPr;
 }
 
+// Resolves the `[repo-or-pr] [pr]` argument pair shared by the default command
+// and `comments` to a repository and PR number.
+function resolvePrArgs(
+  repoOrPr: string | undefined,
+  prArg: string | undefined,
+): [string, number] {
+  if (repoOrPr === undefined) {
+    return detectRepoAndPr();
+  }
+
+  let repo: string;
+  let prNumber: number;
+  const match = parsePrUrl(repoOrPr);
+  if (match) {
+    [repo, prNumber] = match;
+  } else if (prArg !== undefined) {
+    repo = repoOrPr;
+    prNumber = parseInt(prArg, 10);
+  } else {
+    [repo, prNumber] = detectRepoAndPr(repoOrPr);
+  }
+
+  if (isNaN(prNumber) || prNumber <= 0) {
+    fail(`"${repoOrPr}" is not a valid PR number`);
+  }
+  return [repo, prNumber];
+}
+
 function parsePrUrl(url: string): [string, number] | undefined {
   const match = url.match(/github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/);
   if (match) {
@@ -227,26 +265,7 @@ const program = new Command()
         diffHunkLimit: number;
       },
     ) => {
-      let repo: string;
-      let prNumber: number;
-
-      if (repoOrPr === undefined) {
-        [repo, prNumber] = detectRepoAndPr();
-      } else {
-        const match = parsePrUrl(repoOrPr);
-        if (match) {
-          [repo, prNumber] = match;
-        } else if (prArg !== undefined) {
-          repo = repoOrPr;
-          prNumber = parseInt(prArg, 10);
-        } else {
-          [repo, prNumber] = detectRepoAndPr(repoOrPr);
-        }
-
-        if (isNaN(prNumber) || prNumber <= 0) {
-          fail(`"${repoOrPr}" is not a valid PR number`);
-        }
-      }
+      const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
       try {
         const data = await fetchPRData(createClient(), repo, prNumber, {
           timings: opts.timings,
@@ -262,6 +281,40 @@ const program = new Command()
           diffHunkLimit: opts.diffHunkLimit,
         };
         process.stdout.write(renderPR(data, renderOptions));
+      } catch (error) {
+        handleError(error);
+      }
+    },
+  );
+
+program
+  .command("comments [repo-or-pr] [pr]")
+  .description(
+    "Fetch and display all top-level comments on a PR, including those " +
+      "omitted from the middle of a long list in `gh-pr-render` output. " +
+      "Takes the same PR arguments as `gh-pr-render`.",
+  )
+  .option(
+    "--include-minimized",
+    "include minimized comments (marked with reason)",
+    false,
+  )
+  .action(
+    async (
+      repoOrPr: string | undefined,
+      prArg: string | undefined,
+      opts: { includeMinimized: boolean },
+    ) => {
+      const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
+      try {
+        const data = await fetchAllTopComments(createClient(), repo, prNumber);
+        process.stdout.write(
+          renderAllTopComments(
+            data.comments,
+            data.pullRequest,
+            opts.includeMinimized,
+          ),
+        );
       } catch (error) {
         handleError(error);
       }

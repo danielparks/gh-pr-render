@@ -2,6 +2,7 @@ import { exec, execSync } from "child_process";
 import { promisify } from "util";
 import { graphql } from "@octokit/graphql";
 import type {
+  AllTopCommentsData,
   ChangedFile,
   Commit,
   IssueComment,
@@ -222,6 +223,61 @@ export async function fetchTopComments(
   };
 }
 
+const ALL_TOP_COMMENTS_QUERY = `
+  query AllPullRequestComments($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $number) {
+        number
+        url
+        createdAt
+        comments(first: ${MAX_PAGE_SIZE}, after: $cursor) {
+          pageInfo { hasNextPage endCursor }
+          nodes { ${ISSUE_COMMENT_FIELDS} }
+        }
+      }
+    }
+  }
+`;
+
+interface AllTopCommentsResult {
+  repository: {
+    pullRequest: PullRequestRef & {
+      comments: {
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+        nodes: IssueComment[];
+      };
+    };
+  };
+}
+
+// Fetches every top-level comment on the PR, paginating as needed. Used by the
+// `comments` subcommand to show what the head/tail truncation in the full PR
+// output omits.
+export async function fetchAllTopComments(
+  client: typeof graphql,
+  repo: string,
+  number: number,
+): Promise<AllTopCommentsData> {
+  const [owner, repoName] = splitRepo(repo);
+  const comments: IssueComment[] = [];
+  let cursor: string | null = null;
+  let pullRequest: PullRequestRef | undefined;
+
+  while (true) {
+    const result: AllTopCommentsResult = await client<AllTopCommentsResult>(
+      ALL_TOP_COMMENTS_QUERY,
+      { owner, repo: repoName, number, cursor },
+    );
+    const { comments: connection, ...ref } = result.repository.pullRequest;
+    pullRequest ??= ref;
+    comments.push(...connection.nodes);
+    if (!connection.pageInfo.hasNextPage) break;
+    cursor = connection.pageInfo.endCursor;
+  }
+
+  return { comments, pullRequest };
+}
+
 export async function fetchReviewThreads(
   client: typeof graphql,
   owner: string,
@@ -348,6 +404,15 @@ export interface FetchOptions {
   commentTailLimit: number;
 }
 
+function splitRepo(repo: string): [string, string] {
+  const slash = repo.indexOf("/");
+  if (slash === -1)
+    throw new Error(
+      `Invalid repository format: "${repo}" (expected owner/repo)`,
+    );
+  return [repo.slice(0, slash), repo.slice(slash + 1)];
+}
+
 function timed<T>(fn: () => Promise<T>): Promise<[T, number]> {
   const t = performance.now();
   return fn().then((r) => [r, performance.now() - t]);
@@ -365,13 +430,7 @@ export async function fetchPRData(
 ): Promise<PRData> {
   const totalStart = performance.now();
 
-  const slash = repo.indexOf("/");
-  if (slash === -1)
-    throw new Error(
-      `Invalid repository format: "${repo}" (expected owner/repo)`,
-    );
-  const owner = repo.slice(0, slash);
-  const repoName = repo.slice(slash + 1);
+  const [owner, repoName] = splitRepo(repo);
 
   const base = `repos/${repo}`;
 
