@@ -3,6 +3,7 @@ import { DEFAULT_DIFF_HUNK_LIMIT } from "./limits.js";
 import { trimDiffHunk } from "./hunk.js";
 import type {
   Commit,
+  DiffSide,
   IssueComment,
   PRData,
   PullRequest,
@@ -192,11 +193,20 @@ function renderLocation(thread: ReviewThread): string {
   if (end === null) return path;
 
   const start = (current ? thread.startLine : thread.originalStartLine) ?? end;
-  const numbers = start < end ? `lines ${start}–${end}` : `line ${end}`;
+  const side = thread.diffSide;
+  const startSide = thread.startDiffSide ?? side;
+  const original = current ? "" : " (original)";
 
+  // The numbers are from different versions of the file, so say which is which.
+  if (start !== end && side && startSide !== side) {
+    const label = (s: DiffSide) => (s === "LEFT" ? "old file" : "new file");
+    return `${path} lines ${start} (${label(startSide!)}) – ${end} (${label(side)})${original}`;
+  }
+
+  const numbers = start < end ? `lines ${start}–${end}` : `line ${end}`;
   const notes: string[] = [];
   if (!current) notes.push("original");
-  if (thread.diffSide === "LEFT") notes.push("old file");
+  if (side === "LEFT") notes.push("old file");
   const suffix = notes.length > 0 ? ` (${notes.join(", ")})` : "";
   return `${path} ${numbers}${suffix}`;
 }
@@ -204,16 +214,16 @@ function renderLocation(thread: ReviewThread): string {
 function renderDiffHunk(thread: ReviewThread, limit: number): string {
   const first = thread.comments.nodes[0] ?? thread.comments.tailNodes[0];
   const { originalLine, originalStartLine, diffSide, startDiffSide } = thread;
-  const rangeLines =
-    typeof originalLine === "number" &&
+  // `diffHunk` is a snapshot from when the comment was made, so it’s the
+  // original line numbers that match it.
+  const side = startDiffSide ?? diffSide;
+  const start =
     typeof originalStartLine === "number" &&
-    originalLine >= originalStartLine
-      ? originalLine - originalStartLine + 1
-      : 1;
-  // A range that spans both sides can’t be counted on one side.
-  const side =
-    diffSide && (startDiffSide ?? diffSide) === diffSide ? diffSide : null;
-  return trimDiffHunk(first?.diffHunk ?? "", { limit, rangeLines, side });
+    originalStartLine !== originalLine &&
+    side
+      ? { line: originalStartLine, side }
+      : null;
+  return trimDiffHunk(first?.diffHunk ?? "", { limit, start });
 }
 
 function renderThreadComment(comment: ThreadComment, baseDate: string): string {

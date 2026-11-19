@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { trimDiffHunk } from "./hunk.js";
 
-const noCap = { limit: 0, rangeLines: 1, side: null } as const;
+const noCap = { limit: 0, start: null } as const;
 
 function added(count: number, from = 1): string[] {
   return Array.from({ length: count }, (_, i) => `+line ${from + i}`);
@@ -61,38 +61,87 @@ describe("trimDiffHunk", () => {
     const hunk = ["@@ -0,0 +1,30 @@", ...added(30)].join("\n");
     const out = trimDiffHunk(hunk, {
       limit: 3,
-      rangeLines: 8,
-      side: "RIGHT",
+      start: { line: 23, side: "RIGHT" },
     });
     expect(out.split("\n")).toEqual(["… 22 more lines above", ...added(8, 23)]);
   });
 
-  it("counts the range on the comment's side only", () => {
+  it("finds the start when the other side is interleaved in the middle", () => {
     const hunk = [
-      "@@ -1,4 +1,2 @@",
+      "@@ -1,3 +1,2 @@",
       "-gone 1",
       "-gone 2",
       "+kept 1",
       "-gone 3",
       "+kept 2",
     ].join("\n");
-    // Two RIGHT-side lines: +kept 1 and +kept 2, with -gone 3 in between.
-    const out = trimDiffHunk(hunk, { limit: 2, rangeLines: 2, side: "RIGHT" });
-    expect(out.split("\n").slice(1)).toEqual(["+kept 1", "-gone 3", "+kept 2"]);
+    // New-side lines 1–2 are `+kept 1` and `+kept 2`, with `-gone 3` between.
+    const out = trimDiffHunk(hunk, {
+      limit: 2,
+      start: { line: 1, side: "RIGHT" },
+    });
+    expect(out).toBe("… 2 more lines above\n+kept 1\n-gone 3\n+kept 2");
   });
 
-  it("extends past the last-block heuristic to include the range", () => {
-    const hunk = "@@ -1,4 +1,4 @@\n a\n b\n+c\n d\n+e";
-    expect(trimDiffHunk(hunk, { limit: 0, rangeLines: 3, side: "RIGHT" })).toBe(
-      "+c\n d\n+e",
+  it("finds a start on a different side than the end", () => {
+    const hunk = [
+      "@@ -1,3 +1,2 @@",
+      "-gone 1",
+      "-gone 2",
+      "+kept 1",
+      "-gone 3",
+      "+kept 2",
+    ].join("\n");
+    // Old-side line 2 is `-gone 2`; the comment ends on `+kept 2`.
+    const out = trimDiffHunk(hunk, {
+      limit: 2,
+      start: { line: 2, side: "LEFT" },
+    });
+    expect(out).toBe("… 1 more line above\n-gone 2\n+kept 1\n-gone 3\n+kept 2");
+  });
+
+  it("numbers context lines on both sides", () => {
+    const hunk = "@@ -5,3 +10,3 @@\n a\n-b\n+c\n d\n+e";
+    // New-side 10 is ` a`, old-side 6 is `-b`.
+    const right = { limit: 0, start: { line: 10, side: "RIGHT" } } as const;
+    const left = { limit: 0, start: { line: 6, side: "LEFT" } } as const;
+    expect(trimDiffHunk(hunk, right)).toBe(" a\n-b\n+c\n d\n+e");
+    expect(trimDiffHunk(hunk, left)).toBe("-b\n+c\n d\n+e");
+  });
+
+  it("assumes the last line if the start isn’t in the hunk", () => {
+    const hunk = ["@@ -0,0 +1,30 @@", ...added(30)].join("\n");
+    const out = trimDiffHunk(hunk, {
+      limit: 3,
+      start: { line: 99, side: "RIGHT" },
+    });
+    expect(out).toBe(["… 27 more lines above", ...added(3, 28)].join("\n"));
+  });
+
+  it("assumes the last line if there is no header to number lines by", () => {
+    const out = trimDiffHunk(added(10).join("\n"), {
+      limit: 2,
+      start: { line: 3, side: "RIGHT" },
+    });
+    expect(out).toBe("… 8 more lines above\n+line 9\n+line 10");
+  });
+
+  it("ignores “No newline” markers when numbering and ending", () => {
+    const hunk = "@@ -1 +1,3 @@\n x\n-a\n+b\n+c\n\\ No newline at end of file";
+    // New-side 2 is `+b`.
+    const out = trimDiffHunk(hunk, {
+      limit: 2,
+      start: { line: 2, side: "RIGHT" },
+    });
+    expect(out).toBe(
+      "… 1 more line above\n+b\n+c\n\\ No newline at end of file",
     );
   });
 
-  it("ignores “No newline” markers when counting", () => {
-    const hunk = "@@ -1 +1,3 @@\n x\n-a\n+b\n+c\n\\ No newline at end of file";
-    const out = trimDiffHunk(hunk, { limit: 2, rangeLines: 2, side: "RIGHT" });
-    expect(out).toBe(
-      "… 1 more line above\n+b\n+c\n\\ No newline at end of file",
+  it("shows only the last line when there’s a marker and no range", () => {
+    const hunk = "@@ -1 +1,2 @@\n x\n+b\n\\ No newline at end of file";
+    expect(trimDiffHunk(hunk, { limit: 1, start: null })).toBe(
+      "+b\n\\ No newline at end of file",
     );
   });
 });

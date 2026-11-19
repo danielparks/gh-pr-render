@@ -375,6 +375,26 @@ describe("renderPR - thread location", () => {
     );
   });
 
+  it("labels both ends of a range that spans both sides", () => {
+    expect(
+      location({
+        line: 9,
+        startLine: 5,
+        diffSide: "RIGHT",
+        startDiffSide: "LEFT",
+      }),
+    ).toBe("`file.py` lines 5 (old file) – 9 (new file)");
+    expect(
+      location({
+        line: null,
+        originalLine: 3,
+        originalStartLine: 40,
+        diffSide: "RIGHT",
+        startDiffSide: "LEFT",
+      }),
+    ).toBe("`file.py` lines 40 (old file) – 3 (new file) (original)");
+  });
+
   it("shows just the path when no line is known", () => {
     expect(location({ line: null })).toBe("`file.py`");
   });
