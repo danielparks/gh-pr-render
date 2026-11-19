@@ -5,7 +5,9 @@
  * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
  * an APPROVED review, a label, an assignee, and reactions (on the PR
  * description, on a top-level comment with multiple reaction groups, and on
- * a diff-thread reply). A second, draft PR exercises requested reviewers:
+ * a diff-thread reply), and inline comments on the current diff that cover a
+ * multi-line range with a deleted line in the middle, ranges that cross from
+ * the old side of the diff to the new side, and a deleted line. A second, draft PR exercises requested reviewers:
  * a user (best-effort — GitHub disallows requesting the PR author) and a
  * team (best-effort — requires `owner` to be an organization; the team is
  * granted read access to the repo so GitHub will accept it as a reviewer).
@@ -293,6 +295,102 @@ async function addScenarioReactions(prNumber: number): Promise<void> {
   if (modReply) {
     await addReaction(modReply.id, "EYES");
     log("  Reacted 👀 to modulo thread reply.");
+  }
+}
+
+// ─── Hunk scenarios ──────────────────────────────────────────────────────────
+
+// Inline comments on the PR’s current head, so they don’t change whether the
+// earlier threads are outdated. Line numbers refer to the diff against main
+// (CALCULATOR_MAIN → CALCULATOR_V2), which pairs each `-def f(a, b):` line
+// with a `+def f(a: float, ...)` line, so the diff of lines 5–13 looks like:
+//
+//     -def subtract(a, b):                  old 5
+//     +def subtract(a: float, b: float)...  new 5
+//      return a - b                         old 6 / new 6
+//      (blank)                              old 7 / new 7
+//      (blank)                              old 8 / new 8
+//     -def multiply(a, b):                  old 9
+//     +def multiply(a: float, b: float)...  new 9
+//      return a * b                         old 10 / new 10
+//
+// Each entry is skipped if a comment with that body already exists, so this is
+// safe to run every time. `optional` ones are best-effort, since GitHub may
+// reject them.
+interface HunkScenario {
+  body: string;
+  start?: { line: number; side: "LEFT" | "RIGHT" };
+  line: number;
+  side: "LEFT" | "RIGHT";
+  optional?: boolean;
+}
+
+const HUNK_SCENARIOS: HunkScenario[] = [
+  {
+    body: "Comment on new lines 5–9, with a removed line in the middle.",
+    start: { line: 5, side: "RIGHT" },
+    line: 9,
+    side: "RIGHT",
+  },
+  {
+    body: "Comment from old line 9 through new line 10, crossing sides.",
+    start: { line: 9, side: "LEFT" },
+    line: 10,
+    side: "RIGHT",
+  },
+  {
+    body: "Comment from old line 13 to new line 13: same number, different sides.",
+    start: { line: 13, side: "LEFT" },
+    line: 13,
+    side: "RIGHT",
+    optional: true,
+  },
+  {
+    body: "Comment on a removed line.",
+    line: 1,
+    side: "LEFT",
+  },
+];
+
+function addHunkScenarioThreads(prNumber: number): void {
+  const headSha = sh(`gh api "repos/${FULL}/pulls/${prNumber}" --jq .head.sha`);
+  const existing = new Set(
+    (
+      JSON.parse(
+        sh(
+          `gh api --paginate --slurp "repos/${FULL}/pulls/${prNumber}/comments"`,
+        ),
+      ) as Array<Array<{ body: string }>>
+    )
+      .flat()
+      .map((c) => c.body),
+  );
+
+  for (const scenario of HUNK_SCENARIOS) {
+    if (existing.has(scenario.body)) {
+      log(`  Hunk scenario already present: ${scenario.body}`);
+      continue;
+    }
+
+    try {
+      ghPost(`repos/${FULL}/pulls/${prNumber}/comments`, {
+        body: scenario.body,
+        commit_id: headSha,
+        path: "calculator.py",
+        line: scenario.line,
+        side: scenario.side,
+        ...(scenario.start && {
+          start_line: scenario.start.line,
+          start_side: scenario.start.side,
+        }),
+      });
+      log(`  Added hunk scenario: ${scenario.body}`);
+    } catch (err) {
+      if (!scenario.optional) throw err;
+      log(
+        `  Note: hunk scenario skipped (GitHub rejected it): ${scenario.body}`,
+      );
+    }
   }
 }
 
@@ -696,6 +794,7 @@ try {
     log(`  Draft PR #${draftPrNumber} already closed.`);
   }
 
+  addHunkScenarioThreads(prNumber);
   await addScenarioReactions(prNumber);
 } finally {
   rmSync(tmpDir, { recursive: true, force: true });

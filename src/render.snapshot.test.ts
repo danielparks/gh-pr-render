@@ -196,6 +196,31 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1", () => {
   });
 });
 
+describe("renderPR - danielparks-test/gh-pr-render-fixtures #1 hunks", () => {
+  const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 1);
+
+  // The fixture’s hunks are short, so use a low limit to exercise the cap.
+  it("renders with a diff hunk limit of 3", async () => {
+    await expect(
+      renderPR(data, {
+        includeMinimized: false,
+        includeFiles: false,
+        includeCommits: false,
+        commentHeadLimit: 20,
+        commentTailLimit: 20,
+        diffHunkLimit: 3,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".hunk-limit3",
+      ),
+    );
+  });
+});
+
 describe("renderPR - danielparks-test/gh-pr-render-fixtures #2", () => {
   const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 2);
 

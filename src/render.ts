@@ -192,13 +192,15 @@ function renderLocation(thread: ReviewThread): string {
   const end = thread.line ?? thread.originalLine ?? null;
   if (end === null) return path;
 
-  const start = (current ? thread.startLine : thread.originalStartLine) ?? end;
+  const rawStart = current ? thread.startLine : thread.originalStartLine;
+  const start = rawStart ?? end;
   const side = thread.diffSide;
   const startSide = thread.startDiffSide ?? side;
   const original = current ? "" : " (original)";
 
   // The numbers are from different versions of the file, so say which is which.
-  if (start !== end && side && startSide !== side) {
+  // The numbers can be equal (old line 9 to new line 9), so check the sides.
+  if (typeof rawStart === "number" && side && startSide !== side) {
     const label = (s: DiffSide) => (s === "LEFT" ? "old file" : "new file");
     return `${path} lines ${start} (${label(startSide!)}) – ${end} (${label(side)})${original}`;
   }
@@ -213,14 +215,14 @@ function renderLocation(thread: ReviewThread): string {
 
 function renderDiffHunk(thread: ReviewThread, limit: number): string {
   const first = thread.comments.nodes[0] ?? thread.comments.tailNodes[0];
-  const { originalLine, originalStartLine, diffSide, startDiffSide } = thread;
+  const { originalStartLine, diffSide, startDiffSide } = thread;
   // `diffHunk` is a snapshot from when the comment was made, so it’s the
   // original line numbers that match it.
   const side = startDiffSide ?? diffSide;
+  // A start with the same line number as the end can still be a range, if it’s
+  // on the other side of the diff.
   const start =
-    typeof originalStartLine === "number" &&
-    originalStartLine !== originalLine &&
-    side
+    typeof originalStartLine === "number" && side
       ? { line: originalStartLine, side }
       : null;
   return trimDiffHunk(first?.diffHunk ?? "", { limit, start });

@@ -395,6 +395,17 @@ describe("renderPR - thread location", () => {
     ).toBe("`file.py` lines 40 (old file) – 3 (new file) (original)");
   });
 
+  it("recognizes a range across sides with the same line number", () => {
+    expect(
+      location({
+        line: 9,
+        startLine: 9,
+        diffSide: "RIGHT",
+        startDiffSide: "LEFT",
+      }),
+    ).toBe("`file.py` lines 9 (old file) – 9 (new file)");
+  });
+
   it("shows just the path when no line is known", () => {
     expect(location({ line: null })).toBe("`file.py`");
   });
