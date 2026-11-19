@@ -56,6 +56,9 @@ repos:
         entry: npm run lint
         files: \.([mc]?[tj]sx?|md)$
         exclude: "^snapshots/"
+        # `npm run lint` already lints the whole repo, and rumdl rejects the
+        # `.ts` filenames pre-commit would otherwise append.
+        pass_filenames: false
         stages: [pre-commit, pre-merge-commit]
         require_serial: true
       - id: check
