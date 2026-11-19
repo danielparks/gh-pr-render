@@ -363,7 +363,7 @@ describe("renderPR - thread location", () => {
   it("falls back to the original lines for outdated threads", () => {
     expect(
       location({ line: null, originalLine: 12, originalStartLine: 8 }),
-    ).toBe("`file.py` lines 8–12 (original)");
+    ).toBe("`file.py` lines 8–12 (when commented)");
   });
 
   it("notes comments on the old side of the diff", () => {
@@ -371,7 +371,7 @@ describe("renderPR - thread location", () => {
       "`file.py` line 10 (old file)",
     );
     expect(location({ line: null, originalLine: 3, diffSide: "LEFT" })).toBe(
-      "`file.py` line 3 (original, old file)",
+      "`file.py` line 3 (when commented, old file)",
     );
   });
 
@@ -392,7 +392,7 @@ describe("renderPR - thread location", () => {
         diffSide: "RIGHT",
         startDiffSide: "LEFT",
       }),
-    ).toBe("`file.py` lines 40 (old file) – 3 (new file) (original)");
+    ).toBe("`file.py` lines 40 (old file) – 3 (new file) (when commented)");
   });
 
   it("recognizes a range across sides with the same line number", () => {

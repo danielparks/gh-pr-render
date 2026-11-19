@@ -196,7 +196,7 @@ function renderLocation(thread: ReviewThread): string {
   const start = rawStart ?? end;
   const side = thread.diffSide;
   const startSide = thread.startDiffSide ?? side;
-  const original = current ? "" : " (original)";
+  const original = current ? "" : " (when commented)";
 
   // The numbers are from different versions of the file, so say which is which.
   // The numbers can be equal (old line 9 to new line 9), so check the sides.
@@ -207,7 +207,7 @@ function renderLocation(thread: ReviewThread): string {
 
   const numbers = start < end ? `lines ${start}–${end}` : `line ${end}`;
   const notes: string[] = [];
-  if (!current) notes.push("original");
+  if (!current) notes.push("when commented");
   if (side === "LEFT") notes.push("old file");
   const suffix = notes.length > 0 ? ` (${notes.join(", ")})` : "";
   return `${path} ${numbers}${suffix}`;

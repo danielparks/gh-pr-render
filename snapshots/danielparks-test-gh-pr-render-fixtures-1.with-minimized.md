@@ -38,7 +38,7 @@
 
 > This is a duplicate of last week's PR.
 
-### Inline comment on `calculator.py` line 20 (original) (id: PRRT_kwDOSa9ycc6BSipb, outdated):
+### Inline comment on `calculator.py` line 20 (when commented) (id: PRRT_kwDOSa9ycc6BSipb, outdated):
 
 ```diff
 +
@@ -64,7 +64,7 @@
 
 > Please add docstrings to each function.
 
-### Inline comment on `calculator.py` line 19 (original) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
+### Inline comment on `calculator.py` line 19 (when commented) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
 ```diff
 +

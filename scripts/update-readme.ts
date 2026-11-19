@@ -30,7 +30,9 @@ const rendered = renderPR(data, {
 const blockquote = rendered
   .trimEnd()
   .split("\n")
-  .map((line) => (line === "" ? ">" : `> ${line}`))
+  // Trim so blank diff context lines (a single space) don’t leave trailing
+  // whitespace, which the `format` hook would strip, fighting this script.
+  .map((line) => `> ${line}`.trimEnd())
   .join("\n");
 
 const readmePath = join(root, "README.md");
