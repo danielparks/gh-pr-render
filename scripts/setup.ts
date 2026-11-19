@@ -1,19 +1,35 @@
 /**
- * Creates gh-pr-render-fixtures and populates it with a PR that exercises
- * each rendering scenario: minimized top-level comment, minimized diff thread
- * root (skips whole thread), outdated thread, resolved thread, thread with
- * reply, empty-body COMMENTED review (filtered), COMMENTED review with body,
- * an APPROVED review, a label, an assignee, and reactions (on the PR
- * description, on a top-level comment with multiple reaction groups, and on
- * a diff-thread reply), and inline comments on the current diff that cover a
- * multi-line range with a deleted line in the middle, ranges that cross from
- * the old side of the diff to the new side, and a deleted line. A second, draft PR exercises requested reviewers:
- * a user (best-effort — GitHub disallows requesting the PR author) and a
- * team (best-effort — requires `owner` to be an organization; the team is
- * granted read access to the repo so GitHub will accept it as a reviewer).
- * That second PR is then closed without merging, to exercise the
- * "closed, not merged" render; the merged case is already covered by the
- * real-world danielparks/htmlize#66 fixture, so it isn't reproduced here.
+ * Creates a test repo and PRs to exercises various rendering scenarios.
+ *
+ * A PR (#1) is created and left open to exercise these scenarios:
+ *
+ * - minimized top-level comment
+ * - minimized diff thread root (skips whole thread)
+ * - outdated thread
+ * - resolved thread
+ * - thread with reply
+ * - empty-body COMMENTED review (filtered)
+ * - COMMENTED review with body
+ * - an APPROVED review
+ * - a label
+ * - an assignee
+ * - reactions on the PR description
+ * - reactions on a top-level comment with multiple reaction groups
+ * - reactions on a diff-thread reply
+ * - inline comments on the current diff that cover:
+ *   - multi-line range with a deleted line in the middle
+ *   - ranges that cross from the old side of the diff to the new side
+ *   - a deleted line
+ *
+ * A second, draft PR exercises requested reviewers:
+ *
+ * - a user (best-effort — GitHub disallows requesting the PR author)
+ * - a team (best-effort — requires `owner` to be an organization; the team is
+ *   granted read access to the repo so GitHub will accept it as a reviewer).
+ *
+ * That second PR is then closed without merging, to exercise the "closed, not
+ * merged" render; the merged case is already covered by the real-world
+ * danielparks/htmlize#66 fixture, so it isn't reproduced here.
  *
  * Usage: npm run setup -- --owner <owner>
  */
