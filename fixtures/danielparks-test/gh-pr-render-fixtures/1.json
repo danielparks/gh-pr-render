@@ -34,7 +34,7 @@
     },
     "body": "Adds type annotations to all functions and implements `power` and `modulo` operations.",
     "created_at": "2026-05-12T04:18:15Z",
-    "updated_at": "2026-07-21T10:00:11Z",
+    "updated_at": "2026-11-19T04:55:48Z",
     "closed_at": null,
     "merged_at": null,
     "merge_commit_sha": "e71872e6c80ed1bb95717a0dca4ee3485c49e915",
@@ -71,7 +71,9 @@
         "name": "feature",
         "color": "1d76db",
         "default": false,
-        "description": "New feature or request"
+        "description": "New feature or request",
+        "archived_at": null,
+        "archived_by": null
       }
     ],
     "milestone": {
@@ -224,7 +226,7 @@
         "language": "Python",
         "has_issues": true,
         "has_projects": true,
-        "has_downloads": true,
+        "has_downloads": false,
         "has_wiki": true,
         "has_pages": false,
         "has_discussions": false,
@@ -353,7 +355,7 @@
         "language": "Python",
         "has_issues": true,
         "has_projects": true,
-        "has_downloads": true,
+        "has_downloads": false,
         "has_wiki": true,
         "has_pages": false,
         "has_discussions": false,
@@ -432,7 +434,7 @@
     "mergeable_state": "clean",
     "merged_by": null,
     "comments": 2,
-    "review_comments": 5,
+    "review_comments": 9,
     "maintainer_can_modify": false,
     "commits": 2,
     "additions": 12,
@@ -631,6 +633,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078684",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078684"
@@ -671,6 +675,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078751",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078751"
@@ -711,6 +717,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078795",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078795"
@@ -751,6 +759,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078919",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269078919"
@@ -791,6 +801,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269079044",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269079044"
@@ -831,6 +843,8 @@
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269079108",
       "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
       "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
       "_links": {
         "html": {
           "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-4269079108"
@@ -840,6 +854,174 @@
         }
       },
       "submitted_at": "2026-05-12T04:18:24Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 5969529188,
+      "node_id": "PRR_kwDOSa9ycc8AAAABY8_JZA",
+      "user": {
+        "login": "danielparks",
+        "id": 154427,
+        "node_id": "MDQ6VXNlcjE1NDQyNw==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/154427?u=bc5b5c32e5e35cdbcc44366c32c012b2af7b07f4&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks",
+        "html_url": "https://github.com/danielparks",
+        "followers_url": "https://api.github.com/users/danielparks/followers",
+        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks/orgs",
+        "repos_url": "https://api.github.com/users/danielparks/repos",
+        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "",
+      "state": "COMMENTED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529188",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529188"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-19T04:55:55Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 5969529371,
+      "node_id": "PRR_kwDOSa9ycc8AAAABY8_KGw",
+      "user": {
+        "login": "danielparks",
+        "id": 154427,
+        "node_id": "MDQ6VXNlcjE1NDQyNw==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/154427?u=bc5b5c32e5e35cdbcc44366c32c012b2af7b07f4&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks",
+        "html_url": "https://github.com/danielparks",
+        "followers_url": "https://api.github.com/users/danielparks/followers",
+        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks/orgs",
+        "repos_url": "https://api.github.com/users/danielparks/repos",
+        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "",
+      "state": "COMMENTED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529371",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529371"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-19T04:55:57Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 5969529506,
+      "node_id": "PRR_kwDOSa9ycc8AAAABY8_Kog",
+      "user": {
+        "login": "danielparks",
+        "id": 154427,
+        "node_id": "MDQ6VXNlcjE1NDQyNw==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/154427?u=bc5b5c32e5e35cdbcc44366c32c012b2af7b07f4&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks",
+        "html_url": "https://github.com/danielparks",
+        "followers_url": "https://api.github.com/users/danielparks/followers",
+        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks/orgs",
+        "repos_url": "https://api.github.com/users/danielparks/repos",
+        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "",
+      "state": "COMMENTED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529506",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529506"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-19T04:55:58Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 5969529621,
+      "node_id": "PRR_kwDOSa9ycc8AAAABY8_LFQ",
+      "user": {
+        "login": "danielparks",
+        "id": 154427,
+        "node_id": "MDQ6VXNlcjE1NDQyNw==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/154427?u=bc5b5c32e5e35cdbcc44366c32c012b2af7b07f4&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks",
+        "html_url": "https://github.com/danielparks",
+        "followers_url": "https://api.github.com/users/danielparks/followers",
+        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks/orgs",
+        "repos_url": "https://api.github.com/users/danielparks/repos",
+        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "",
+      "state": "COMMENTED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529621",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "MEMBER",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-5969529621"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-19T04:55:59Z",
       "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
     }
   ],
@@ -1145,6 +1327,11 @@
       "isOutdated": true,
       "path": "calculator.py",
       "line": null,
+      "startLine": null,
+      "originalLine": 20,
+      "originalStartLine": null,
+      "diffSide": "RIGHT",
+      "startDiffSide": null,
       "comments": {
         "totalCount": 1,
         "nodes": [
@@ -1297,6 +1484,11 @@
       "isOutdated": false,
       "path": "calculator.py",
       "line": 13,
+      "startLine": 13,
+      "originalLine": 13,
+      "originalStartLine": null,
+      "diffSide": "RIGHT",
+      "startDiffSide": null,
       "comments": {
         "totalCount": 1,
         "nodes": [
@@ -1449,6 +1641,11 @@
       "isOutdated": true,
       "path": "calculator.py",
       "line": null,
+      "startLine": 19,
+      "originalLine": 19,
+      "originalStartLine": null,
+      "diffSide": "RIGHT",
+      "startDiffSide": null,
       "comments": {
         "totalCount": 1,
         "nodes": [
@@ -1601,6 +1798,11 @@
       "isOutdated": false,
       "path": "calculator.py",
       "line": 23,
+      "startLine": 23,
+      "originalLine": 23,
+      "originalStartLine": null,
+      "diffSide": "RIGHT",
+      "startDiffSide": null,
       "comments": {
         "totalCount": 2,
         "nodes": [
@@ -1886,6 +2088,634 @@
                       "login": "danielparks"
                     }
                   ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PRRT_kwDOSa9ycc65VME5",
+      "isResolved": false,
+      "isOutdated": false,
+      "path": "calculator.py",
+      "line": 9,
+      "startLine": 5,
+      "originalLine": 9,
+      "originalStartLine": 5,
+      "diffSide": "RIGHT",
+      "startDiffSide": "RIGHT",
+      "comments": {
+        "totalCount": 1,
+        "nodes": [
+          {
+            "databaseId": 4624495958,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment on new lines 5–9, with a removed line in the middle.",
+            "createdAt": "2026-11-19T04:55:55Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
+          {
+            "databaseId": 4624495958,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment on new lines 5–9, with a removed line in the middle.",
+            "createdAt": "2026-11-19T04:55:55Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PRRT_kwDOSa9ycc65VMF_",
+      "isResolved": false,
+      "isOutdated": false,
+      "path": "calculator.py",
+      "line": 10,
+      "startLine": 9,
+      "originalLine": 10,
+      "originalStartLine": 9,
+      "diffSide": "RIGHT",
+      "startDiffSide": "LEFT",
+      "comments": {
+        "totalCount": 1,
+        "nodes": [
+          {
+            "databaseId": 4624496083,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment from old line 9 through new line 10, crossing sides.",
+            "createdAt": "2026-11-19T04:55:57Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
+          {
+            "databaseId": 4624496083,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment from old line 9 through new line 10, crossing sides.",
+            "createdAt": "2026-11-19T04:55:57Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PRRT_kwDOSa9ycc65VMHE",
+      "isResolved": false,
+      "isOutdated": false,
+      "path": "calculator.py",
+      "line": 13,
+      "startLine": 13,
+      "originalLine": 13,
+      "originalStartLine": 13,
+      "diffSide": "RIGHT",
+      "startDiffSide": "LEFT",
+      "comments": {
+        "totalCount": 1,
+        "nodes": [
+          {
+            "databaseId": 4624496187,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment from old line 13 to new line 13: same number, different sides.",
+            "createdAt": "2026-11-19T04:55:58Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
+          {
+            "databaseId": 4624496187,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment from old line 13 to new line 13: same number, different sides.",
+            "createdAt": "2026-11-19T04:55:58Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):\n+def add(a: float, b: float) -> float:\n     return a + b\n \n \n-def subtract(a, b):\n+def subtract(a: float, b: float) -> float:\n     return a - b\n \n \n-def multiply(a, b):\n+def multiply(a: float, b: float) -> float:\n     return a * b\n \n \n-def divide(a, b):\n+def divide(a: float, b: float) -> float:",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PRRT_kwDOSa9ycc65VMID",
+      "isResolved": false,
+      "isOutdated": false,
+      "path": "calculator.py",
+      "line": 1,
+      "startLine": 1,
+      "originalLine": 1,
+      "originalStartLine": null,
+      "diffSide": "LEFT",
+      "startDiffSide": null,
+      "comments": {
+        "totalCount": 1,
+        "nodes": [
+          {
+            "databaseId": 4624496288,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment on a removed line.",
+            "createdAt": "2026-11-19T04:55:59Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              }
+            ]
+          }
+        ],
+        "tailNodes": [
+          {
+            "databaseId": 4624496288,
+            "author": {
+              "login": "danielparks"
+            },
+            "body": "Comment on a removed line.",
+            "createdAt": "2026-11-19T04:55:59Z",
+            "isMinimized": false,
+            "minimizedReason": null,
+            "diffHunk": "@@ -1,16 +1,24 @@\n-def add(a, b):",
+            "reactionGroups": [
+              {
+                "content": "THUMBS_UP",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "THUMBS_DOWN",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "LAUGH",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HOORAY",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "CONFUSED",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "HEART",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "ROCKET",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
+                }
+              },
+              {
+                "content": "EYES",
+                "reactors": {
+                  "totalCount": 0,
+                  "nodes": []
                 }
               }
             ]

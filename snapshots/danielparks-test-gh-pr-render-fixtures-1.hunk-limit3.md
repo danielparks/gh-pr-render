@@ -25,7 +25,7 @@
 - 👍 danielparks
 - 🎉 danielparks
 
-### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSipb, outdated):
+### Inline comment on `calculator.py` line 20 (original) (id: PRRT_kwDOSa9ycc6BSipb, outdated):
 
 ```diff
 … 1 more line above
@@ -42,7 +42,7 @@
 
 > Please add docstrings to each function.
 
-### Inline comment on `calculator.py` (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
+### Inline comment on `calculator.py` line 19 (original) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
 ```diff
 +
@@ -74,3 +74,51 @@
 ##### Reactions
 
 - 👀 danielparks
+
+### Inline comment on `calculator.py` lines 5–9 (id: PRRT_kwDOSa9ycc65VME5):
+
+```diff
++def subtract(a: float, b: float) -> float:
+     return a - b
+ 
+ 
+-def multiply(a, b):
++def multiply(a: float, b: float) -> float:
+```
+
+#### danielparks 6 months later (id: 4624495958):
+
+> Comment on new lines 5–9, with a removed line in the middle.
+
+### Inline comment on `calculator.py` lines 9 (old file) – 10 (new file) (id: PRRT_kwDOSa9ycc65VMF_):
+
+```diff
+-def multiply(a, b):
++def multiply(a: float, b: float) -> float:
+     return a * b
+```
+
+#### danielparks 6 months later (id: 4624496083):
+
+> Comment from old line 9 through new line 10, crossing sides.
+
+### Inline comment on `calculator.py` lines 13 (old file) – 13 (new file) (id: PRRT_kwDOSa9ycc65VMHE):
+
+```diff
+-def divide(a, b):
++def divide(a: float, b: float) -> float:
+```
+
+#### danielparks 6 months later (id: 4624496187):
+
+> Comment from old line 13 to new line 13: same number, different sides.
+
+### Inline comment on `calculator.py` line 1 (old file) (id: PRRT_kwDOSa9ycc65VMID):
+
+```diff
+-def add(a, b):
+```
+
+#### danielparks 6 months later (id: 4624496288):
+
+> Comment on a removed line.
