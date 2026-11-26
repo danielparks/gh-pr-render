@@ -1,5 +1,5 @@
 import { formatDistance } from "date-fns";
-import { DEFAULT_DIFF_HUNK_LIMIT } from "./limits.js";
+import { DEFAULT_BODY_LINE_LIMIT, DEFAULT_DIFF_HUNK_LIMIT } from "./limits.js";
 import { trimDiffHunk } from "./hunk.js";
 import type {
   Commit,
@@ -32,6 +32,23 @@ export function blockquote(text: string): string {
     .replace(/\n$/, "")
     .replace(/^/gm, "> ")
     .replace(/^> $/gm, ">");
+}
+
+// Like `blockquote`, but keeps only the first `limit` lines (0 = unlimited).
+// If lines were cut, a note follows the quote — outside of it, since it’s
+// renderer-generated, not part of the body. `hint` says how to see the rest.
+//
+// Returns string lines without newlines.
+function quoteBody(body: string, limit: number, hint: string): string[] {
+  const lines = body.replace(/\r\n/gm, "\n").replace(/\n$/, "").split("\n");
+  if (limit === 0 || lines.length <= limit) return [blockquote(body)];
+
+  const omitted = lines.length - limit;
+  return [
+    blockquote(lines.slice(0, limit).join("\n")),
+    "",
+    `… ${omitted} more ${omitted === 1 ? "line" : "lines"} omitted — ${hint}`,
+  ];
 }
 
 const REACTION_EMOJI: Record<ReactionContent, string> = {
@@ -160,7 +177,12 @@ interface TimelineEntry {
   content: string;
 }
 
-function renderIssueComment(comment: IssueComment, baseDate: string): string {
+function renderIssueComment(
+  comment: IssueComment,
+  baseDate: string,
+  bodyLineLimit = 0,
+  prUrl = "",
+): string {
   const author = comment.author?.login ?? "ghost";
   const time = formatDate(comment.createdAt, baseDate);
   const minimized = comment.isMinimized
@@ -169,7 +191,11 @@ function renderIssueComment(comment: IssueComment, baseDate: string): string {
   return [
     `### Comment by ${author} ${time} (id: ${comment.databaseId}${minimized}):`,
     "",
-    blockquote(comment.body),
+    ...quoteBody(
+      comment.body,
+      bodyLineLimit,
+      `run \`gh-pr-render comments ${prUrl}\` to see all`,
+    ),
     ...formatReactions(comment.reactionGroups, "#### Reactions"),
   ].join("\n");
 }
@@ -228,7 +254,12 @@ function renderDiffHunk(thread: ReviewThread, limit: number): string {
   return trimDiffHunk(first?.diffHunk ?? "", { limit, start });
 }
 
-function renderThreadComment(comment: ThreadComment, baseDate: string): string {
+function renderThreadComment(
+  comment: ThreadComment,
+  baseDate: string,
+  bodyLineLimit = 0,
+  threadId = "",
+): string {
   const author = comment.author?.login ?? "ghost";
   const time = formatDate(comment.createdAt, baseDate);
   const minimized = comment.isMinimized
@@ -240,8 +271,41 @@ function renderThreadComment(comment: ThreadComment, baseDate: string): string {
   return [
     header,
     "",
-    blockquote(comment.body),
+    ...quoteBody(
+      comment.body,
+      bodyLineLimit,
+      `run \`gh-pr-render thread ${threadId}\` to see all`,
+    ),
     ...formatReactions(comment.reactionGroups, "##### Reactions"),
+  ].join("\n");
+}
+
+const COLLAPSED_SUMMARY_MAX_CHARS = 200;
+
+// Renders a resolved thread as just its location, its first comment’s first
+// line, and how to expand it. Resolved threads are rarely what a reader needs,
+// but they can give context, so keep a one-line hint of what they were about.
+function renderCollapsedThread(
+  thread: ReviewThread,
+  first: ThreadComment,
+  location: string,
+  tagStr: string,
+  baseDate: string,
+): string {
+  const author = first.author?.login ?? "ghost";
+  const time = formatDate(first.createdAt, baseDate);
+  const count = thread.comments.totalCount;
+  const summary = first.body.trim().split(/\r?\n/, 1)[0] ?? "";
+  const cut = summary.length > COLLAPSED_SUMMARY_MAX_CHARS;
+  const more = cut || first.body.trim() !== summary ? " …" : "";
+  return [
+    `### Inline comment on ${location}${tagStr}:`,
+    "",
+    `#### ${author} ${time} (id: ${first.databaseId}):`,
+    "",
+    blockquote(summary.slice(0, COLLAPSED_SUMMARY_MAX_CHARS) + more),
+    "",
+    `Collapsed (${count} ${count === 1 ? "comment" : "comments"}) — run \`gh-pr-render thread ${thread.id}\` to see all`,
   ].join("\n");
 }
 
@@ -252,6 +316,8 @@ function renderReviewThread(
   commentHeadLimit: number,
   commentTailLimit: number,
   diffHunkLimit: number,
+  bodyLineLimit: number,
+  collapse: boolean,
 ): string {
   // Defensive coding: the fetch code always fetches the first comment so we can
   // use its timestamp to place the thread in the timeline. If that ever changes
@@ -265,6 +331,10 @@ function renderReviewThread(
   if (thread.isResolved) tags.push("resolved");
   if (thread.isOutdated) tags.push("outdated");
   const tagStr = ` (${tags.join(", ")})`;
+
+  if (collapse) {
+    return renderCollapsedThread(thread, first, location, tagStr, baseDate);
+  }
 
   const lines: string[] = [
     `### Inline comment on ${location}${tagStr}:`,
@@ -284,7 +354,10 @@ function renderReviewThread(
 
   for (const comment of head) {
     if (comment.isMinimized && !includeMinimized) continue;
-    lines.push("", renderThreadComment(comment, baseDate));
+    lines.push(
+      "",
+      renderThreadComment(comment, baseDate, bodyLineLimit, thread.id),
+    );
   }
 
   if (omittedCount > 0) {
@@ -294,7 +367,10 @@ function renderReviewThread(
     );
     for (const comment of tail) {
       if (comment.isMinimized && !includeMinimized) continue;
-      lines.push("", renderThreadComment(comment, baseDate));
+      lines.push(
+        "",
+        renderThreadComment(comment, baseDate, bodyLineLimit, thread.id),
+      );
     }
   }
 
@@ -337,6 +413,8 @@ export function renderSingleThread(
     thread.comments.totalCount,
     0,
     diffHunkLimit,
+    0,
+    false,
   );
   return [
     `Part of [PR #${pullRequest.number}](${pullRequest.url})`,
@@ -357,6 +435,12 @@ export interface RenderOptions {
   // Maximum lines of diff hunk to show per inline thread (0 = unlimited).
   // Defaults to DEFAULT_DIFF_HUNK_LIMIT.
   diffHunkLimit?: number;
+  // Maximum lines of each top-level and inline comment body to show (0 =
+  // unlimited). Defaults to DEFAULT_BODY_LINE_LIMIT.
+  bodyLineLimit?: number;
+  // Render resolved threads as a short summary instead of in full. Defaults to
+  // true.
+  collapseResolved?: boolean;
 }
 
 export function renderPR(
@@ -368,6 +452,8 @@ export function renderPR(
     commentHeadLimit,
     commentTailLimit,
     diffHunkLimit = DEFAULT_DIFF_HUNK_LIMIT,
+    bodyLineLimit = DEFAULT_BODY_LINE_LIMIT,
+    collapseResolved = true,
   }: RenderOptions,
 ): string {
   const out: string[] = [];
@@ -441,7 +527,12 @@ export function renderPR(
     if (comment.isMinimized && !includeMinimized) return;
     timeline.push({
       timestamp: comment.createdAt,
-      content: renderIssueComment(comment, pull.created_at),
+      content: renderIssueComment(
+        comment,
+        pull.created_at,
+        bodyLineLimit,
+        pull.html_url,
+      ),
     });
   };
 
@@ -491,6 +582,8 @@ export function renderPR(
         commentHeadLimit,
         commentTailLimit,
         diffHunkLimit,
+        bodyLineLimit,
+        collapseResolved && thread.isResolved,
       ),
     });
   }

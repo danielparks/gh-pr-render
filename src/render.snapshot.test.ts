@@ -209,6 +209,7 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1 hunks", () => {
         commentHeadLimit: 20,
         commentTailLimit: 20,
         diffHunkLimit: 3,
+        collapseResolved: false,
       }),
     ).toMatchFileSnapshot(
       snapshotPath(
@@ -216,6 +217,44 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1 hunks", () => {
         "gh-pr-render-fixtures",
         1,
         ".hunk-limit3",
+      ),
+    );
+  });
+});
+
+describe("renderPR - danielparks-test/gh-pr-render-fixtures #1 body and resolved options", () => {
+  const data = loadFixture("danielparks-test", "gh-pr-render-fixtures", 1);
+  const options = {
+    includeMinimized: false,
+    includeFiles: false,
+    includeCommits: false,
+    commentHeadLimit: 20,
+    commentTailLimit: 20,
+  };
+
+  it("renders resolved threads in full", async () => {
+    await expect(
+      renderPR(data, { ...options, collapseResolved: false }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".no-collapse-resolved",
+      ),
+    );
+  });
+
+  // The fixture’s bodies are short, so use a low limit to exercise the cap.
+  it("renders with a body line limit of 1", async () => {
+    await expect(
+      renderPR(data, { ...options, bodyLineLimit: 1, collapseResolved: false }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".body-limit1",
       ),
     );
   });

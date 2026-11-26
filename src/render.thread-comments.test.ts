@@ -410,3 +410,140 @@ describe("renderPR - thread location", () => {
     expect(location({ line: null })).toBe("`file.py`");
   });
 });
+
+describe("renderPR - thread body line limit", () => {
+  const body = Array.from({ length: 10 }, (_, i) => `line ${i + 1}`).join("\n");
+  const thread = baseThread({
+    comments: {
+      totalCount: 1,
+      nodes: [baseThreadComment({ body })],
+      tailNodes: [],
+    },
+  });
+
+  it("cuts a long body and names the thread subcommand", () => {
+    const output = renderPR(basePRData({ reviewThreads: [thread] }), {
+      ...renderOptions,
+      bodyLineLimit: 3,
+    });
+    expect(output).not.toContain("line 4");
+    expect(output).toContain(
+      "\n\n… 7 more lines omitted — run `gh-pr-render thread THREAD_1` to see all",
+    );
+  });
+
+  it("is not applied by renderSingleThread", () => {
+    const output = renderSingleThread(
+      thread,
+      {
+        number: 1,
+        url: "https://github.com/owner/repo/pull/1",
+        createdAt: "2026-01-01T00:00:00Z",
+      },
+      false,
+    );
+    expect(output).toContain("> line 10");
+    expect(output).not.toContain("omitted");
+  });
+});
+
+describe("renderPR - collapsed resolved threads", () => {
+  const resolved = baseThread({
+    isResolved: true,
+    comments: {
+      totalCount: 3,
+      nodes: [
+        baseThreadComment({ databaseId: 1, body: "First line\nsecond line" }),
+        baseThreadComment({ databaseId: 2, body: "reply" }),
+        baseThreadComment({ databaseId: 3, body: "another reply" }),
+      ],
+      tailNodes: [],
+    },
+  });
+
+  it("collapses a resolved thread to its first comment’s first line", () => {
+    const output = renderPR(
+      basePRData({ reviewThreads: [resolved] }),
+      renderOptions,
+    );
+    expect(output).toContain(
+      "### Inline comment on `file.py` line 10 (id: THREAD_1, resolved):",
+    );
+    expect(output).toContain("(id: 1):\n\n> First line …");
+    expect(output).not.toContain("second line");
+    expect(output).not.toContain("id: 2");
+    expect(output).not.toContain("```diff");
+    expect(output).toContain(
+      "Collapsed (3 comments) — run `gh-pr-render thread THREAD_1` to see all",
+    );
+  });
+
+  it("does not add an ellipsis to a one-line summary", () => {
+    const thread = baseThread({
+      isResolved: true,
+      comments: {
+        totalCount: 1,
+        nodes: [baseThreadComment({ body: "Done" })],
+        tailNodes: [],
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).toContain("> Done\n");
+    expect(output).toContain("Collapsed (1 comment)");
+  });
+
+  it("shortens a very long first line", () => {
+    const thread = baseThread({
+      isResolved: true,
+      comments: {
+        totalCount: 1,
+        nodes: [baseThreadComment({ body: "x".repeat(500) })],
+        tailNodes: [],
+      },
+    });
+    const output = renderPR(
+      basePRData({ reviewThreads: [thread] }),
+      renderOptions,
+    );
+    expect(output).toContain(`> ${"x".repeat(200)} …\n`);
+  });
+
+  it("renders resolved threads in full when asked", () => {
+    const output = renderPR(basePRData({ reviewThreads: [resolved] }), {
+      ...renderOptions,
+      collapseResolved: false,
+    });
+    expect(output).toContain("```diff");
+    expect(output).toContain("second line");
+    expect(output).not.toContain("Collapsed");
+  });
+
+  it("leaves unresolved threads alone, even when outdated", () => {
+    const output = renderPR(
+      basePRData({
+        reviewThreads: [baseThread({ isOutdated: true })],
+      }),
+      renderOptions,
+    );
+    expect(output).toContain("```diff");
+    expect(output).not.toContain("Collapsed");
+  });
+
+  it("is not applied by renderSingleThread", () => {
+    const output = renderSingleThread(
+      resolved,
+      {
+        number: 1,
+        url: "https://github.com/owner/repo/pull/1",
+        createdAt: "2026-01-01T00:00:00Z",
+      },
+      false,
+    );
+    expect(output).toContain("second line");
+    expect(output).toContain("id: 3)");
+    expect(output).not.toContain("Collapsed");
+  });
+});

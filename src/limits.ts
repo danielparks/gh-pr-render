@@ -20,3 +20,12 @@ export const MAX_PAGE_SIZE = 100;
 // thread. The commented range itself is never cut, even if it is longer than
 // this. 0 means unlimited. Configurable via --diff-hunk-limit.
 export const DEFAULT_DIFF_HUNK_LIMIT = 10;
+
+// Maximum number of lines of a comment body to show for top-level comments and
+// inline thread comments; the rest is replaced with a note on how many lines
+// were cut, and how to see the whole comment. Long bodies (pasted logs, bot
+// reports) can cost more context than the rest of the discussion put together.
+// Doesn't apply to the PR description or review bodies, and the `comments` and
+// `thread` subcommands always show bodies in full. 0 means unlimited.
+// Configurable via --body-line-limit.
+export const DEFAULT_BODY_LINE_LIMIT = 50;

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 - Added `comments` subcommand to render every top-level comment on a PR, including those omitted from the middle of a long list. The “N comments omitted” marker now names it.
+- Cap each top-level and inline comment body at 50 lines, with a `… N more lines omitted` note saying how to see the whole comment. Configure with `--body-line-limit <n>` (0 for no limit). The PR description and review bodies are not capped.
+- Collapse resolved inline threads to their location, the first line of their first comment, and a pointer to `thread`. Unresolved threads are shown in full even if outdated. Use `--no-collapse-resolved` to show resolved threads in full.
 
 ## Release 0.7.0 (2026-11-18)
 

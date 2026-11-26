@@ -25,6 +25,8 @@ Options:
 - `--comment-head-limit <n>` — comments to show at the start of a long comment list (default: 20).
 - `--comment-tail-limit <n>` — comments to show at the end of a long comment list (default: 20).
 - `--diff-hunk-limit <n>` — maximum lines of diff to show above each inline comment; the commented lines are never cut (default: 10, 0 for no limit). Also accepted by `thread`.
+- `--body-line-limit <n>` — maximum lines of each top-level and inline comment body to show; a note says how many lines were cut (default: 50, 0 for no limit). Doesn’t apply to the PR description or review bodies, or to `comments` and `thread`, which always show bodies in full.
+- `--no-collapse-resolved` — show resolved inline threads in full. By default they’re collapsed to their location, the first line of the first comment, and a pointer to `thread`.
 - `--timings` — print request timings to stderr.
 
 ### When to use `--no-files` / `--no-commits`
@@ -118,15 +120,11 @@ Fetch and display every top-level comment on a PR, including the ones omitted fr
 >
 > ### Inline comment on `calculator.py` line 19 (when commented) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 >
-> ```diff
-> +
-> +
-> +def power(base: float, exponent: int) -> float:
-> ```
->
 > #### danielparks less than a minute later (id: 3223656785):
 >
 > > Nice, much cleaner!
+>
+> Collapsed (1 comment) — run `gh-pr-render thread PRRT_kwDOSa9ycc6BSisk` to see all
 >
 > ### Inline comment on `calculator.py` line 23 (id: PRRT_kwDOSa9ycc6BSitZ):
 >

@@ -14,6 +14,7 @@ import {
   type RenderOptions,
 } from "./render.js";
 import {
+  DEFAULT_BODY_LINE_LIMIT,
   DEFAULT_COMMENT_HEAD_LIMIT,
   DEFAULT_COMMENT_TAIL_LIMIT,
   DEFAULT_DIFF_HUNK_LIMIT,
@@ -251,6 +252,16 @@ const program = new Command()
     parseIntArg(0, Number.MAX_SAFE_INTEGER),
     DEFAULT_DIFF_HUNK_LIMIT,
   )
+  .option(
+    "--body-line-limit <n>",
+    "max lines of each comment body to show (0 for no limit)",
+    parseIntArg(0, Number.MAX_SAFE_INTEGER),
+    DEFAULT_BODY_LINE_LIMIT,
+  )
+  .option(
+    "--no-collapse-resolved",
+    "show resolved inline comment threads in full",
+  )
   .action(
     async (
       repoOrPr: string | undefined,
@@ -263,6 +274,8 @@ const program = new Command()
         commentHeadLimit: number;
         commentTailLimit: number;
         diffHunkLimit: number;
+        bodyLineLimit: number;
+        collapseResolved: boolean;
       },
     ) => {
       const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
@@ -279,6 +292,8 @@ const program = new Command()
           commentHeadLimit: opts.commentHeadLimit,
           commentTailLimit: opts.commentTailLimit,
           diffHunkLimit: opts.diffHunkLimit,
+          bodyLineLimit: opts.bodyLineLimit,
+          collapseResolved: opts.collapseResolved,
         };
         process.stdout.write(renderPR(data, renderOptions));
       } catch (error) {

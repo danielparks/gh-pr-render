@@ -296,3 +296,64 @@ describe("renderAllTopComments", () => {
     );
   });
 });
+
+describe("renderPR - body line limit", () => {
+  const longBody = Array.from({ length: 10 }, (_, i) => `line ${i + 1}`).join(
+    "\n",
+  );
+  const render = (bodyLineLimit?: number, body = longBody): string =>
+    renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 1,
+          nodes: [baseIssueComment({ body })],
+          tailNodes: [],
+        },
+      }),
+      bodyLineLimit === undefined
+        ? renderOptions
+        : { ...renderOptions, bodyLineLimit },
+    );
+
+  it("cuts a long body and says how to see the rest", () => {
+    const output = render(3);
+    expect(output).toContain("> line 3\n");
+    expect(output).not.toContain("line 4");
+    expect(output).toContain(
+      "\n\n… 7 more lines omitted — run `gh-pr-render comments https://github.com/owner/repo/pull/1` to see all",
+    );
+  });
+
+  it("uses the singular for one omitted line", () => {
+    expect(render(9)).toContain("… 1 more line omitted");
+  });
+
+  it("leaves a body at exactly the limit alone", () => {
+    const output = render(10);
+    expect(output).toContain("> line 10");
+    expect(output).not.toContain("omitted");
+  });
+
+  it("does not limit with 0", () => {
+    const output = render(0, Array(500).fill("x").join("\n"));
+    expect(output).not.toContain("omitted");
+  });
+
+  it("has a default limit", () => {
+    const output = render(undefined, Array(500).fill("x").join("\n"));
+    expect(output).toContain("… 450 more lines omitted");
+  });
+
+  it("is not applied by the comments subcommand", () => {
+    const output = renderAllTopComments(
+      [baseIssueComment({ body: Array(500).fill("x").join("\n") })],
+      {
+        number: 1,
+        url: "https://github.com/owner/repo/pull/1",
+        createdAt: "2026-01-01T00:00:00Z",
+      },
+      false,
+    );
+    expect(output).not.toContain("omitted");
+  });
+});

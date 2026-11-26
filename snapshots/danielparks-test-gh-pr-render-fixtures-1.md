@@ -53,15 +53,11 @@
 
 ### Inline comment on `calculator.py` line 19 (when commented) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
-```diff
-+
-+
-+def power(base: float, exponent: int) -> float:
-```
-
 #### danielparks less than a minute later (id: 3223656785):
 
 > Nice, much cleaner!
+
+Collapsed (1 comment) — run `gh-pr-render thread PRRT_kwDOSa9ycc6BSisk` to see all
 
 ### Inline comment on `calculator.py` line 23 (id: PRRT_kwDOSa9ycc6BSitZ):
 
