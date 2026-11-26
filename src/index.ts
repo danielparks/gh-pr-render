@@ -214,6 +214,10 @@ const program = new Command()
   .name(metadata.name)
   .version(metadata.version)
   .description(metadata.description)
+  // Without this, options shared with a subcommand (e.g. --include-minimized)
+  // are consumed by the top-level command even when given after the
+  // subcommand name, so the subcommand never sees them.
+  .enablePositionalOptions()
   .configureOutput({
     outputError:
       process.env.GITHUB_ACTIONS === "true"

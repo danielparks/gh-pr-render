@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Added `conversation` subcommand to render every top-level comment and review on a PR, in full. The omitted marker names it.
 - Cap each top-level comment, review, and inline comment body at 50 lines, with a `… N more lines omitted` note saying how to see the whole thing. Configure with `--body-line-limit <n>` (0 for no limit). The PR description is not capped.
 - Collapse resolved inline threads to their location, the first line of their first comment, and a pointer to `thread`. Unresolved threads are shown in full even if outdated. Use `--no-collapse-resolved` to show resolved threads in full.
+- Fixed `thread` ignoring `--include-minimized` and `--diff-hunk-limit` when given after the subcommand name.
 
 ## Release 0.7.0 (2026-11-18)
 
