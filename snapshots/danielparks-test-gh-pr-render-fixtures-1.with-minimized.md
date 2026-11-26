@@ -143,3 +143,86 @@ Collapsed (1 comment) — run `gh-pr-render thread PRRT_kwDOSa9ycc6BSisk` to see
 #### danielparks 6 months later (id: 4624496288):
 
 > Comment on a removed line.
+
+### Change request by danielparks-test-1 7 months later:
+
+> Please add tests before merging.
+
+### Comment by danielparks 7 months later (id: 7203762426):
+
+> Tests are coming in a separate PR.
+
+### Comment by danielparks 7 months later (id: 7203762950):
+
+> Local test run:
+>
+> ```text
+> step 1/60: ok
+> step 2/60: ok
+> step 3/60: ok
+> step 4/60: ok
+> step 5/60: ok
+> step 6/60: ok
+> step 7/60: ok
+> step 8/60: ok
+> step 9/60: ok
+> step 10/60: ok
+> step 11/60: ok
+> step 12/60: ok
+> step 13/60: ok
+> step 14/60: ok
+> step 15/60: ok
+> step 16/60: ok
+> step 17/60: ok
+> step 18/60: ok
+> step 19/60: ok
+> step 20/60: ok
+> step 21/60: ok
+> step 22/60: ok
+> step 23/60: ok
+> step 24/60: ok
+> step 25/60: ok
+> step 26/60: ok
+> step 27/60: ok
+> step 28/60: ok
+> step 29/60: ok
+> step 30/60: ok
+> step 31/60: ok
+> step 32/60: ok
+> step 33/60: ok
+> step 34/60: ok
+> step 35/60: ok
+> step 36/60: ok
+> step 37/60: ok
+> step 38/60: ok
+> step 39/60: ok
+> step 40/60: ok
+> step 41/60: ok
+> step 42/60: ok
+> step 43/60: ok
+> step 44/60: ok
+> step 45/60: ok
+> step 46/60: ok
+> step 47/60: ok
+
+… 14 more lines omitted — run `gh-pr-render conversation https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1` to see all
+
+### Comment by danielparks-test-1 7 months later (id: 7203763530):
+
+> That works for me, thanks.
+
+### Comment by danielparks 7 months later (id: 7203764098):
+
+> CI is green now.
+
+### Approval by danielparks-test-1 7 months later:
+
+> Looks good now.
+
+### Comment by danielparks 7 months later (id: 7203765186):
+
+> Merging after one more look.
+
+### Comment by danielparks 7 months later (id: 7203765676):
+
+> Thanks for the review!

@@ -7,6 +7,11 @@
     "diff_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1.diff",
     "patch_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1.patch",
     "issue_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1",
+    "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/commits",
+    "review_comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/comments",
+    "review_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/comments{/number}",
+    "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1/comments",
+    "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/159bc540a03a63a77cefd7ca9e8282e431f299d5",
     "number": 1,
     "state": "open",
     "locked": false,
@@ -33,56 +38,27 @@
       "site_admin": false
     },
     "body": "Adds type annotations to all functions and implements `power` and `modulo` operations.",
-    "created_at": "2026-05-12T04:18:15Z",
-    "updated_at": "2026-11-19T04:55:48Z",
-    "closed_at": null,
-    "merged_at": null,
-    "merge_commit_sha": "e71872e6c80ed1bb95717a0dca4ee3485c49e915",
-    "assignees": [
-      {
-        "login": "danielparks",
-        "id": 154427,
-        "node_id": "MDQ6VXNlcjE1NDQyNw==",
-        "avatar_url": "https://avatars.githubusercontent.com/u/154427?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/danielparks",
-        "html_url": "https://github.com/danielparks",
-        "followers_url": "https://api.github.com/users/danielparks/followers",
-        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
-        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
-        "organizations_url": "https://api.github.com/users/danielparks/orgs",
-        "repos_url": "https://api.github.com/users/danielparks/repos",
-        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/danielparks/received_events",
-        "type": "User",
-        "user_view_type": "public",
-        "site_admin": false
-      }
-    ],
-    "requested_reviewers": [],
-    "requested_teams": [],
     "labels": [
       {
         "id": 11520646899,
         "node_id": "LA_kwDOSa9ycc8AAAACrq8e8w",
         "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/labels/feature",
         "name": "feature",
+        "description": "New feature or request",
         "color": "1d76db",
         "default": false,
-        "description": "New feature or request",
         "archived_at": null,
         "archived_by": null
       }
     ],
     "milestone": {
+      "id": 16904853,
+      "node_id": "MI_kwDOSa9ycc4BAfKV",
       "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones/1",
       "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/milestone/1",
       "labels_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones/1/labels",
-      "id": 16904853,
-      "node_id": "MI_kwDOSa9ycc4BAfKV",
       "number": 1,
+      "state": "open",
       "title": "v1.0",
       "description": null,
       "creator": {
@@ -108,304 +84,17 @@
       },
       "open_issues": 1,
       "closed_issues": 0,
-      "state": "open",
       "created_at": "2026-07-21T03:27:25Z",
       "updated_at": "2026-07-21T03:27:26Z",
-      "due_on": null,
-      "closed_at": null
+      "closed_at": null,
+      "due_on": null
     },
-    "draft": false,
-    "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/commits",
-    "review_comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/comments",
-    "review_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/comments{/number}",
-    "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1/comments",
-    "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/159bc540a03a63a77cefd7ca9e8282e431f299d5",
-    "head": {
-      "label": "danielparks-test:feat/type-hints-and-ops",
-      "ref": "feat/type-hints-and-ops",
-      "sha": "159bc540a03a63a77cefd7ca9e8282e431f299d5",
-      "user": {
-        "login": "danielparks-test",
-        "id": 20963268,
-        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
-        "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/danielparks-test",
-        "html_url": "https://github.com/danielparks-test",
-        "followers_url": "https://api.github.com/users/danielparks-test/followers",
-        "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
-        "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
-        "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
-        "repos_url": "https://api.github.com/users/danielparks-test/repos",
-        "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
-        "type": "Organization",
-        "user_view_type": "public",
-        "site_admin": false
-      },
-      "repo": {
-        "id": 1236234865,
-        "node_id": "R_kgDOSa9ycQ",
-        "name": "gh-pr-render-fixtures",
-        "full_name": "danielparks-test/gh-pr-render-fixtures",
-        "private": false,
-        "owner": {
-          "login": "danielparks-test",
-          "id": 20963268,
-          "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
-          "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/danielparks-test",
-          "html_url": "https://github.com/danielparks-test",
-          "followers_url": "https://api.github.com/users/danielparks-test/followers",
-          "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
-          "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
-          "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
-          "repos_url": "https://api.github.com/users/danielparks-test/repos",
-          "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
-          "type": "Organization",
-          "user_view_type": "public",
-          "site_admin": false
-        },
-        "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
-        "description": "Fixture repository for gh-pr-render tests",
-        "fork": false,
-        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures",
-        "forks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/forks",
-        "keys_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/keys{/key_id}",
-        "collaborators_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/collaborators{/collaborator}",
-        "teams_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/teams",
-        "hooks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/hooks",
-        "issue_events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/events{/number}",
-        "events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/events",
-        "assignees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/assignees{/user}",
-        "branches_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/branches{/branch}",
-        "tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/tags",
-        "blobs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/blobs{/sha}",
-        "git_tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/tags{/sha}",
-        "git_refs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/refs{/sha}",
-        "trees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees{/sha}",
-        "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/{sha}",
-        "languages_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/languages",
-        "stargazers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/stargazers",
-        "contributors_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contributors",
-        "subscribers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscribers",
-        "subscription_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscription",
-        "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits{/sha}",
-        "git_commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits{/sha}",
-        "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/comments{/number}",
-        "issue_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/comments{/number}",
-        "contents_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contents/{+path}",
-        "compare_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/compare/{base}...{head}",
-        "merges_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/merges",
-        "archive_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/{archive_format}{/ref}",
-        "downloads_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/downloads",
-        "issues_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues{/number}",
-        "pulls_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls{/number}",
-        "milestones_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones{/number}",
-        "notifications_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/notifications{?since,all,participating}",
-        "labels_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/labels{/name}",
-        "releases_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/releases{/id}",
-        "deployments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/deployments",
-        "created_at": "2026-05-12T04:18:07Z",
-        "updated_at": "2026-05-12T04:18:16Z",
-        "pushed_at": "2026-07-21T03:29:26Z",
-        "git_url": "git://github.com/danielparks-test/gh-pr-render-fixtures.git",
-        "ssh_url": "git@github.com:danielparks-test/gh-pr-render-fixtures.git",
-        "clone_url": "https://github.com/danielparks-test/gh-pr-render-fixtures.git",
-        "svn_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
-        "homepage": null,
-        "size": 5,
-        "stargazers_count": 0,
-        "watchers_count": 0,
-        "language": "Python",
-        "has_issues": true,
-        "has_projects": true,
-        "has_downloads": false,
-        "has_wiki": true,
-        "has_pages": false,
-        "has_discussions": false,
-        "forks_count": 0,
-        "mirror_url": null,
-        "archived": false,
-        "disabled": false,
-        "open_issues_count": 1,
-        "license": null,
-        "allow_forking": true,
-        "is_template": false,
-        "web_commit_signoff_required": false,
-        "has_pull_requests": true,
-        "pull_request_creation_policy": "all",
-        "topics": [],
-        "visibility": "public",
-        "forks": 0,
-        "open_issues": 1,
-        "watchers": 0,
-        "default_branch": "main"
-      }
-    },
-    "base": {
-      "label": "danielparks-test:main",
-      "ref": "main",
-      "sha": "6951a8116bb2bb27302529d348b3990c35de61db",
-      "user": {
-        "login": "danielparks-test",
-        "id": 20963268,
-        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
-        "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/danielparks-test",
-        "html_url": "https://github.com/danielparks-test",
-        "followers_url": "https://api.github.com/users/danielparks-test/followers",
-        "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
-        "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
-        "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
-        "repos_url": "https://api.github.com/users/danielparks-test/repos",
-        "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
-        "type": "Organization",
-        "user_view_type": "public",
-        "site_admin": false
-      },
-      "repo": {
-        "id": 1236234865,
-        "node_id": "R_kgDOSa9ycQ",
-        "name": "gh-pr-render-fixtures",
-        "full_name": "danielparks-test/gh-pr-render-fixtures",
-        "private": false,
-        "owner": {
-          "login": "danielparks-test",
-          "id": 20963268,
-          "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
-          "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/danielparks-test",
-          "html_url": "https://github.com/danielparks-test",
-          "followers_url": "https://api.github.com/users/danielparks-test/followers",
-          "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
-          "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
-          "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
-          "repos_url": "https://api.github.com/users/danielparks-test/repos",
-          "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
-          "type": "Organization",
-          "user_view_type": "public",
-          "site_admin": false
-        },
-        "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
-        "description": "Fixture repository for gh-pr-render tests",
-        "fork": false,
-        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures",
-        "forks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/forks",
-        "keys_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/keys{/key_id}",
-        "collaborators_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/collaborators{/collaborator}",
-        "teams_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/teams",
-        "hooks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/hooks",
-        "issue_events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/events{/number}",
-        "events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/events",
-        "assignees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/assignees{/user}",
-        "branches_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/branches{/branch}",
-        "tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/tags",
-        "blobs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/blobs{/sha}",
-        "git_tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/tags{/sha}",
-        "git_refs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/refs{/sha}",
-        "trees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees{/sha}",
-        "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/{sha}",
-        "languages_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/languages",
-        "stargazers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/stargazers",
-        "contributors_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contributors",
-        "subscribers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscribers",
-        "subscription_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscription",
-        "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits{/sha}",
-        "git_commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits{/sha}",
-        "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/comments{/number}",
-        "issue_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/comments{/number}",
-        "contents_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contents/{+path}",
-        "compare_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/compare/{base}...{head}",
-        "merges_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/merges",
-        "archive_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/{archive_format}{/ref}",
-        "downloads_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/downloads",
-        "issues_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues{/number}",
-        "pulls_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls{/number}",
-        "milestones_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones{/number}",
-        "notifications_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/notifications{?since,all,participating}",
-        "labels_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/labels{/name}",
-        "releases_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/releases{/id}",
-        "deployments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/deployments",
-        "created_at": "2026-05-12T04:18:07Z",
-        "updated_at": "2026-05-12T04:18:16Z",
-        "pushed_at": "2026-07-21T03:29:26Z",
-        "git_url": "git://github.com/danielparks-test/gh-pr-render-fixtures.git",
-        "ssh_url": "git@github.com:danielparks-test/gh-pr-render-fixtures.git",
-        "clone_url": "https://github.com/danielparks-test/gh-pr-render-fixtures.git",
-        "svn_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
-        "homepage": null,
-        "size": 5,
-        "stargazers_count": 0,
-        "watchers_count": 0,
-        "language": "Python",
-        "has_issues": true,
-        "has_projects": true,
-        "has_downloads": false,
-        "has_wiki": true,
-        "has_pages": false,
-        "has_discussions": false,
-        "forks_count": 0,
-        "mirror_url": null,
-        "archived": false,
-        "disabled": false,
-        "open_issues_count": 1,
-        "license": null,
-        "allow_forking": true,
-        "is_template": false,
-        "web_commit_signoff_required": false,
-        "has_pull_requests": true,
-        "pull_request_creation_policy": "all",
-        "topics": [],
-        "visibility": "public",
-        "forks": 0,
-        "open_issues": 1,
-        "watchers": 0,
-        "default_branch": "main"
-      }
-    },
-    "_links": {
-      "self": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
-      },
-      "html": {
-        "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1"
-      },
-      "issue": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1"
-      },
-      "comments": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1/comments"
-      },
-      "review_comments": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/comments"
-      },
-      "review_comment": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/comments{/number}"
-      },
-      "commits": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/commits"
-      },
-      "statuses": {
-        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/159bc540a03a63a77cefd7ca9e8282e431f299d5"
-      }
-    },
-    "author_association": "MEMBER",
-    "auto_merge": null,
+    "active_lock_reason": null,
+    "created_at": "2026-05-12T04:18:15Z",
+    "updated_at": "2026-11-26T21:28:46Z",
+    "closed_at": null,
+    "merged_at": null,
+    "merge_commit_sha": "e71872e6c80ed1bb95717a0dca4ee3485c49e915",
     "assignee": {
       "login": "danielparks",
       "id": 154427,
@@ -427,13 +116,324 @@
       "user_view_type": "public",
       "site_admin": false
     },
-    "active_lock_reason": null,
+    "assignees": [
+      {
+        "login": "danielparks",
+        "id": 154427,
+        "node_id": "MDQ6VXNlcjE1NDQyNw==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/154427?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks",
+        "html_url": "https://github.com/danielparks",
+        "followers_url": "https://api.github.com/users/danielparks/followers",
+        "following_url": "https://api.github.com/users/danielparks/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks/orgs",
+        "repos_url": "https://api.github.com/users/danielparks/repos",
+        "events_url": "https://api.github.com/users/danielparks/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      }
+    ],
+    "requested_reviewers": [],
+    "requested_teams": [],
+    "head": {
+      "label": "danielparks-test:feat/type-hints-and-ops",
+      "ref": "feat/type-hints-and-ops",
+      "repo": {
+        "id": 1236234865,
+        "node_id": "R_kgDOSa9ycQ",
+        "name": "gh-pr-render-fixtures",
+        "full_name": "danielparks-test/gh-pr-render-fixtures",
+        "owner": {
+          "login": "danielparks-test",
+          "id": 20963268,
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
+          "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/danielparks-test",
+          "html_url": "https://github.com/danielparks-test",
+          "followers_url": "https://api.github.com/users/danielparks-test/followers",
+          "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
+          "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
+          "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
+          "repos_url": "https://api.github.com/users/danielparks-test/repos",
+          "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
+          "type": "Organization",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "private": false,
+        "fork": false,
+        "archived": false,
+        "disabled": false,
+        "description": "Fixture repository for gh-pr-render tests",
+        "homepage": null,
+        "language": "Python",
+        "visibility": "public",
+        "is_template": false,
+        "topics": [],
+        "forks_count": 0,
+        "forks": 0,
+        "stargazers_count": 0,
+        "watchers_count": 0,
+        "watchers": 0,
+        "open_issues_count": 1,
+        "open_issues": 1,
+        "size": 5,
+        "default_branch": "main",
+        "has_issues": true,
+        "has_projects": true,
+        "has_wiki": true,
+        "has_pages": false,
+        "has_downloads": false,
+        "has_discussions": false,
+        "has_pull_requests": true,
+        "pushed_at": "2026-07-21T03:29:26Z",
+        "created_at": "2026-05-12T04:18:07Z",
+        "updated_at": "2026-05-12T04:18:16Z",
+        "allow_forking": true,
+        "web_commit_signoff_required": false,
+        "pull_request_creation_policy": "all",
+        "license": null,
+        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures",
+        "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
+        "archive_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/{archive_format}{/ref}",
+        "assignees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/assignees{/user}",
+        "blobs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/blobs{/sha}",
+        "branches_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/branches{/branch}",
+        "collaborators_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/collaborators{/collaborator}",
+        "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/comments{/number}",
+        "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits{/sha}",
+        "compare_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/compare/{base}...{head}",
+        "contents_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contents/{+path}",
+        "contributors_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contributors",
+        "deployments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/deployments",
+        "downloads_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/downloads",
+        "events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/events",
+        "forks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/forks",
+        "git_commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/refs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/tags{/sha}",
+        "git_url": "git://github.com/danielparks-test/gh-pr-render-fixtures.git",
+        "issue_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/comments{/number}",
+        "issue_events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/events{/number}",
+        "issues_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues{/number}",
+        "keys_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/keys{/key_id}",
+        "labels_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/labels{/name}",
+        "languages_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/languages",
+        "merges_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/merges",
+        "milestones_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/notifications{?since,all,participating}",
+        "pulls_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls{/number}",
+        "releases_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/releases{/id}",
+        "ssh_url": "git@github.com:danielparks-test/gh-pr-render-fixtures.git",
+        "stargazers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/stargazers",
+        "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/{sha}",
+        "subscribers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscribers",
+        "subscription_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscription",
+        "tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/tags",
+        "teams_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/teams",
+        "trees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees{/sha}",
+        "clone_url": "https://github.com/danielparks-test/gh-pr-render-fixtures.git",
+        "mirror_url": null,
+        "hooks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/hooks",
+        "svn_url": "https://github.com/danielparks-test/gh-pr-render-fixtures"
+      },
+      "sha": "159bc540a03a63a77cefd7ca9e8282e431f299d5",
+      "user": {
+        "login": "danielparks-test",
+        "id": 20963268,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks-test",
+        "html_url": "https://github.com/danielparks-test",
+        "followers_url": "https://api.github.com/users/danielparks-test/followers",
+        "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
+        "repos_url": "https://api.github.com/users/danielparks-test/repos",
+        "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      }
+    },
+    "base": {
+      "label": "danielparks-test:main",
+      "ref": "main",
+      "repo": {
+        "id": 1236234865,
+        "node_id": "R_kgDOSa9ycQ",
+        "name": "gh-pr-render-fixtures",
+        "full_name": "danielparks-test/gh-pr-render-fixtures",
+        "owner": {
+          "login": "danielparks-test",
+          "id": 20963268,
+          "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
+          "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/danielparks-test",
+          "html_url": "https://github.com/danielparks-test",
+          "followers_url": "https://api.github.com/users/danielparks-test/followers",
+          "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
+          "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
+          "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
+          "repos_url": "https://api.github.com/users/danielparks-test/repos",
+          "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
+          "type": "Organization",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "private": false,
+        "fork": false,
+        "archived": false,
+        "disabled": false,
+        "description": "Fixture repository for gh-pr-render tests",
+        "homepage": null,
+        "language": "Python",
+        "visibility": "public",
+        "is_template": false,
+        "topics": [],
+        "forks_count": 0,
+        "forks": 0,
+        "stargazers_count": 0,
+        "watchers_count": 0,
+        "watchers": 0,
+        "open_issues_count": 1,
+        "open_issues": 1,
+        "size": 5,
+        "default_branch": "main",
+        "has_issues": true,
+        "has_projects": true,
+        "has_wiki": true,
+        "has_pages": false,
+        "has_downloads": false,
+        "has_discussions": false,
+        "has_pull_requests": true,
+        "pushed_at": "2026-07-21T03:29:26Z",
+        "created_at": "2026-05-12T04:18:07Z",
+        "updated_at": "2026-05-12T04:18:16Z",
+        "allow_forking": true,
+        "web_commit_signoff_required": false,
+        "pull_request_creation_policy": "all",
+        "license": null,
+        "url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures",
+        "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures",
+        "archive_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/{archive_format}{/ref}",
+        "assignees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/assignees{/user}",
+        "blobs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/blobs{/sha}",
+        "branches_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/branches{/branch}",
+        "collaborators_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/collaborators{/collaborator}",
+        "comments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/comments{/number}",
+        "commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/commits{/sha}",
+        "compare_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/compare/{base}...{head}",
+        "contents_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contents/{+path}",
+        "contributors_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/contributors",
+        "deployments_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/deployments",
+        "downloads_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/downloads",
+        "events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/events",
+        "forks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/forks",
+        "git_commits_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/refs{/sha}",
+        "git_tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/tags{/sha}",
+        "git_url": "git://github.com/danielparks-test/gh-pr-render-fixtures.git",
+        "issue_comment_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/comments{/number}",
+        "issue_events_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/events{/number}",
+        "issues_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues{/number}",
+        "keys_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/keys{/key_id}",
+        "labels_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/labels{/name}",
+        "languages_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/languages",
+        "merges_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/merges",
+        "milestones_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/milestones{/number}",
+        "notifications_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/notifications{?since,all,participating}",
+        "pulls_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls{/number}",
+        "releases_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/releases{/id}",
+        "ssh_url": "git@github.com:danielparks-test/gh-pr-render-fixtures.git",
+        "stargazers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/stargazers",
+        "statuses_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/{sha}",
+        "subscribers_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscribers",
+        "subscription_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/subscription",
+        "tags_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/tags",
+        "teams_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/teams",
+        "trees_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/git/trees{/sha}",
+        "clone_url": "https://github.com/danielparks-test/gh-pr-render-fixtures.git",
+        "mirror_url": null,
+        "hooks_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/hooks",
+        "svn_url": "https://github.com/danielparks-test/gh-pr-render-fixtures"
+      },
+      "sha": "6951a8116bb2bb27302529d348b3990c35de61db",
+      "user": {
+        "login": "danielparks-test",
+        "id": 20963268,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwOTYzMjY4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/20963268?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks-test",
+        "html_url": "https://github.com/danielparks-test",
+        "followers_url": "https://api.github.com/users/danielparks-test/followers",
+        "following_url": "https://api.github.com/users/danielparks-test/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks-test/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks-test/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks-test/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks-test/orgs",
+        "repos_url": "https://api.github.com/users/danielparks-test/repos",
+        "events_url": "https://api.github.com/users/danielparks-test/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks-test/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      }
+    },
+    "_links": {
+      "comments": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1/comments"
+      },
+      "commits": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/commits"
+      },
+      "statuses": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/statuses/159bc540a03a63a77cefd7ca9e8282e431f299d5"
+      },
+      "html": {
+        "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1"
+      },
+      "issue": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/issues/1"
+      },
+      "review_comments": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1/comments"
+      },
+      "review_comment": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/comments{/number}"
+      },
+      "self": {
+        "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+      }
+    },
+    "author_association": "MEMBER",
+    "auto_merge": null,
+    "draft": false,
     "merged": false,
     "mergeable": true,
     "rebaseable": true,
     "mergeable_state": "clean",
     "merged_by": null,
-    "comments": 2,
+    "comments": 8,
     "review_comments": 9,
     "maintainer_can_modify": false,
     "commits": 2,
@@ -1023,10 +1023,94 @@
       },
       "submitted_at": "2026-11-19T04:55:59Z",
       "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 6080641810,
+      "node_id": "PRR_kwDOSa9ycc8AAAABam87Eg",
+      "user": {
+        "login": "danielparks-test-1",
+        "id": 361721046,
+        "node_id": "U_kgDOFY9s1g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/361721046?u=358a9a24f48d2f642f8c8e7cc0291043c3e04dc9&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks-test-1",
+        "html_url": "https://github.com/danielparks-test-1",
+        "followers_url": "https://api.github.com/users/danielparks-test-1/followers",
+        "following_url": "https://api.github.com/users/danielparks-test-1/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks-test-1/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks-test-1/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks-test-1/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks-test-1/orgs",
+        "repos_url": "https://api.github.com/users/danielparks-test-1/repos",
+        "events_url": "https://api.github.com/users/danielparks-test-1/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks-test-1/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "Please add tests before merging.",
+      "state": "CHANGES_REQUESTED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-6080641810",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "NONE",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-6080641810"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-26T21:28:31Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
+    },
+    {
+      "id": 6080643618,
+      "node_id": "PRR_kwDOSa9ycc8AAAABam9CIg",
+      "user": {
+        "login": "danielparks-test-1",
+        "id": 361721046,
+        "node_id": "U_kgDOFY9s1g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/361721046?u=358a9a24f48d2f642f8c8e7cc0291043c3e04dc9&v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks-test-1",
+        "html_url": "https://github.com/danielparks-test-1",
+        "followers_url": "https://api.github.com/users/danielparks-test-1/followers",
+        "following_url": "https://api.github.com/users/danielparks-test-1/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks-test-1/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks-test-1/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks-test-1/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks-test-1/orgs",
+        "repos_url": "https://api.github.com/users/danielparks-test-1/repos",
+        "events_url": "https://api.github.com/users/danielparks-test-1/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks-test-1/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "body": "Looks good now.",
+      "state": "APPROVED",
+      "html_url": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-6080643618",
+      "pull_request_url": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1",
+      "author_association": "NONE",
+      "is_copilot_code_review": false,
+      "copilot_code_review_effort": null,
+      "_links": {
+        "html": {
+          "href": "https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1#pullrequestreview-6080643618"
+        },
+        "pull_request": {
+          "href": "https://api.github.com/repos/danielparks-test/gh-pr-render-fixtures/pulls/1"
+        }
+      },
+      "submitted_at": "2026-11-26T21:28:42Z",
+      "commit_id": "159bc540a03a63a77cefd7ca9e8282e431f299d5"
     }
   ],
   "topComments": {
-    "totalCount": 2,
+    "totalCount": 8,
     "nodes": [
       {
         "databaseId": 4427286000,
@@ -1113,6 +1197,414 @@
         "createdAt": "2026-05-12T04:18:17Z",
         "isMinimized": true,
         "minimizedReason": "duplicate",
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203762426,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Tests are coming in a separate PR.",
+        "createdAt": "2026-11-26T21:28:33Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203762950,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Local test run:\n\n```text\nstep 1/60: ok\nstep 2/60: ok\nstep 3/60: ok\nstep 4/60: ok\nstep 5/60: ok\nstep 6/60: ok\nstep 7/60: ok\nstep 8/60: ok\nstep 9/60: ok\nstep 10/60: ok\nstep 11/60: ok\nstep 12/60: ok\nstep 13/60: ok\nstep 14/60: ok\nstep 15/60: ok\nstep 16/60: ok\nstep 17/60: ok\nstep 18/60: ok\nstep 19/60: ok\nstep 20/60: ok\nstep 21/60: ok\nstep 22/60: ok\nstep 23/60: ok\nstep 24/60: ok\nstep 25/60: ok\nstep 26/60: ok\nstep 27/60: ok\nstep 28/60: ok\nstep 29/60: ok\nstep 30/60: ok\nstep 31/60: ok\nstep 32/60: ok\nstep 33/60: ok\nstep 34/60: ok\nstep 35/60: ok\nstep 36/60: ok\nstep 37/60: ok\nstep 38/60: ok\nstep 39/60: ok\nstep 40/60: ok\nstep 41/60: ok\nstep 42/60: ok\nstep 43/60: ok\nstep 44/60: ok\nstep 45/60: ok\nstep 46/60: ok\nstep 47/60: ok\nstep 48/60: ok\nstep 49/60: ok\nstep 50/60: ok\nstep 51/60: ok\nstep 52/60: ok\nstep 53/60: ok\nstep 54/60: ok\nstep 55/60: ok\nstep 56/60: ok\nstep 57/60: ok\nstep 58/60: ok\nstep 59/60: ok\nstep 60/60: ok\n```",
+        "createdAt": "2026-11-26T21:28:36Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203763530,
+        "author": {
+          "login": "danielparks-test-1"
+        },
+        "body": "That works for me, thanks.",
+        "createdAt": "2026-11-26T21:28:38Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203764098,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "CI is green now.",
+        "createdAt": "2026-11-26T21:28:40Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203765186,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Merging after one more look.",
+        "createdAt": "2026-11-26T21:28:44Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203765676,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Thanks for the review!",
+        "createdAt": "2026-11-26T21:28:46Z",
+        "isMinimized": false,
+        "minimizedReason": null,
         "reactionGroups": [
           {
             "content": "THUMBS_UP",
@@ -1259,6 +1751,414 @@
         "createdAt": "2026-05-12T04:18:17Z",
         "isMinimized": true,
         "minimizedReason": "duplicate",
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203762426,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Tests are coming in a separate PR.",
+        "createdAt": "2026-11-26T21:28:33Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203762950,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Local test run:\n\n```text\nstep 1/60: ok\nstep 2/60: ok\nstep 3/60: ok\nstep 4/60: ok\nstep 5/60: ok\nstep 6/60: ok\nstep 7/60: ok\nstep 8/60: ok\nstep 9/60: ok\nstep 10/60: ok\nstep 11/60: ok\nstep 12/60: ok\nstep 13/60: ok\nstep 14/60: ok\nstep 15/60: ok\nstep 16/60: ok\nstep 17/60: ok\nstep 18/60: ok\nstep 19/60: ok\nstep 20/60: ok\nstep 21/60: ok\nstep 22/60: ok\nstep 23/60: ok\nstep 24/60: ok\nstep 25/60: ok\nstep 26/60: ok\nstep 27/60: ok\nstep 28/60: ok\nstep 29/60: ok\nstep 30/60: ok\nstep 31/60: ok\nstep 32/60: ok\nstep 33/60: ok\nstep 34/60: ok\nstep 35/60: ok\nstep 36/60: ok\nstep 37/60: ok\nstep 38/60: ok\nstep 39/60: ok\nstep 40/60: ok\nstep 41/60: ok\nstep 42/60: ok\nstep 43/60: ok\nstep 44/60: ok\nstep 45/60: ok\nstep 46/60: ok\nstep 47/60: ok\nstep 48/60: ok\nstep 49/60: ok\nstep 50/60: ok\nstep 51/60: ok\nstep 52/60: ok\nstep 53/60: ok\nstep 54/60: ok\nstep 55/60: ok\nstep 56/60: ok\nstep 57/60: ok\nstep 58/60: ok\nstep 59/60: ok\nstep 60/60: ok\n```",
+        "createdAt": "2026-11-26T21:28:36Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203763530,
+        "author": {
+          "login": "danielparks-test-1"
+        },
+        "body": "That works for me, thanks.",
+        "createdAt": "2026-11-26T21:28:38Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203764098,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "CI is green now.",
+        "createdAt": "2026-11-26T21:28:40Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203765186,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Merging after one more look.",
+        "createdAt": "2026-11-26T21:28:44Z",
+        "isMinimized": false,
+        "minimizedReason": null,
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "THUMBS_DOWN",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "LAUGH",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HOORAY",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "CONFUSED",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "HEART",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "ROCKET",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          },
+          {
+            "content": "EYES",
+            "reactors": {
+              "totalCount": 0,
+              "nodes": []
+            }
+          }
+        ]
+      },
+      {
+        "databaseId": 7203765676,
+        "author": {
+          "login": "danielparks"
+        },
+        "body": "Thanks for the review!",
+        "createdAt": "2026-11-26T21:28:46Z",
+        "isMinimized": false,
+        "minimizedReason": null,
         "reactionGroups": [
           {
             "content": "THUMBS_UP",

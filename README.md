@@ -199,6 +199,44 @@ Long comment bodies are cut short here (`--body-line-limit 5`) to keep the examp
 > #### danielparks 6 months later (id: 4624496288):
 >
 > > Comment on a removed line.
+>
+> ### Change request by danielparks-test-1 7 months later:
+>
+> > Please add tests before merging.
+>
+> ### Comment by danielparks 7 months later (id: 7203762426):
+>
+> > Tests are coming in a separate PR.
+>
+> ### Comment by danielparks 7 months later (id: 7203762950):
+>
+> > Local test run:
+> >
+> > ```text
+> > step 1/60: ok
+> > step 2/60: ok
+>
+> … 59 more lines omitted — run `gh-pr-render conversation https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1` to see all
+>
+> ### Comment by danielparks-test-1 7 months later (id: 7203763530):
+>
+> > That works for me, thanks.
+>
+> ### Comment by danielparks 7 months later (id: 7203764098):
+>
+> > CI is green now.
+>
+> ### Approval by danielparks-test-1 7 months later:
+>
+> > Looks good now.
+>
+> ### Comment by danielparks 7 months later (id: 7203765186):
+>
+> > Merging after one more look.
+>
+> ### Comment by danielparks 7 months later (id: 7203765676):
+>
+> > Thanks for the review!
 
 <!-- example-output-end -->
 <!-- rumdl-enable -->
