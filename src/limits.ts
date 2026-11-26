@@ -1,7 +1,8 @@
-// Comment lists longer than head + tail limit are rendered as their first
-// `head` and last `tail` entries, with a note on how many were omitted in
-// between, rather than in full. Applies to top-level PR comments (render.ts)
-// and individual review-thread comments (fetch.ts fetches the tail
+// Lists longer than head + tail limit are rendered as their first `head` and
+// last `tail` entries, with a note on how many were omitted in between, rather
+// than in full. Applies to the top-level conversation (render.ts), which is PR
+// comments and overall reviews together, and to individual review-thread
+// comments (fetch.ts fetches the tail
 // separately when a thread has more comments than fit in one page;
 // render.ts does the head/tail slicing and reports the omitted count).
 //
@@ -21,11 +22,11 @@ export const MAX_PAGE_SIZE = 100;
 // this. 0 means unlimited. Configurable via --diff-hunk-limit.
 export const DEFAULT_DIFF_HUNK_LIMIT = 10;
 
-// Maximum number of lines of a comment body to show for top-level comments and
-// inline thread comments; the rest is replaced with a note on how many lines
+// Maximum number of lines of a comment body to show for top-level comments,
+// reviews, and inline thread comments; the rest is replaced with a note on how many lines
 // were cut, and how to see the whole comment. Long bodies (pasted logs, bot
 // reports) can cost more context than the rest of the discussion put together.
-// Doesn't apply to the PR description or review bodies, and the `comments` and
-// `thread` subcommands always show bodies in full. 0 means unlimited.
+// Doesn't apply to the PR description, and the `conversation` and `thread`
+// subcommands always show bodies in full. 0 means unlimited.
 // Configurable via --body-line-limit.
 export const DEFAULT_BODY_LINE_LIMIT = 50;

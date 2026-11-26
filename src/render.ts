@@ -3,6 +3,7 @@ import { DEFAULT_BODY_LINE_LIMIT, DEFAULT_DIFF_HUNK_LIMIT } from "./limits.js";
 import { trimDiffHunk } from "./hunk.js";
 import type {
   Commit,
+  ConversationData,
   DiffSide,
   IssueComment,
   PRData,
@@ -14,6 +15,7 @@ import type {
   ReviewState,
   ReviewThread,
   ThreadComment,
+  TruncatedCommentList,
 } from "./types.js";
 
 function formatDate(iso: string, baseDate: string): string {
@@ -172,6 +174,128 @@ function isSignificantReview(review: Review): boolean {
   );
 }
 
+// A top-level comment or an overall review. GitHub shows these as one
+// chronological conversation, and they often refer to each other, so they are
+// truncated together rather than as two lists.
+type ConversationItem =
+  | { kind: "comment"; time: string; comment: IssueComment }
+  | { kind: "review"; time: string; review: Review };
+
+function commentItem(comment: IssueComment): ConversationItem {
+  return { kind: "comment", time: comment.createdAt, comment };
+}
+
+function reviewItem(review: Review): ConversationItem {
+  return { kind: "review", time: review.submitted_at, review };
+}
+
+// Chronological, with a fixed tie-break so every slice of the list agrees on
+// what the order is.
+function compareItems(a: ConversationItem, b: ConversationItem): number {
+  const byTime = new Date(a.time).getTime() - new Date(b.time).getTime();
+  if (byTime !== 0) return byTime;
+  if (a.kind !== b.kind) return a.kind === "comment" ? -1 : 1;
+  const id = (i: ConversationItem) =>
+    i.kind === "comment" ? i.comment.databaseId : i.review.id;
+  return id(a) - id(b);
+}
+
+function sortItems(items: ConversationItem[]): ConversationItem[] {
+  return items.sort(compareItems);
+}
+
+// Each reviewer’s latest approval or change request, which together say where
+// the PR stands. These are kept even when they would fall in the omitted middle
+// of a long conversation. A review that was dismissed no longer counts.
+function pinnedReviews(reviews: ConversationItem[]): Set<ConversationItem> {
+  const latest = new Map<string, ConversationItem>();
+  for (const item of reviews) {
+    if (item.kind !== "review") continue;
+    const { state, user } = item.review;
+    if (
+      state !== "APPROVED" &&
+      state !== "CHANGES_REQUESTED" &&
+      state !== "DISMISSED"
+    ) {
+      continue;
+    }
+    const previous = latest.get(user.login);
+    if (!previous || compareItems(previous, item) < 0) {
+      latest.set(user.login, item);
+    }
+  }
+  return new Set(
+    [...latest.values()].filter(
+      (i) => i.kind === "review" && i.review.state !== "DISMISSED",
+    ),
+  );
+}
+
+interface TruncatedConversation {
+  head: ConversationItem[];
+  // Reviews kept from the omitted middle, in order.
+  pinned: ConversationItem[];
+  // Number of items not shown, not counting `pinned`.
+  omittedCount: number;
+  tail: ConversationItem[];
+}
+
+// Picks which comments and reviews to show: the first `headLimit` and last
+// `tailLimit` of the combined, chronological list, plus any pinned reviews.
+//
+// Only the first headLimit of the combined list can come from the first
+// headLimit comments and the first headLimit reviews (and likewise for the
+// tail), so the comment slices that were fetched are enough to find the exact
+// head and tail. Reviews are always fetched in full.
+function truncateConversation(
+  comments: TruncatedCommentList<IssueComment>,
+  reviews: Review[],
+  headLimit: number,
+  tailLimit: number,
+): TruncatedConversation {
+  const reviewItems = reviews.filter(isSignificantReview).map(reviewItem);
+  const total = comments.totalCount + reviewItems.length;
+
+  if (total <= headLimit + tailLimit) {
+    // Everything fits; the comment slices can overlap, so reconcile them.
+    const { head } = truncateComments(
+      comments.nodes,
+      comments.tailNodes,
+      comments.totalCount,
+      headLimit,
+      tailLimit,
+    );
+    return {
+      head: sortItems([...head.map(commentItem), ...reviewItems]),
+      pinned: [],
+      omittedCount: 0,
+      tail: [],
+    };
+  }
+
+  const head = sortItems([
+    ...comments.nodes.slice(0, headLimit).map(commentItem),
+    ...reviewItems,
+  ]).slice(0, headLimit);
+  const tail = tailLimit
+    ? sortItems([
+        ...comments.tailNodes.slice(-tailLimit).map(commentItem),
+        ...reviewItems,
+      ]).slice(-tailLimit)
+    : [];
+
+  const shown = new Set([...head, ...tail]);
+  const pinned = sortItems(
+    [...pinnedReviews(reviewItems)].filter((item) => !shown.has(item)),
+  );
+  return {
+    head,
+    pinned,
+    omittedCount: total - head.length - tail.length - pinned.length,
+    tail,
+  };
+}
+
 interface TimelineEntry {
   timestamp: string;
   content: string;
@@ -194,18 +318,31 @@ function renderIssueComment(
     ...quoteBody(
       comment.body,
       bodyLineLimit,
-      `run \`gh-pr-render comments ${prUrl}\` to see all`,
+      `run \`gh-pr-render conversation ${prUrl}\` to see all`,
     ),
     ...formatReactions(comment.reactionGroups, "#### Reactions"),
   ].join("\n");
 }
 
-function renderReview(review: Review, baseDate: string): string {
+function renderReview(
+  review: Review,
+  baseDate: string,
+  bodyLineLimit = 0,
+  prUrl = "",
+): string {
   const state = reviewStateLabel(review.state);
   const time = formatDate(review.submitted_at, baseDate);
   const header = `### ${state} by ${review.user.login} ${time}:`;
   return review.body.trim()
-    ? [header, "", blockquote(review.body)].join("\n")
+    ? [
+        header,
+        "",
+        ...quoteBody(
+          review.body,
+          bodyLineLimit,
+          `run \`gh-pr-render conversation ${prUrl}\` to see all`,
+        ),
+      ].join("\n")
     : header;
 }
 
@@ -511,61 +648,61 @@ export function renderPR(
   // Timeline
   const timeline: TimelineEntry[] = [];
 
-  const {
-    head: topCommentsHead,
-    omittedCount: topCommentsOmitted,
-    tail: topCommentsTail,
-  } = truncateComments(
-    topComments.nodes,
-    topComments.tailNodes,
-    topComments.totalCount,
+  const conversation = truncateConversation(
+    topComments,
+    reviews,
     commentHeadLimit,
     commentTailLimit,
   );
 
-  const pushIssueComment = (comment: IssueComment): void => {
-    if (comment.isMinimized && !includeMinimized) return;
-    timeline.push({
-      timestamp: comment.createdAt,
-      content: renderIssueComment(
-        comment,
-        pull.created_at,
-        bodyLineLimit,
-        pull.html_url,
-      ),
-    });
-  };
-
-  topCommentsHead.forEach(pushIssueComment);
-
-  if (
-    topCommentsOmitted > 0 &&
-    (topCommentsHead.length || topCommentsTail.length)
-  ) {
-    // The first surviving tail comment's timestamp, or the last head comment's
-    // timestamp, places this entry roughly where the omitted comments would
-    // otherwise have sorted into the timeline — pushed here, ahead of the tail
-    // entries, so it sorts first on an exact tie (Array#sort is stable).
-    const omittedAt =
-      topCommentsTail[0]?.createdAt ??
-      topCommentsHead.at(-1)?.createdAt ??
-      pull.created_at;
-    timeline.push({
-      timestamp: omittedAt,
-      content: `### ${topCommentsOmitted} comments omitted — run \`gh-pr-render comments ${pull.html_url}\` to see all`,
-    });
-  }
-
-  topCommentsTail.forEach(pushIssueComment);
-
-  for (const review of reviews) {
-    if (isSignificantReview(review)) {
+  const pushItem = (item: ConversationItem): void => {
+    if (item.kind === "review") {
       timeline.push({
-        timestamp: review.submitted_at,
-        content: renderReview(review, pull.created_at),
+        timestamp: item.time,
+        content: renderReview(
+          item.review,
+          pull.created_at,
+          bodyLineLimit,
+          pull.html_url,
+        ),
+      });
+    } else if (!item.comment.isMinimized || includeMinimized) {
+      timeline.push({
+        timestamp: item.time,
+        content: renderIssueComment(
+          item.comment,
+          pull.created_at,
+          bodyLineLimit,
+          pull.html_url,
+        ),
       });
     }
+  };
+
+  conversation.head.forEach(pushItem);
+
+  if (
+    conversation.omittedCount > 0 &&
+    (conversation.head.length || conversation.tail.length)
+  ) {
+    // Placed just after the last head item, which is where the omitted items
+    // start — pushed here, ahead of the pinned and tail entries, so it sorts
+    // first on an exact tie (Array#sort is stable).
+    const omittedAt =
+      conversation.head.at(-1)?.time ??
+      conversation.tail[0]?.time ??
+      pull.created_at;
+    const noun = reviews.some(isSignificantReview)
+      ? "comments and reviews"
+      : "comments";
+    timeline.push({
+      timestamp: omittedAt,
+      content: `### ${conversation.omittedCount} ${noun} omitted — run \`gh-pr-render conversation ${pull.html_url}\` to see all`,
+    });
   }
+
+  conversation.pinned.forEach(pushItem);
+  conversation.tail.forEach(pushItem);
 
   for (const thread of reviewThreads) {
     // The fetch code ensures the head limit is at least 1 so we can get the
@@ -603,25 +740,35 @@ export function renderPR(
   return out.join("\n");
 }
 
-// Renders every top-level comment on a PR, with a brief PR context header. Used
-// by the `comments` subcommand so an LLM can see the comments that were
-// omitted from the middle of a long list in the full PR output.
-export function renderAllTopComments(
-  comments: IssueComment[],
-  pullRequest: PullRequestRef,
+// Renders every top-level comment and overall review on a PR in chronological
+// order, with a brief PR context header. Used by the `conversation` subcommand
+// so an LLM can see what was omitted from the middle of a long conversation in
+// the full PR output, and read bodies that were cut short.
+export function renderConversation(
+  { comments, reviews, pullRequest }: ConversationData,
   includeMinimized: boolean,
 ): string {
+  const items = sortItems([
+    ...comments
+      .filter((c) => includeMinimized || !c.isMinimized)
+      .map(commentItem),
+    ...reviews.filter(isSignificantReview).map(reviewItem),
+  ]);
   const lines = [
     `Part of [PR #${pullRequest.number}](${pullRequest.url})`,
     "",
-    "## Comments",
+    "## Conversation",
   ];
-  const shown = comments.filter((c) => includeMinimized || !c.isMinimized);
-  for (const comment of shown) {
-    lines.push("", renderIssueComment(comment, pullRequest.createdAt));
+  for (const item of items) {
+    lines.push(
+      "",
+      item.kind === "review"
+        ? renderReview(item.review, pullRequest.createdAt)
+        : renderIssueComment(item.comment, pullRequest.createdAt),
+    );
   }
-  if (shown.length === 0) {
-    lines.push("", "No comments.");
+  if (items.length === 0) {
+    lines.push("", "No comments or reviews.");
   }
   lines.push("");
   return lines.join("\n");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderAllTopComments, renderPR } from "./render.js";
+import { renderPR } from "./render.js";
 import type { IssueComment } from "./types.js";
 import { basePRData } from "./test-helpers.js";
 
@@ -236,7 +236,7 @@ describe("renderPR - top-level comment list truncation", () => {
 });
 
 describe("renderPR - omitted comments marker", () => {
-  it("names the comments subcommand with the PR URL", () => {
+  it("names the conversation subcommand with the PR URL", () => {
     const output = renderPR(
       basePRData({
         topComments: {
@@ -248,51 +248,7 @@ describe("renderPR - omitted comments marker", () => {
       renderOptions,
     );
     expect(output).toContain(
-      "### 60 comments omitted — run `gh-pr-render comments https://github.com/owner/repo/pull/1` to see all",
-    );
-  });
-});
-
-describe("renderAllTopComments", () => {
-  const pullRequest = {
-    number: 42,
-    url: "https://github.com/acme/widgets/pull/42",
-    createdAt: "2026-01-01T00:00:00Z",
-  };
-
-  it("includes PR context header and every comment without truncation", () => {
-    const output = renderAllTopComments(
-      manyIssueComments(50, 1),
-      pullRequest,
-      false,
-    );
-    expect(output).toContain(
-      "Part of [PR #42](https://github.com/acme/widgets/pull/42)",
-    );
-    expect(output).not.toContain("comments omitted");
-    for (let id = 1; id <= 50; id++) {
-      expect(output).toContain(`(id: ${id}):`);
-    }
-  });
-
-  it("skips minimized comments unless asked", () => {
-    const comments = [
-      baseIssueComment({ databaseId: 1 }),
-      baseIssueComment({
-        databaseId: 2,
-        isMinimized: true,
-        minimizedReason: "SPAM",
-      }),
-    ];
-    const hidden = renderAllTopComments(comments, pullRequest, false);
-    expect(hidden).not.toContain("id: 2");
-    const shown = renderAllTopComments(comments, pullRequest, true);
-    expect(shown).toContain("id: 2, minimized: SPAM");
-  });
-
-  it("says so when there are no comments", () => {
-    expect(renderAllTopComments([], pullRequest, false)).toContain(
-      "No comments.",
+      "### 60 comments omitted — run `gh-pr-render conversation https://github.com/owner/repo/pull/1` to see all",
     );
   });
 });
@@ -320,7 +276,7 @@ describe("renderPR - body line limit", () => {
     expect(output).toContain("> line 3\n");
     expect(output).not.toContain("line 4");
     expect(output).toContain(
-      "\n\n… 7 more lines omitted — run `gh-pr-render comments https://github.com/owner/repo/pull/1` to see all",
+      "\n\n… 7 more lines omitted — run `gh-pr-render conversation https://github.com/owner/repo/pull/1` to see all",
     );
   });
 
@@ -342,18 +298,5 @@ describe("renderPR - body line limit", () => {
   it("has a default limit", () => {
     const output = render(undefined, Array(500).fill("x").join("\n"));
     expect(output).toContain("… 450 more lines omitted");
-  });
-
-  it("is not applied by the comments subcommand", () => {
-    const output = renderAllTopComments(
-      [baseIssueComment({ body: Array(500).fill("x").join("\n") })],
-      {
-        number: 1,
-        url: "https://github.com/owner/repo/pull/1",
-        createdAt: "2026-01-01T00:00:00Z",
-      },
-      false,
-    );
-    expect(output).not.toContain("omitted");
   });
 });

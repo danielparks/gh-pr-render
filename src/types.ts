@@ -155,8 +155,12 @@ export interface SingleThreadData {
   pullRequest: PullRequestRef;
 }
 
-export interface AllTopCommentsData {
+// Every top-level comment and review on a PR, for the `conversation`
+// subcommand. Reviews include the ones that won’t be rendered; see
+// isSignificantReview in render.ts.
+export interface ConversationData {
   comments: IssueComment[];
+  reviews: Review[];
   pullRequest: PullRequestRef;
 }
 

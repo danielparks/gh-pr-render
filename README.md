@@ -22,10 +22,10 @@ Options:
 - `--include-minimized` — include minimized comments, marked with their reason. Off by default: minimized comments are usually outdated or off-topic noise.
 - `--no-files` — omit the `## Changed Files` list.
 - `--no-commits` — omit the `## Commits` list.
-- `--comment-head-limit <n>` — comments to show at the start of a long comment list (default: 20).
-- `--comment-tail-limit <n>` — comments to show at the end of a long comment list (default: 20).
+- `--comment-head-limit <n>` — comments and reviews to show at the start of a long conversation, or comments to show at the start of an inline thread (default: 20).
+- `--comment-tail-limit <n>` — likewise for the end (default: 20).
 - `--diff-hunk-limit <n>` — maximum lines of diff to show above each inline comment; the commented lines are never cut (default: 10, 0 for no limit). Also accepted by `thread`.
-- `--body-line-limit <n>` — maximum lines of each top-level and inline comment body to show; a note says how many lines were cut (default: 50, 0 for no limit). Doesn’t apply to the PR description or review bodies, or to `comments` and `thread`, which always show bodies in full.
+- `--body-line-limit <n>` — maximum lines of each top-level comment, review, and inline comment body to show; a note says how many lines were cut (default: 50, 0 for no limit). Doesn’t apply to the PR description, or to `conversation` and `thread`, which always show bodies in full.
 - `--no-collapse-resolved` — show resolved inline threads in full. By default they’re collapsed to their location, the first line of the first comment, and a pointer to `thread`.
 - `--timings` — print request timings to stderr.
 
@@ -52,13 +52,13 @@ gh-pr-render thread <thread-id>
 
 Fetch and display all comments in a single review thread. Pass the thread ID shown in `gh-pr-render` output, e.g. `RT_kwDO...`.
 
-## Using to render all top-level comments
+## Using to render the whole conversation
 
 ```text
-gh-pr-render comments [repo-or-pr] [pr]
+gh-pr-render conversation [repo-or-pr] [pr]
 ```
 
-Fetch and display every top-level comment on a PR, including the ones omitted from the middle of a long list in `gh-pr-render` output. Takes the same PR arguments as `gh-pr-render`, and `--include-minimized`.
+Fetch and display every top-level comment and overall review on a PR, in order and with bodies in full. This is what to run when `gh-pr-render` output says “N comments and reviews omitted” or cuts a body short. Takes the same PR arguments as `gh-pr-render`, and `--include-minimized`.
 
 ## Example output
 

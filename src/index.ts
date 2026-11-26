@@ -3,12 +3,12 @@ import { spawnSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
 import {
   createClient,
-  fetchAllTopComments,
+  fetchConversation,
   fetchPRData,
   fetchSingleThread,
 } from "./fetch.js";
 import {
-  renderAllTopComments,
+  renderConversation,
   renderPR,
   renderSingleThread,
   type RenderOptions,
@@ -175,7 +175,7 @@ function detectRepoAndPr(
 }
 
 // Resolves the `[repo-or-pr] [pr]` argument pair shared by the default command
-// and `comments` to a repository and PR number.
+// and `conversation` to a repository and PR number.
 function resolvePrArgs(
   repoOrPr: string | undefined,
   prArg: string | undefined,
@@ -303,10 +303,10 @@ const program = new Command()
   );
 
 program
-  .command("comments [repo-or-pr] [pr]")
+  .command("conversation [repo-or-pr] [pr]")
   .description(
-    "Fetch and display all top-level comments on a PR, including those " +
-      "omitted from the middle of a long list in `gh-pr-render` output. " +
+    "Fetch and display all top-level comments and reviews on a PR, in full, " +
+      "including those omitted or cut short in `gh-pr-render` output. " +
       "Takes the same PR arguments as `gh-pr-render`.",
   )
   .option(
@@ -322,14 +322,8 @@ program
     ) => {
       const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
       try {
-        const data = await fetchAllTopComments(createClient(), repo, prNumber);
-        process.stdout.write(
-          renderAllTopComments(
-            data.comments,
-            data.pullRequest,
-            opts.includeMinimized,
-          ),
-        );
+        const data = await fetchConversation(createClient(), repo, prNumber);
+        process.stdout.write(renderConversation(data, opts.includeMinimized));
       } catch (error) {
         handleError(error);
       }

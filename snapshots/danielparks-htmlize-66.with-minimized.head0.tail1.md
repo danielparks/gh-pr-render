@@ -197,7 +197,7 @@
 
 ## Discussion
 
-### 4 comments omitted — run `gh-pr-render comments https://github.com/danielparks/htmlize/pull/66` to see all
+### 4 comments omitted — run `gh-pr-render conversation https://github.com/danielparks/htmlize/pull/66` to see all
 
 ### Comment by danielparks 5 months later (id: 1951796878):
 

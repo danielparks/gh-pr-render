@@ -2,7 +2,7 @@ import { exec, execSync } from "child_process";
 import { promisify } from "util";
 import { graphql } from "@octokit/graphql";
 import type {
-  AllTopCommentsData,
+  ConversationData,
   ChangedFile,
   Commit,
   IssueComment,
@@ -223,8 +223,8 @@ export async function fetchTopComments(
   };
 }
 
-const ALL_TOP_COMMENTS_QUERY = `
-  query AllPullRequestComments($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
+const CONVERSATION_COMMENTS_QUERY = `
+  query ConversationComments($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $number) {
         number
@@ -239,7 +239,7 @@ const ALL_TOP_COMMENTS_QUERY = `
   }
 `;
 
-interface AllTopCommentsResult {
+interface ConversationCommentsResult {
   repository: {
     pullRequest: PullRequestRef & {
       comments: {
@@ -250,24 +250,32 @@ interface AllTopCommentsResult {
   };
 }
 
-// Fetches every top-level comment on the PR, paginating as needed. Used by the
-// `comments` subcommand to show what the head/tail truncation in the full PR
-// output omits.
+// Fetches the PR's overall reviews (not the inline comments in them).
+function fetchReviews(repo: string, number: number): Promise<Review[]> {
+  return ghApiArray(`repos/${repo}/pulls/${number}/reviews`) as Promise<
+    Review[]
+  >;
+}
+
+// Fetches every top-level comment on the PR, paginating as needed.
 export async function fetchAllTopComments(
   client: typeof graphql,
   repo: string,
   number: number,
-): Promise<AllTopCommentsData> {
+): Promise<Pick<ConversationData, "comments" | "pullRequest">> {
   const [owner, repoName] = splitRepo(repo);
   const comments: IssueComment[] = [];
   let cursor: string | null = null;
   let pullRequest: PullRequestRef | undefined;
 
   while (true) {
-    const result: AllTopCommentsResult = await client<AllTopCommentsResult>(
-      ALL_TOP_COMMENTS_QUERY,
-      { owner, repo: repoName, number, cursor },
-    );
+    const result: ConversationCommentsResult =
+      await client<ConversationCommentsResult>(CONVERSATION_COMMENTS_QUERY, {
+        owner,
+        repo: repoName,
+        number,
+        cursor,
+      });
     const { comments: connection, ...ref } = result.repository.pullRequest;
     pullRequest ??= ref;
     comments.push(...connection.nodes);
@@ -276,6 +284,21 @@ export async function fetchAllTopComments(
   }
 
   return { comments, pullRequest };
+}
+
+// Fetches every top-level comment and review on the PR. Used by the
+// `conversation` subcommand to show what the head/tail truncation in the full
+// PR output omits.
+export async function fetchConversation(
+  client: typeof graphql,
+  repo: string,
+  number: number,
+): Promise<ConversationData> {
+  const [{ comments, pullRequest }, reviews] = await Promise.all([
+    fetchAllTopComments(client, repo, number),
+    fetchReviews(repo, number),
+  ]);
+  return { comments, reviews, pullRequest };
 }
 
 export async function fetchReviewThreads(
@@ -476,10 +499,7 @@ export async function fetchPRData(
       () =>
         ghApiArray(`${base}/pulls/${prNumber}/commits`) as Promise<Commit[]>,
     ),
-    timed(
-      () =>
-        ghApiArray(`${base}/pulls/${prNumber}/reviews`) as Promise<Review[]>,
-    ),
+    timed(() => fetchReviews(repo, prNumber)),
   ]);
 
   const pull: PullRequest = { ...restPull, reactionGroups: pullReactionGroups };

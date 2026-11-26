@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-- Added `comments` subcommand to render every top-level comment on a PR, including those omitted from the middle of a long list. The “N comments omitted” marker now names it.
-- Cap each top-level and inline comment body at 50 lines, with a `… N more lines omitted` note saying how to see the whole comment. Configure with `--body-line-limit <n>` (0 for no limit). The PR description and review bodies are not capped.
+- Top-level comments and overall reviews are now one chronological list, as in the GitHub UI, and are truncated together: by default the first 20 and last 20 are shown, with an “N comments and reviews omitted” marker between. Previously reviews were always shown in full. Each reviewer’s latest approval or change request is kept even when it falls in the omitted part, so the PR’s status is never hidden.
+- Added `conversation` subcommand to render every top-level comment and review on a PR, in full. The omitted marker names it.
+- Cap each top-level comment, review, and inline comment body at 50 lines, with a `… N more lines omitted` note saying how to see the whole thing. Configure with `--body-line-limit <n>` (0 for no limit). The PR description is not capped.
 - Collapse resolved inline threads to their location, the first line of their first comment, and a pointer to `thread`. Unresolved threads are shown in full even if outdated. Use `--no-collapse-resolved` to show resolved threads in full.
 
 ## Release 0.7.0 (2026-11-18)
