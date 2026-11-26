@@ -171,6 +171,46 @@ describe("renderPR - conversation truncation", () => {
   });
 });
 
+describe("renderPR - omitted marker placement", () => {
+  const thread = {
+    id: "THREAD_1",
+    isResolved: false,
+    isOutdated: false,
+    path: "file.py",
+    line: 10,
+    comments: {
+      totalCount: 1,
+      nodes: [
+        {
+          ...comment(100, 5),
+          diffHunk: "@@ -1,1 +1,1 @@\n-old\n+new\n",
+        },
+      ],
+      tailNodes: [],
+    },
+  };
+
+  it("comes after inline threads that precede the tail", () => {
+    // c1 c2 c3 [thread] c4 c5 c6 c7 — head 2, tail 2.
+    const comments = [1, 2, 3, 4, 5, 6, 7].map((n) => comment(n, n * 2 - 1));
+    const output = renderPR(
+      basePRData({
+        topComments: {
+          totalCount: 7,
+          nodes: comments.slice(0, 2),
+          tailNodes: comments.slice(-2),
+        },
+        reviewThreads: [thread],
+      }),
+      renderOptions,
+    );
+    const at = (text: string): number => output.indexOf(text);
+    expect(at("(id: 2)")).toBeLessThan(at("### Inline comment"));
+    expect(at("### Inline comment")).toBeLessThan(at("### 3 comments omitted"));
+    expect(at("### 3 comments omitted")).toBeLessThan(at("(id: 6)"));
+  });
+});
+
 describe("renderPR - pinned reviews", () => {
   const comments = [1, 2, 3, 4, 5, 6].map((n) => comment(n, n * 2));
 

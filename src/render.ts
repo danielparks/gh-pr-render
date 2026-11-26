@@ -685,12 +685,16 @@ export function renderPR(
     conversation.omittedCount > 0 &&
     (conversation.head.length || conversation.tail.length)
   ) {
-    // Placed just after the last head item, which is where the omitted items
-    // start — pushed here, ahead of the pinned and tail entries, so it sorts
-    // first on an exact tie (Array#sort is stable).
+    // The omitted items are somewhere between the head and the tail, and inline
+    // threads are interleaved with them by time, so there is no single right
+    // place. Put the marker just before the first entry kept after them (a
+    // pinned review or the tail), so what is left out reads as leading up to
+    // it — pushed ahead of those entries so it sorts first on an exact tie
+    // (Array#sort is stable). With neither, the omitted items follow the head.
     const omittedAt =
-      conversation.head.at(-1)?.time ??
+      conversation.pinned[0]?.time ??
       conversation.tail[0]?.time ??
+      conversation.head.at(-1)?.time ??
       pull.created_at;
     const noun = reviews.some(isSignificantReview)
       ? "comments and reviews"

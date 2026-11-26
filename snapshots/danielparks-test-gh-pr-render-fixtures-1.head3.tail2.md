@@ -42,8 +42,6 @@
 
 > Please add docstrings to each function.
 
-### 5 comments and reviews omitted — run `gh-pr-render conversation https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1` to see all
-
 ### Inline comment on `calculator.py` line 19 (when commented) (id: PRRT_kwDOSa9ycc6BSisk, resolved, outdated):
 
 #### danielparks less than a minute later (id: 3223656785):
@@ -123,6 +121,8 @@ Collapsed (1 comment) — run `gh-pr-render thread PRRT_kwDOSa9ycc6BSisk` to see
 #### danielparks 6 months later (id: 4624496288):
 
 > Comment on a removed line.
+
+### 5 comments and reviews omitted — run `gh-pr-render conversation https://github.com/danielparks-test/gh-pr-render-fixtures/pull/1` to see all
 
 ### Approval by danielparks-test-1 7 months later:
 
