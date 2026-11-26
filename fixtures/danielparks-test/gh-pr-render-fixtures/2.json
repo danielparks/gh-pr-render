@@ -42,13 +42,35 @@
     "milestone": null,
     "active_lock_reason": null,
     "created_at": "2026-07-21T03:29:27Z",
-    "updated_at": "2026-07-21T04:54:20Z",
+    "updated_at": "2026-11-26T23:05:11Z",
     "closed_at": "2026-07-21T04:54:20Z",
     "merged_at": null,
     "merge_commit_sha": "e5c45e5ae906042f6f11d79e9d5dcc0b9219c5ed",
     "assignee": null,
     "assignees": [],
-    "requested_reviewers": [],
+    "requested_reviewers": [
+      {
+        "login": "danielparks-test-1",
+        "id": 361721046,
+        "node_id": "U_kgDOFY9s1g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/361721046?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/danielparks-test-1",
+        "html_url": "https://github.com/danielparks-test-1",
+        "followers_url": "https://api.github.com/users/danielparks-test-1/followers",
+        "following_url": "https://api.github.com/users/danielparks-test-1/following{/other_user}",
+        "gists_url": "https://api.github.com/users/danielparks-test-1/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/danielparks-test-1/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/danielparks-test-1/subscriptions",
+        "organizations_url": "https://api.github.com/users/danielparks-test-1/orgs",
+        "repos_url": "https://api.github.com/users/danielparks-test-1/repos",
+        "events_url": "https://api.github.com/users/danielparks-test-1/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/danielparks-test-1/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      }
+    ],
     "requested_teams": [
       {
         "id": 18619524,

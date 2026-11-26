@@ -4,7 +4,7 @@
 **State:** draft, closed without merge about 1 hour later
 **Branch:** `feat/add-tests` → `main`
 **URL:** https://github.com/danielparks-test/gh-pr-render-fixtures/pull/2
-**Requested reviewers:** reviewers (team)
+**Requested reviewers:** danielparks-test-1, reviewers (team)
 
 > Work in progress: adding unit tests to verify all calculator operations.
 

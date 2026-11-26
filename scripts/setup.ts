@@ -788,6 +788,8 @@ function createDraftPR(dir: string, title: string): number {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
+log(`Current user: ${currentUser}`);
+
 log(`Ensuring ${FULL} exists...`);
 try {
   sh(`gh repo view ${FULL} --json name`);
@@ -894,15 +896,13 @@ try {
   // Requested reviewers on the draft PR — a user and, where possible, a team.
   try {
     ghPost(`repos/${FULL}/pulls/${draftPrNumber}/requested_reviewers`, {
-      reviewers: [currentUser],
+      reviewers: [reviewer],
     });
+    log(`  Requested review from ${reviewer} on draft PR #${draftPrNumber}.`);
+  } catch (error) {
     log(
-      `  Requested review from ${currentUser} on draft PR #${draftPrNumber}.`,
-    );
-  } catch {
-    log(
-      "  Note: requested reviewer skipped (GitHub disallows requesting " +
-        "review from the PR author; needs a second account to demonstrate).",
+      `  Note: requested reviewer ${reviewer} skipped: ` +
+        ((error as { stderr?: string }).stderr ?? String(error)),
     );
   }
 
