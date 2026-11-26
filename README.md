@@ -62,6 +62,8 @@ Fetch and display every top-level comment and overall review on a PR, in order a
 
 ## Example output
 
+Long comment bodies are cut short here (`--body-line-limit 5`) to keep the example brief.
+
 <!-- rumdl-disable -->
 <!-- example-output-start -->
 

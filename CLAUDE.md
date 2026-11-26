@@ -61,7 +61,7 @@ Adding a new rendering scenario, e.g. a new comment type or a label, means addin
 scripts/update-tests.sh
 ```
 
-Requires `gh` auth with write access to that repo (`gh auth login`). If `npm run setup` fails cloning with `Permission denied (publickey)`, `gh` is set to clone over SSH but no SSH key is configured — fix with `gh config set -h github.com git_protocol https`.
+Requires `gh` auth with write access to that repo (`gh auth login`). The conversation scenario (approvals and change requests) also needs a second GitHub account, `danielparks-test-1`, because GitHub rejects those reviews from a PR's author: log in as it too with `gh auth login` (`gh auth token --user` finds the token), or set `GH_REVIEWER_TOKEN`. Without it that scenario is skipped, with a note. If `npm run setup` fails cloning with `Permission denied (publickey)`, `gh` is set to clone over SSH but no SSH key is configured — fix with `gh config set -h github.com git_protocol https`.
 
 ## Committing
 

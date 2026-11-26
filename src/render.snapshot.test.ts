@@ -245,6 +245,26 @@ describe("renderPR - danielparks-test/gh-pr-render-fixtures #1 body and resolved
     );
   });
 
+  // With small limits, a long conversation has to decide which of its
+  // reviews to keep: each reviewer’s latest approval or change request is kept
+  // even in the omitted middle.
+  it("renders with a head limit of 3 and a tail limit of 2", async () => {
+    await expect(
+      renderPR(data, {
+        ...options,
+        commentHeadLimit: 3,
+        commentTailLimit: 2,
+      }),
+    ).toMatchFileSnapshot(
+      snapshotPath(
+        "danielparks-test",
+        "gh-pr-render-fixtures",
+        1,
+        ".head3.tail2",
+      ),
+    );
+  });
+
   // The fixture’s bodies are short, so use a low limit to exercise the cap.
   it("renders with a body line limit of 1", async () => {
     await expect(

@@ -25,6 +25,8 @@ const rendered = renderPR(data, {
   includeCommits: true,
   commentHeadLimit: DEFAULT_COMMENT_HEAD_LIMIT,
   commentTailLimit: DEFAULT_COMMENT_TAIL_LIMIT,
+  // The fixture has a long comment; cut it short to keep the example brief.
+  bodyLineLimit: 5,
 });
 
 const blockquote = rendered

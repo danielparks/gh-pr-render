@@ -10,7 +10,12 @@
  * - thread with reply
  * - empty-body COMMENTED review (filtered)
  * - COMMENTED review with body
- * - an APPROVED review
+ * - a conversation of top-level comments and reviews, long enough to be
+ *   truncated with small limits, including:
+ *   - a CHANGES_REQUESTED review that is later superseded by an APPROVED review
+ *     from the same reviewer (the approval is kept when truncation would omit
+ *     it)
+ *   - a top-level comment too long for the body line limit
  * - a label
  * - an assignee
  * - reactions on the PR description
@@ -31,7 +36,13 @@
  * merged" render; the merged case is already covered by the real-world
  * danielparks/htmlize#66 fixture, so it isn't reproduced here.
  *
- * Usage: npm run setup -- --owner <owner>
+ * APPROVED and CHANGES_REQUESTED reviews can't come from a PR's author, so the
+ * conversation scenario needs a second GitHub account (--reviewer, default
+ * danielparks-test-1). Log in as it with `gh auth login` (the token is found
+ * with `gh auth token --user`) or set GH_REVIEWER_TOKEN. Without it, that
+ * scenario is skipped.
+ *
+ * Usage: npm run setup -- --owner <owner> [--reviewer <login>]
  */
 
 import { execSync } from "child_process";
@@ -46,6 +57,10 @@ const ownerIdx = process.argv.indexOf("--owner");
 const owner: string =
   (ownerIdx !== -1 && process.argv[ownerIdx + 1]) ||
   die("Usage: npm run setup -- --owner <owner>");
+
+const reviewerIdx = process.argv.indexOf("--reviewer");
+const reviewer: string =
+  (reviewerIdx !== -1 && process.argv[reviewerIdx + 1]) || "danielparks-test-1";
 
 const REPO = "gh-pr-render-fixtures";
 const FULL = `${owner}/${REPO}`;
@@ -85,12 +100,14 @@ function log(msg: string): void {
   process.stderr.write(msg + "\n");
 }
 
-function ghPost(path: string, body: object): unknown {
+// Pass `token` to act as a different account than the one `gh` is using.
+function ghPost(path: string, body: object, token?: string): unknown {
   return JSON.parse(
     execSync(`gh api --method POST "${path}" --input -`, {
       encoding: "utf8",
       input: JSON.stringify(body),
       stdio: ["pipe", "pipe", "pipe"],
+      env: token ? { ...process.env, GH_TOKEN: token } : process.env,
     }),
   );
 }
@@ -410,6 +427,122 @@ function addHunkScenarioThreads(prNumber: number): void {
   }
 }
 
+// ─── Conversation scenario ───────────────────────────────────────────────────
+
+// The reviewer account's token, or undefined if it isn't available. Looks at
+// GH_REVIEWER_TOKEN, then at accounts `gh` is logged in to.
+function reviewerToken(): string | undefined {
+  const fromEnv = process.env["GH_REVIEWER_TOKEN"];
+  if (fromEnv) return fromEnv;
+  try {
+    const token = execSync(`gh auth token --user ${JSON.stringify(reviewer)}`, {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return token || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const LONG_COMMENT = [
+  "Local test run:",
+  "",
+  "```text",
+  ...Array.from({ length: 60 }, (_, i) => `step ${i + 1}/60: ok`),
+  "```",
+].join("\n");
+
+interface ConversationStep {
+  as: "author" | "reviewer";
+  body: string;
+  // A review with this event, rather than a top-level comment.
+  review?: "APPROVE" | "REQUEST_CHANGES";
+}
+
+// Added after the PR's original comments and reviews, in this order. The
+// reviewer's approval is followed by two more comments so that it is in the
+// middle of the conversation, where truncation with small limits has to decide
+// whether to keep it.
+const CONVERSATION_STEPS: ConversationStep[] = [
+  {
+    as: "reviewer",
+    review: "REQUEST_CHANGES",
+    body: "Please add tests before merging.",
+  },
+  { as: "author", body: "Tests are coming in a separate PR." },
+  { as: "author", body: LONG_COMMENT },
+  { as: "reviewer", body: "That works for me, thanks." },
+  { as: "author", body: "CI is green now." },
+  { as: "reviewer", review: "APPROVE", body: "Looks good now." },
+  { as: "author", body: "Merging after one more look." },
+  { as: "author", body: "Thanks for the review!" },
+];
+
+async function addConversationScenario(prNumber: number): Promise<void> {
+  const token = reviewerToken();
+  if (!token) {
+    log(
+      `  Note: conversation scenario skipped (no token for ${reviewer}; ` +
+        "run `gh auth login` as that account or set GH_REVIEWER_TOKEN).",
+    );
+    return;
+  }
+
+  const reviewerLogin = execSync("gh api user --jq .login", {
+    encoding: "utf8",
+    env: { ...process.env, GH_TOKEN: token },
+  }).trim();
+  if (reviewerLogin === currentUser) {
+    log(
+      `  Note: conversation scenario skipped (${reviewer}'s token is for ` +
+        `${currentUser}, who authored the PR and can't approve it).`,
+    );
+    return;
+  }
+
+  const bodies = (path: string): Set<string> =>
+    new Set(
+      (
+        JSON.parse(sh(`gh api --paginate --slurp "${path}"`)) as Array<
+          Array<{ body: string }>
+        >
+      )
+        .flat()
+        .map((item) => item.body),
+    );
+  const existingComments = bodies(`repos/${FULL}/issues/${prNumber}/comments`);
+  const existingReviews = bodies(`repos/${FULL}/pulls/${prNumber}/reviews`);
+
+  for (const step of CONVERSATION_STEPS) {
+    const label = step.body.split("\n")[0];
+    if ((step.review ? existingReviews : existingComments).has(step.body)) {
+      log(`  Conversation step already present: ${label}`);
+      continue;
+    }
+
+    const asToken = step.as === "reviewer" ? token : undefined;
+    if (step.review) {
+      ghPost(
+        `repos/${FULL}/pulls/${prNumber}/reviews`,
+        { body: step.body, event: step.review },
+        asToken,
+      );
+    } else {
+      ghPost(
+        `repos/${FULL}/issues/${prNumber}/comments`,
+        { body: step.body },
+        asToken,
+      );
+    }
+    log(`  Added ${step.as} ${step.review ?? "comment"}: ${label}`);
+
+    // Timestamps only have one-second resolution; make sure steps are strictly
+    // ordered so the recorded conversation doesn't depend on tie-breaking.
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+  }
+}
+
 // ─── Scenario PR ─────────────────────────────────────────────────────────────
 
 async function createScenarioPR(dir: string, title: string): Promise<number> {
@@ -526,17 +659,6 @@ async function createScenarioPR(dir: string, title: string): Promise<number> {
     in_reply_to: threadWithReply.id,
   });
   log("  Added reply to modulo thread.");
-
-  // APPROVED review — GitHub may reject self-reviews on some repos
-  try {
-    ghPost(`repos/${FULL}/pulls/${n}/reviews`, {
-      body: "Looks good to me!",
-      event: "APPROVE",
-    });
-    log("  Added APPROVED review.");
-  } catch {
-    log("  Note: APPROVED review skipped (self-review not allowed).");
-  }
 
   // ── GraphQL mutations ──────────────────────────────────────────────────────
 
@@ -811,6 +933,7 @@ try {
   }
 
   addHunkScenarioThreads(prNumber);
+  await addConversationScenario(prNumber);
   await addScenarioReactions(prNumber);
 } finally {
   rmSync(tmpDir, { recursive: true, force: true });
