@@ -50,11 +50,56 @@ function getAuthToken(): string {
   );
 }
 
+/** A `gh api` call failed with an HTTP error status. */
+export class GhApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+    this.name = "GhApiError";
+  }
+}
+
+/**
+ * Describe a 404/403/401 failure from GitHub in a friendly way, or return
+ * `undefined` if `error` is something else.
+ */
+export function describeAccessError(error: unknown): string | undefined {
+  if (error instanceof GhApiError) {
+    if (error.status === 404) return "Not found";
+    if (error.status === 403 || error.status === 401)
+      return "Permission denied";
+  }
+  // GraphQL reports a missing PR as a NOT_FOUND error rather than HTTP 404.
+  const errors = (error as { errors?: { type?: string }[] } | null)?.errors;
+  if (Array.isArray(errors)) {
+    if (errors.some((e) => e.type === "NOT_FOUND")) return "Not found";
+    if (errors.some((e) => e.type === "FORBIDDEN")) return "Permission denied";
+  }
+  return undefined;
+}
+
 async function ghApi(endpoint: string): Promise<unknown> {
-  const { stdout } = await execFileAsync("gh", ["api", endpoint], {
-    maxBuffer: 10 * 1024 * 1024,
-  });
-  return JSON.parse(stdout);
+  try {
+    const { stdout } = await execFileAsync("gh", ["api", endpoint], {
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    return JSON.parse(stdout);
+  } catch (error) {
+    const stderr = (error as { stderr?: unknown }).stderr;
+    const match =
+      typeof stderr === "string" ? /\(HTTP (\d{3})\)/.exec(stderr) : null;
+    if (match?.[1] !== undefined) {
+      throw new GhApiError(
+        `gh api ${endpoint}: ${(stderr as string).trim()}`,
+        parseInt(match[1], 10),
+        { cause: error },
+      );
+    }
+    throw error;
+  }
 }
 
 async function ghApiArray(endpoint: string): Promise<unknown[]> {
@@ -387,7 +432,7 @@ export async function fetchSingleThread(
     { id: threadId, cursor: null },
   );
   const firstNode = firstResult.node;
-  if (!firstNode) throw new Error(`Thread not found: ${threadId}`);
+  if (!firstNode) throw new GhApiError(`Thread not found: ${threadId}`, 404);
 
   const allComments: ThreadComment[] = [...firstNode.comments.nodes];
   let { hasNextPage, endCursor } = firstNode.comments.pageInfo;
