@@ -45,7 +45,7 @@
  * Usage: npm run setup -- --owner <owner> [--reviewer <login>]
  */
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { mkdirSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -73,22 +73,23 @@ const MILESTONE_TITLE = "v1.0";
 
 const TEAM_NAME = "reviewers";
 
-const token = sh("gh auth token");
+const token = run("gh", "auth", "token");
 const gql = graphql.defaults({ headers: { authorization: `token ${token}` } });
 
 // `owner` is the repo's namespace, which may be an org (as it is for
 // danielparks-test) — orgs aren't users and can't be assigned to a PR or
 // requested as a reviewer. This is the actual authenticated account.
-const currentUser = sh("gh api user --jq .login");
+const currentUser = run("gh", "api", "user", "--jq", ".login");
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function sh(cmd: string, opts?: { cwd?: string; input?: string }): string {
-  return execSync(cmd, {
-    encoding: "utf8",
-    cwd: opts?.cwd,
-    input: opts?.input,
-  }).trim();
+// Runs `file` directly (no shell), so arguments are never reinterpreted.
+function run(file: string, ...args: string[]): string {
+  return execFileSync(file, args, { encoding: "utf8" }).trim();
+}
+
+function runIn(cwd: string, file: string, ...args: string[]): string {
+  return execFileSync(file, args, { encoding: "utf8", cwd }).trim();
 }
 
 function die(msg: string): never {
@@ -100,39 +101,37 @@ function log(msg: string): void {
   process.stderr.write(msg + "\n");
 }
 
+function gh(
+  method: string,
+  path: string,
+  body: object,
+  token?: string,
+): string {
+  return execFileSync("gh", ["api", "--method", method, path, "--input", "-"], {
+    encoding: "utf8",
+    input: JSON.stringify(body),
+    stdio: ["pipe", "pipe", "pipe"],
+    env: token ? { ...process.env, GH_TOKEN: token } : process.env,
+  });
+}
+
 // Pass `token` to act as a different account than the one `gh` is using.
 function ghPost(path: string, body: object, token?: string): unknown {
-  return JSON.parse(
-    execSync(`gh api --method POST "${path}" --input -`, {
-      encoding: "utf8",
-      input: JSON.stringify(body),
-      stdio: ["pipe", "pipe", "pipe"],
-      env: token ? { ...process.env, GH_TOKEN: token } : process.env,
-    }),
-  );
+  return JSON.parse(gh("POST", path, body, token));
 }
 
 function ghPatch(path: string, body: object): unknown {
-  return JSON.parse(
-    execSync(`gh api --method PATCH "${path}" --input -`, {
-      encoding: "utf8",
-      input: JSON.stringify(body),
-      stdio: ["pipe", "pipe", "pipe"],
-    }),
-  );
+  return JSON.parse(gh("PATCH", path, body));
 }
 
 // PUT endpoints used here (team repo permissions) respond 204 No Content,
 // so there's no body to parse.
 function ghPut(path: string, body: object): void {
-  execSync(`gh api --method PUT "${path}" --input -`, {
-    input: JSON.stringify(body),
-    stdio: ["pipe", "pipe", "pipe"],
-  });
+  gh("PUT", path, body);
 }
 
 function git(cwd: string, ...args: string[]): string {
-  return sh(`git ${args.map((a) => JSON.stringify(a)).join(" ")}`, { cwd });
+  return runIn(cwd, "git", ...args);
 }
 
 // Team review requests need a real team, which only exists for
@@ -146,7 +145,7 @@ function ensureReviewTeam(): string | undefined {
   let teams: Array<{ slug: string }>;
   try {
     teams = JSON.parse(
-      sh(`gh api "orgs/${owner}/teams?per_page=100"`),
+      run("gh", "api", `orgs/${owner}/teams?per_page=100`),
     ) as Array<{ slug: string }>;
   } catch {
     log(`  Note: team review request skipped ("${owner}" is not an org).`);
@@ -386,12 +385,22 @@ const HUNK_SCENARIOS: HunkScenario[] = [
 ];
 
 function addHunkScenarioThreads(prNumber: number): void {
-  const headSha = sh(`gh api "repos/${FULL}/pulls/${prNumber}" --jq .head.sha`);
+  const headSha = run(
+    "gh",
+    "api",
+    `repos/${FULL}/pulls/${prNumber}`,
+    "--jq",
+    ".head.sha",
+  );
   const existing = new Set(
     (
       JSON.parse(
-        sh(
-          `gh api --paginate --slurp "repos/${FULL}/pulls/${prNumber}/comments"`,
+        run(
+          "gh",
+          "api",
+          "--paginate",
+          "--slurp",
+          `repos/${FULL}/pulls/${prNumber}/comments`,
         ),
       ) as Array<Array<{ body: string }>>
     )
@@ -435,7 +444,7 @@ function reviewerToken(): string | undefined {
   const fromEnv = process.env["GH_REVIEWER_TOKEN"];
   if (fromEnv) return fromEnv;
   try {
-    const token = execSync(`gh auth token --user ${JSON.stringify(reviewer)}`, {
+    const token = execFileSync("gh", ["auth", "token", "--user", reviewer], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
@@ -489,7 +498,7 @@ async function addConversationScenario(prNumber: number): Promise<void> {
     return;
   }
 
-  const reviewerLogin = execSync("gh api user --jq .login", {
+  const reviewerLogin = execFileSync("gh", ["api", "user", "--jq", ".login"], {
     encoding: "utf8",
     env: { ...process.env, GH_TOKEN: token },
   }).trim();
@@ -504,7 +513,7 @@ async function addConversationScenario(prNumber: number): Promise<void> {
   const bodies = (path: string): Set<string> =>
     new Set(
       (
-        JSON.parse(sh(`gh api --paginate --slurp "${path}"`)) as Array<
+        JSON.parse(run("gh", "api", "--paginate", "--slurp", path)) as Array<
           Array<{ body: string }>
         >
       )
@@ -792,33 +801,46 @@ log(`Current user: ${currentUser}`);
 
 log(`Ensuring ${FULL} exists...`);
 try {
-  sh(`gh repo view ${FULL} --json name`);
+  run("gh", "repo", "view", FULL, "--json", "name");
   log("  Repo already exists.");
 } catch {
   log("  Creating repo...");
-  sh(
-    `gh repo create ${FULL} --public --add-readme ` +
-      `--description "Fixture repository for gh-pr-render tests"`,
+  run(
+    "gh",
+    "repo",
+    "create",
+    FULL,
+    "--public",
+    "--add-readme",
+    "--description",
+    "Fixture repository for gh-pr-render tests",
   );
 }
 
 log(`Ensuring label "${LABEL_NAME}" exists...`);
-sh(
-  `gh label create ${JSON.stringify(LABEL_NAME)} --repo ${FULL} ` +
-    `--color ${LABEL_COLOR} --description ${JSON.stringify(LABEL_DESCRIPTION)} --force`,
+run(
+  "gh",
+  "label",
+  "create",
+  LABEL_NAME,
+  "--repo",
+  FULL,
+  "--color",
+  LABEL_COLOR,
+  "--description",
+  LABEL_DESCRIPTION,
+  "--force",
 );
 
 const tmpDir = join(tmpdir(), `gh-pr-render-setup-${Date.now()}`);
 mkdirSync(tmpDir, { recursive: true });
 
 try {
-  sh(`gh repo clone ${FULL} ${JSON.stringify(tmpDir)}`);
+  run("gh", "repo", "clone", FULL, tmpDir);
   git(tmpDir, "config", "user.email", "setup@gh-pr-render");
   git(tmpDir, "config", "user.name", "gh-pr-render setup");
 
-  const existingFiles = sh("git ls-files", { cwd: tmpDir })
-    .split("\n")
-    .filter(Boolean);
+  const existingFiles = git(tmpDir, "ls-files").split("\n").filter(Boolean);
   if (!existingFiles.includes("calculator.py")) {
     log("Initializing main branch...");
     writeFileSync(join(tmpDir, "calculator.py"), CALCULATOR_MAIN);
@@ -829,9 +851,18 @@ try {
 
   const PR_TITLE = "Add type hints and arithmetic operations";
   const existing = JSON.parse(
-    sh(
-      `gh pr list --repo ${FULL} --state all ` +
-        `--search ${JSON.stringify(PR_TITLE)} --json number,title`,
+    run(
+      "gh",
+      "pr",
+      "list",
+      "--repo",
+      FULL,
+      "--state",
+      "all",
+      "--search",
+      PR_TITLE,
+      "--json",
+      "number,title",
     ),
   ) as Array<{ number: number; title: string }>;
 
@@ -856,7 +887,7 @@ try {
 
   log(`Ensuring milestone "${MILESTONE_TITLE}" exists...`);
   const existingMilestones = JSON.parse(
-    sh(`gh api "repos/${FULL}/milestones?state=all&per_page=100"`),
+    run("gh", "api", `repos/${FULL}/milestones?state=all&per_page=100`),
   ) as Array<{ number: number; title: string }>;
   let milestoneNumber: number;
   const existingMilestone = existingMilestones.find(
@@ -877,9 +908,18 @@ try {
 
   const DRAFT_PR_TITLE = "Add unit tests for calculator";
   const existingDraftPRs = JSON.parse(
-    sh(
-      `gh pr list --repo ${FULL} --state all ` +
-        `--search ${JSON.stringify(DRAFT_PR_TITLE)} --json number,title`,
+    run(
+      "gh",
+      "pr",
+      "list",
+      "--repo",
+      FULL,
+      "--state",
+      "all",
+      "--search",
+      DRAFT_PR_TITLE,
+      "--json",
+      "number,title",
     ),
   ) as Array<{ number: number; title: string }>;
   const existingDraftPR = existingDraftPRs.find(
@@ -923,7 +963,13 @@ try {
   // Close the draft PR without merging — exercises the "closed, not merged"
   // render. Done last, after the (open-PR-only) reviewer requests above.
   const draftState = JSON.parse(
-    sh(`gh api "repos/${FULL}/pulls/${draftPrNumber}" --jq "{state: .state}"`),
+    run(
+      "gh",
+      "api",
+      `repos/${FULL}/pulls/${draftPrNumber}`,
+      "--jq",
+      "{state: .state}",
+    ),
   ) as { state: string };
   if (draftState.state === "open") {
     ghPatch(`repos/${FULL}/pulls/${draftPrNumber}`, { state: "closed" });

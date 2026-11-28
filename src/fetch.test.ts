@@ -1,6 +1,8 @@
 import { graphql } from "@octokit/graphql";
 import { describe, expect, it } from "vitest";
 import {
+  GhApiError,
+  describeAccessError,
   fetchAllTopComments,
   fetchReviewThreads,
   fetchSingleThread,
@@ -402,5 +404,34 @@ describe("fetchAllTopComments", () => {
     await expect(fetchAllTopComments(client, "widgets", 7)).rejects.toThrow(
       "Invalid repository format",
     );
+  });
+});
+
+describe("describeAccessError", () => {
+  it("describes HTTP 404 as not found", () => {
+    expect(describeAccessError(new GhApiError("x", 404))).toBe("Not found");
+  });
+
+  it("describes HTTP 403 and 401 as permission denied", () => {
+    expect(describeAccessError(new GhApiError("x", 403))).toBe(
+      "Permission denied",
+    );
+    expect(describeAccessError(new GhApiError("x", 401))).toBe(
+      "Permission denied",
+    );
+  });
+
+  it("recognizes GraphQL NOT_FOUND and FORBIDDEN errors", () => {
+    expect(describeAccessError({ errors: [{ type: "NOT_FOUND" }] })).toBe(
+      "Not found",
+    );
+    expect(describeAccessError({ errors: [{ type: "FORBIDDEN" }] })).toBe(
+      "Permission denied",
+    );
+  });
+
+  it("ignores other errors", () => {
+    expect(describeAccessError(new GhApiError("x", 500))).toBeUndefined();
+    expect(describeAccessError(new Error("boom"))).toBeUndefined();
   });
 });

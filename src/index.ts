@@ -3,6 +3,7 @@ import { spawnSync } from "child_process";
 import { Command, InvalidArgumentError } from "commander";
 import {
   createClient,
+  describeAccessError,
   fetchConversation,
   fetchPRData,
   fetchSingleThread,
@@ -31,7 +32,11 @@ function fail(message: string): never {
   process.exit(1);
 }
 
-function handleError(error: unknown): never {
+function handleError(error: unknown, prContext?: string): never {
+  const access = describeAccessError(error);
+  if (access !== undefined) {
+    fail(prContext === undefined ? access : `${prContext}: ${access}`);
+  }
   if (process.env.GITHUB_ACTIONS === "true") {
     fail(error instanceof Error ? error.message : String(error));
   } else {
@@ -289,6 +294,7 @@ const program = new Command()
       },
     ) => {
       const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
+      const prContext = `PR #${prNumber} in ${repo}`;
       try {
         const data = await fetchPRData(createClient(), repo, prNumber, {
           timings: opts.timings,
@@ -307,7 +313,7 @@ const program = new Command()
         };
         process.stdout.write(renderPR(data, renderOptions));
       } catch (error) {
-        handleError(error);
+        handleError(error, prContext);
       }
     },
   );
@@ -331,11 +337,12 @@ program
       opts: { includeMinimized: boolean },
     ) => {
       const [repo, prNumber] = resolvePrArgs(repoOrPr, prArg);
+      const prContext = `PR #${prNumber} in ${repo}`;
       try {
         const data = await fetchConversation(createClient(), repo, prNumber);
         process.stdout.write(renderConversation(data, opts.includeMinimized));
       } catch (error) {
-        handleError(error);
+        handleError(error, prContext);
       }
     },
   );
@@ -373,7 +380,7 @@ program
           ),
         );
       } catch (error) {
-        handleError(error);
+        handleError(error, `Thread ${threadId}`);
       }
     },
   );

@@ -1,11 +1,11 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { mkdirSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { createClient, fetchPRData } from "../src/fetch.js";
 
 function detectRepo(): string {
-  const url = execSync("git remote get-url origin", {
+  const url = execFileSync("git", ["remote", "get-url", "origin"], {
     encoding: "utf8",
   }).trim();
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/);
