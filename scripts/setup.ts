@@ -45,7 +45,7 @@
  * Usage: npm run setup -- --owner <owner> [--reviewer <login>]
  */
 
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import { mkdirSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -100,35 +100,33 @@ function log(msg: string): void {
   process.stderr.write(msg + "\n");
 }
 
+function gh(
+  method: string,
+  path: string,
+  body: object,
+  token?: string,
+): string {
+  return execFileSync("gh", ["api", "--method", method, path, "--input", "-"], {
+    encoding: "utf8",
+    input: JSON.stringify(body),
+    stdio: ["pipe", "pipe", "pipe"],
+    env: token ? { ...process.env, GH_TOKEN: token } : process.env,
+  });
+}
+
 // Pass `token` to act as a different account than the one `gh` is using.
 function ghPost(path: string, body: object, token?: string): unknown {
-  return JSON.parse(
-    execSync(`gh api --method POST "${path}" --input -`, {
-      encoding: "utf8",
-      input: JSON.stringify(body),
-      stdio: ["pipe", "pipe", "pipe"],
-      env: token ? { ...process.env, GH_TOKEN: token } : process.env,
-    }),
-  );
+  return JSON.parse(gh("POST", path, body, token));
 }
 
 function ghPatch(path: string, body: object): unknown {
-  return JSON.parse(
-    execSync(`gh api --method PATCH "${path}" --input -`, {
-      encoding: "utf8",
-      input: JSON.stringify(body),
-      stdio: ["pipe", "pipe", "pipe"],
-    }),
-  );
+  return JSON.parse(gh("PATCH", path, body));
 }
 
 // PUT endpoints used here (team repo permissions) respond 204 No Content,
 // so there's no body to parse.
 function ghPut(path: string, body: object): void {
-  execSync(`gh api --method PUT "${path}" --input -`, {
-    input: JSON.stringify(body),
-    stdio: ["pipe", "pipe", "pipe"],
-  });
+  gh("PUT", path, body);
 }
 
 function git(cwd: string, ...args: string[]): string {
@@ -435,7 +433,7 @@ function reviewerToken(): string | undefined {
   const fromEnv = process.env["GH_REVIEWER_TOKEN"];
   if (fromEnv) return fromEnv;
   try {
-    const token = execSync(`gh auth token --user ${JSON.stringify(reviewer)}`, {
+    const token = execFileSync("gh", ["auth", "token", "--user", reviewer], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
@@ -489,7 +487,7 @@ async function addConversationScenario(prNumber: number): Promise<void> {
     return;
   }
 
-  const reviewerLogin = execSync("gh api user --jq .login", {
+  const reviewerLogin = execFileSync("gh", ["api", "user", "--jq", ".login"], {
     encoding: "utf8",
     env: { ...process.env, GH_TOKEN: token },
   }).trim();

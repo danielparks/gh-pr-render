@@ -1,4 +1,4 @@
-import { exec, execSync } from "child_process";
+import { execFile, execFileSync } from "child_process";
 import { promisify } from "util";
 import { graphql } from "@octokit/graphql";
 import type {
@@ -22,7 +22,7 @@ import {
   MAX_PAGE_SIZE,
 } from "./limits.js";
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 // Number of reactors to fetch (by login) per reaction emoji. GitHub returns
 // reactors as a `Reactor` union (User | Bot | Organization | Mannequin);
@@ -46,12 +46,12 @@ function getAuthToken(): string {
   return (
     process.env["GH_TOKEN"] ??
     process.env["GITHUB_TOKEN"] ??
-    execSync("gh auth token", { encoding: "utf8" }).trim()
+    execFileSync("gh", ["auth", "token"], { encoding: "utf8" }).trim()
   );
 }
 
 async function ghApi(endpoint: string): Promise<unknown> {
-  const { stdout } = await execAsync(`gh api "${endpoint}"`, {
+  const { stdout } = await execFileAsync("gh", ["api", endpoint], {
     maxBuffer: 10 * 1024 * 1024,
   });
   return JSON.parse(stdout);
