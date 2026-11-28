@@ -65,6 +65,7 @@ Fetch and display every top-level comment and overall review on a PR, in order a
 Long comment bodies are cut short here (`--body-line-limit 5`) to keep the example brief.
 
 <!-- rumdl-disable -->
+<!-- prettier-ignore-start -->
 <!-- example-output-start -->
 
 > # PR #1: Add type hints and arithmetic operations
@@ -239,6 +240,7 @@ Long comment bodies are cut short here (`--body-line-limit 5`) to keep the examp
 > > Thanks for the review!
 
 <!-- example-output-end -->
+<!-- prettier-ignore-end -->
 <!-- rumdl-enable -->
 
 See [`snapshots/`] for more examples of rendered output, including inline comments, reviews, and minimized comments.
