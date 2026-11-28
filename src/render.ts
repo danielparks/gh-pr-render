@@ -174,18 +174,19 @@ function isSignificantReview(review: Review): boolean {
   );
 }
 
+type CommentItem = { kind: "comment"; time: string; comment: IssueComment };
+type ReviewItem = { kind: "review"; time: string; review: Review };
+
 // A top-level comment or an overall review. GitHub shows these as one
 // chronological conversation, and they often refer to each other, so they are
 // truncated together rather than as two lists.
-type ConversationItem =
-  | { kind: "comment"; time: string; comment: IssueComment }
-  | { kind: "review"; time: string; review: Review };
+type ConversationItem = CommentItem | ReviewItem;
 
-function commentItem(comment: IssueComment): ConversationItem {
+function commentItem(comment: IssueComment): CommentItem {
   return { kind: "comment", time: comment.createdAt, comment };
 }
 
-function reviewItem(review: Review): ConversationItem {
+function reviewItem(review: Review): ReviewItem {
   return { kind: "review", time: review.submitted_at, review };
 }
 
@@ -207,10 +208,9 @@ function sortItems(items: ConversationItem[]): ConversationItem[] {
 // Each reviewer’s latest approval or change request, which together say where
 // the PR stands. These are kept even when they would fall in the omitted middle
 // of a long conversation. A review that was dismissed no longer counts.
-function pinnedReviews(reviews: ConversationItem[]): Set<ConversationItem> {
-  const latest = new Map<string, ConversationItem>();
+function pinnedReviews(reviews: ReviewItem[]): Set<ReviewItem> {
+  const latest = new Map<string, ReviewItem>();
   for (const item of reviews) {
-    if (item.kind !== "review") continue;
     const { state, user } = item.review;
     if (
       state !== "APPROVED" &&
