@@ -52,8 +52,7 @@ fi
 
 if grep '^## ' CHANGELOG.md | head -1 | grep -v '^## Release ' >/dev/null ; then
   echo 'Found non-release ## heading near start of CHANGELOG.md:' >&2
-  grep '^## ' CHANGELOG.md | head -1 | grep -v '^## Release ' >&2
-  # grep should fail and cause an exit, but just in case:
+  grep '^## ' CHANGELOG.md | head -1 >&2
   exit 1
 fi
 

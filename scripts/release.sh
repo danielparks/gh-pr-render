@@ -69,9 +69,16 @@ awk-in-place package.json '
   { print }'
 
 npm install
+echo
+
+if grep '^## ' CHANGELOG.md | head -1 | grep '^## Release ' >/dev/null ; then
+  echo 'CHANGELOG.md has no unreleased section, e.g. “## main branch”:' >&2
+  grep '^## ' CHANGELOG.md | head -1 >&2
+  exit 1
+fi
 
 awk-in-place CHANGELOG.md '
-  /^## main/ && !done {
+  /^## / && !done {
     $0 = "## Release '$version' ('$(date +%Y-%m-%d)')"
     done=1
   }
