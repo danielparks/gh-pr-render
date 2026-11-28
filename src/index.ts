@@ -181,25 +181,31 @@ function resolvePrArgs(
   prArg: string | undefined,
 ): [string, number] {
   if (repoOrPr === undefined) {
+    // No arguments.
     return detectRepoAndPr();
   }
 
-  let repo: string;
-  let prNumber: number;
-  const match = parsePrUrl(repoOrPr);
-  if (match) {
-    [repo, prNumber] = match;
-  } else if (prArg !== undefined) {
-    repo = repoOrPr;
-    prNumber = parseInt(prArg, 10);
-  } else {
-    [repo, prNumber] = detectRepoAndPr(repoOrPr);
+  if (prArg === undefined) {
+    // One argument.
+    const match = parsePrUrl(repoOrPr);
+    if (match) {
+      return match;
+    }
+
+    return detectRepoAndPr(repoOrPr);
   }
 
-  if (isNaN(prNumber) || prNumber <= 0) {
-    fail(`"${repoOrPr}" is not a valid PR number`);
+  // Two arguments.
+  if (!/^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/.test(repoOrPr)) {
+    fail(`"${repoOrPr}" is not a valid GitHub username/repo`);
   }
-  return [repo, prNumber];
+
+  const prNumber = parseInt(prArg, 10);
+  if (isNaN(prNumber) || prNumber <= 0) {
+    fail(`"${prArg}" is not a valid PR number`);
+  }
+
+  return [repoOrPr, prNumber];
 }
 
 function parsePrUrl(url: string): [string, number] | undefined {
