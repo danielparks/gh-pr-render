@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## Release 0.8.0 (2026-11-28)
 
 - Top-level comments and overall reviews are now one chronological list, as in the GitHub UI, and are truncated together: by default the first 20 and last 20 are shown, with an “N comments and reviews omitted” marker between. Previously reviews were always shown in full. Each reviewer’s latest approval or change request is kept even when it falls in the omitted part, so the PR’s status is never hidden.
 - Added `conversation` subcommand to render every top-level comment and review on a PR, in full. The omitted marker names it.
